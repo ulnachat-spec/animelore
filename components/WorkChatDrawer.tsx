@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { ShareModal } from "@/components/share/ShareModal";
 import { CHAT_ASSISTANT_NAME } from "@/lib/chat/persona";
@@ -154,12 +155,18 @@ export function WorkChatDrawer({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full border border-brand/60 bg-zinc-900 px-5 py-3 text-sm font-semibold text-paper shadow-lg shadow-black/40 transition hover:border-brand hover:bg-zinc-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        className="fixed bottom-[calc(5.25rem+var(--safe-bottom))] right-4 z-30 flex min-h-12 items-center gap-2 rounded-full border border-brand/40 bg-elevated py-1.5 pl-1.5 pr-4 text-sm font-semibold text-ink shadow-float transition hover:-translate-y-0.5 hover:border-brand md:bottom-6 md:right-6 md:z-40"
         aria-haspopup="dialog"
         aria-expanded={open}
       >
-        <span aria-hidden>💬</span>
-        聊一聊
+        <Image
+          src="/brand/mei-avatar-v1.png"
+          alt=""
+          width={40}
+          height={40}
+          className="size-9 rounded-full border border-brand/20 object-cover"
+        />
+        问问芽衣
       </button>
 
       <AnimatePresence>
@@ -168,7 +175,7 @@ export function WorkChatDrawer({
             <motion.button
               type="button"
               aria-label="关闭聊天"
-              className="fixed inset-0 z-50 bg-black/55 backdrop-blur-[2px]"
+              className="fixed inset-0 z-50 bg-ink/20 backdrop-blur-[2px]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -178,28 +185,35 @@ export function WorkChatDrawer({
               role="dialog"
               aria-modal="true"
               aria-labelledby="work-chat-title"
-              className="fixed z-50 flex w-full flex-col border-zinc-700 bg-zinc-900 shadow-2xl inset-x-0 bottom-0 top-auto max-h-[min(88vh,720px)] rounded-t-2xl border-t md:inset-y-0 md:left-auto md:right-0 md:top-0 md:max-h-none md:w-full md:max-w-md md:rounded-none md:rounded-l-2xl md:border-l md:border-t-0"
+              className="fixed z-50 flex w-full flex-col border-line bg-surface shadow-2xl inset-x-0 bottom-0 top-auto max-h-[min(88vh,720px)] rounded-t-2xl border-t md:inset-y-0 md:left-auto md:right-0 md:top-0 md:max-h-none md:w-full md:max-w-md md:rounded-none md:rounded-l-2xl md:border-l md:border-t-0"
               initial={isMobileSheet ? { y: "100%", x: 0 } : { x: "100%", y: 0 }}
               animate={{ y: 0, x: 0 }}
               exit={isMobileSheet ? { y: "100%", x: 0 } : { x: "100%", y: 0 }}
               transition={{ type: "spring", damping: 28, stiffness: 320 }}
             >
-              <header className="flex shrink-0 items-center justify-between gap-3 border-b border-zinc-800 px-4 py-4 md:px-5">
+              <header className="flex shrink-0 items-center justify-between gap-3 border-b border-line/70 px-4 py-4 md:px-5">
                 <motion.div
-                  className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-zinc-700 md:hidden"
+                  className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-line md:hidden"
                   aria-hidden
+                />
+                <Image
+                  src="/brand/mei-avatar-v1.png"
+                  alt="芽衣"
+                  width={44}
+                  height={44}
+                  className="mt-2 size-10 shrink-0 rounded-full border border-brand/20 object-cover md:mt-0"
                 />
                 <div className="min-w-0 pt-2 md:pt-0">
                   <h2 id="work-chat-title" className="text-base font-semibold text-paper">
                     和{CHAT_ASSISTANT_NAME}聊聊这部作品
                   </h2>
-                  <p className="mt-0.5 truncate text-xs text-zinc-500">{workTitle}</p>
+                  <p className="mt-0.5 truncate text-xs text-muted">{workTitle}</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-2 py-1 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-paper"
+                    className="rounded-lg px-2 py-1 text-sm text-muted transition hover:bg-soft hover:text-paper"
                     aria-label="关闭"
                   >
                     ✕
@@ -212,12 +226,21 @@ export function WorkChatDrawer({
                 className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4 md:px-5"
               >
                 {messages.length === 0 ? (
-                  <p className="text-center text-sm leading-relaxed text-zinc-500">
-                    嗨～我是{CHAT_ASSISTANT_NAME}！关于《{workTitle}》的梗、幕后或观感，都可以问我哦 (๑•̀ㅂ•́)و
+                  <div className="mx-auto max-w-xs rounded-2xl border border-line bg-soft/60 p-5 text-center">
+                    <Image
+                      src="/brand/mei-avatar-v1.png"
+                      alt=""
+                      width={64}
+                      height={64}
+                      className="mx-auto size-16 rounded-full border-2 border-elevated object-cover shadow-card"
+                    />
+                    <p className="mt-3 text-sm leading-relaxed text-body">
+                    嗨～我是{CHAT_ASSISTANT_NAME}。关于《{workTitle}》的梗、幕后或观感，都可以问我。
                     {!ready ? (
                       <span className="mt-2 block text-amber-400/90">{readyHint}</span>
                     ) : null}
-                  </p>
+                    </p>
+                  </div>
                 ) : null}
                 {messages.map((m, i) => (
                   <motion.div
@@ -230,7 +253,7 @@ export function WorkChatDrawer({
                       className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                         m.role === "user"
                           ? "rounded-br-md bg-brand/90 text-white"
-                          : "rounded-bl-md border border-zinc-700/80 bg-zinc-800/90 text-zinc-100"
+                          : "rounded-bl-md border border-line/80 bg-soft/90 text-ink"
                       }`}
                     >
                       {m.role === "assistant" ? (
@@ -243,13 +266,13 @@ export function WorkChatDrawer({
                   </motion.div>
                 ))}
                 {loading ? (
-                  <p className="text-center text-xs text-zinc-500" aria-live="polite">
+                  <p className="text-center text-xs text-muted" aria-live="polite">
                     {CHAT_ASSISTANT_NAME}正在想怎么回答呢…
                   </p>
                 ) : null}
               </motion.div>
 
-              <footer className="shrink-0 border-t border-zinc-800 px-4 py-3 md:px-5">
+              <footer className="shrink-0 border-t border-line/70 px-4 py-3 md:px-5">
                 {!ready ? (
                   <p className="mb-2 text-center text-xs text-amber-400/90" role="status">
                     {readyHint}
@@ -289,7 +312,7 @@ export function WorkChatDrawer({
                     placeholder={
                       canSend ? "输入问题，Enter 发送" : "暂时还不能发送哦"
                     }
-                    className="min-h-[44px] flex-1 resize-none rounded-xl border border-zinc-700 bg-zinc-950/80 px-3 py-2 text-sm text-paper placeholder:text-zinc-600 focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="min-h-[44px] flex-1 resize-none rounded-xl border border-line bg-canvas/80 px-3 py-2 text-sm text-paper placeholder:text-muted focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   <button
                     type="button"

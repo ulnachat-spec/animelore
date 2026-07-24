@@ -188,6 +188,9 @@ export function pickColdHookFromStore(opts: PickColdHookOptions = {}): PickColdH
 }
 
 export function markColdHookShown(id: string): void {
+  // Next's production build may execute dynamic server components while collecting
+  // route data. A build must never mutate the checked-in content library.
+  if (process.env.NEXT_PHASE === "phase-production-build") return;
   const store = ensureLoaded();
   const rec = store.find((r) => r.id === id);
   if (!rec) return;

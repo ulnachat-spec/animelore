@@ -115,12 +115,12 @@ export function WorkLoreClient({ meta, initialCards, evidenceForRegenerate }: Wo
             type="button"
             onClick={handleRegenerate}
             disabled={isRegenerating}
-            className="rounded-full border border-zinc-600 bg-zinc-800 px-6 py-2.5 text-sm font-medium text-zinc-100 transition hover:border-brand hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-full border border-line bg-soft px-6 py-2.5 text-sm font-medium text-ink transition hover:border-brand hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isRegenerating ? "生成中..." : "换一批 ↻"}
           </button>
           {statusHint ? (
-            <p className="text-center text-xs text-zinc-500" aria-live="polite">
+            <p className="text-center text-xs text-muted" aria-live="polite">
               {statusHint}
             </p>
           ) : null}

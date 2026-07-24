@@ -17,14 +17,14 @@ export function RoamCard({ card }: { card: RoamCardData }) {
   const verifiedLabel = card.verification_status === "fallback" ? "安全兜底" : "已校验";
 
   return (
-    <article className="relative overflow-hidden rounded-[2rem] border border-zinc-700/80 bg-zinc-900 p-6 shadow-2xl shadow-black/40">
+    <article className="relative overflow-hidden rounded-[2rem] border border-line/80 bg-surface p-6 shadow-2xl shadow-black/40">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(249,115,22,0.18),transparent_34%),radial-gradient(circle_at_85%_18%,rgba(59,130,246,0.12),transparent_28%)]" />
       <div className="relative">
         <div className="flex items-center justify-between gap-3">
           <span className={`rounded-full border px-3 py-1 text-xs font-medium ${tagTone[card.tag]}`}>
             {card.tag}
           </span>
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
             {card.type.replaceAll("_", " ")}
           </span>
         </div>
@@ -32,17 +32,17 @@ export function RoamCard({ card }: { card: RoamCardData }) {
         <h1 className="mt-8 text-3xl font-bold leading-tight tracking-tight text-paper">
           {card.hook}
         </h1>
-        <p className="mt-5 text-base leading-8 text-zinc-300">{card.blurb}</p>
+        <p className="mt-5 text-base leading-8 text-body">{card.blurb}</p>
 
-        <div className="mt-8 rounded-2xl border border-zinc-700/70 bg-black/20 p-4">
-          <p className="text-xs text-zinc-500">深入目标</p>
-          <p className="mt-1 text-sm font-medium text-zinc-100">{card.target.title}</p>
-          <p className="mt-2 text-xs text-zinc-500">
+        <div className="mt-8 rounded-2xl border border-line/70 bg-ink/5 p-4">
+          <p className="text-xs text-muted">深入目标</p>
+          <p className="mt-1 text-sm font-medium text-ink">{card.target.title}</p>
+          <p className="mt-2 text-xs text-muted">
             {card.next_seeds.slice(0, 3).join(" / ") || card.topic_key}
           </p>
         </div>
 
-        <footer className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-500">
+        <footer className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-muted">
           <span>
             {verifiedLabel} / 来源 {sourceCount} 个
           </span>

@@ -11,7 +11,7 @@ export async function CommunityRecsSection({ query }: { query: string }) {
     if (recs.length === 0) return null;
 
     return (
-      <section className="mt-10 rounded-2xl border border-zinc-700 bg-zinc-900/60 p-5">
+      <section className="mt-10 rounded-2xl border border-line bg-surface/85 p-5">
         <CommunityArticleRecs recs={recs} showDivider={false} />
       </section>
     );

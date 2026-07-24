@@ -234,15 +234,15 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
 
   if (!activeCard) {
     return (
-      <section className="mt-10 rounded-3xl border border-zinc-700 bg-zinc-900 p-6 text-center">
-        <p className="text-zinc-300">暂时没有可漫游的卡片，稍后再来刷一条。</p>
+      <section className="mt-10 rounded-3xl border border-line bg-surface p-6 text-center">
+        <p className="text-body">暂时没有可漫游的卡片，稍后再来刷一条。</p>
       </section>
     );
   }
 
   return (
     <section className="mt-8">
-      <div className="mb-4 flex items-center justify-between text-xs text-zinc-500">
+      <div className="mb-4 flex items-center justify-between text-xs text-muted">
         <span>知识漫游</span>
         <span>{progressText}</span>
       </div>
@@ -273,7 +273,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
         <button
           type="button"
           onClick={goNext}
-          className="rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm font-medium text-zinc-200 transition hover:border-zinc-500 hover:bg-zinc-800"
+          className="rounded-2xl border border-line bg-surface px-4 py-3 text-sm font-medium text-ink transition hover:border-brand/40 hover:bg-soft"
         >
           下一条
         </button>
@@ -286,7 +286,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
         </button>
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs text-zinc-600">
+      <div className="mt-4 flex items-center justify-between text-xs text-muted">
         <span>左滑下一条，右滑深入了解</span>
         <span>{loadingMore ? "补充卡片中..." : `余 ${remaining} 条`}</span>
       </div>

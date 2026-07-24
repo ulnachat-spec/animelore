@@ -4,7 +4,8 @@
  */
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { LoreCard } from "@/lib/types";
 
 function validHttpUrls(urls: string[] | undefined): string[] {
@@ -64,11 +65,11 @@ function CardSourceLine({ source, sourceUrls }: { source: string; sourceUrls: st
   if (!source.trim()) return null;
 
   if (links.length === 0) {
-    return <div className="mt-3 text-xs text-zinc-500">{source}</div>;
+    return <div className="mt-3 text-xs text-muted">{source}</div>;
   }
 
   return (
-    <div className="mt-3 text-xs text-zinc-500">
+    <div className="mt-3 text-xs text-muted">
       {viaPrefix ? <span>via </span> : null}
       {links.map((item, i) => (
         <span key={`${item.label}-${i}`}>
@@ -78,7 +79,7 @@ function CardSourceLine({ source, sourceUrls }: { source: string; sourceUrls: st
               href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="underline decoration-zinc-600 underline-offset-2 hover:text-zinc-400"
+              className="underline decoration-line underline-offset-2 hover:text-muted"
             >
               {item.label}
             </a>
@@ -99,35 +100,112 @@ export function LoreGrid({
   enterBatchKey?: number;
 }) {
   const isRegenEnter = enterBatchKey > 0;
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    setActive(0);
+  }, [enterBatchKey]);
+
+  const current = cards[active] ?? cards[0];
 
   return (
-    <motion.div className="grid gap-4 md:grid-cols-2">
-      {cards.map((card, idx) => (
-        <motion.article
-          key={`${enterBatchKey}-${card.id}`}
-          initial={isRegenEnter ? { opacity: 0, y: 0 } : { opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={
-            isRegenEnter
-              ? { duration: 0.3, delay: idx * 0.1, type: "tween" }
-              : { delay: idx * 0.1, type: "spring" }
-          }
-          className="rounded-2xl border border-zinc-700 bg-zinc-900/70 p-5"
-        >
-          <motion.div className="text-xs text-zinc-400">
-            {String(idx + 1).padStart(2, "0")} {"\u00b7"} {card.en_label}
-          </motion.div>
-          <h3 className="mt-2 text-lg font-semibold">{card.zh_name}</h3>
-          <p className="mt-2 text-brand">{card.headline}</p>
-          <p className="mt-2 text-sm text-zinc-200">{card.intro}</p>
-          <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-zinc-300">
-            {card.points.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
-          <CardSourceLine source={card.source} sourceUrls={card.source_urls ?? []} />
-        </motion.article>
-      ))}
-    </motion.div>
+    <>
+      <div className="mb-4 grid grid-cols-2 gap-2 md:hidden" role="tablist" aria-label="档案索引">
+        {cards.map((card, index) => (
+          <button
+            key={card.id}
+            type="button"
+            role="tab"
+            aria-selected={active === index}
+            onClick={() => setActive(index)}
+            className={`relative min-h-[4.5rem] overflow-hidden rounded-xl border p-3 text-left transition ${
+              active === index
+                ? "border-brand bg-brand/10"
+                : "border-line bg-surface text-body"
+            }`}
+          >
+            <span className="font-mono text-[0.62rem] tracking-wider text-muted">
+              {String(index + 1).padStart(2, "0")} · {card.en_label}
+            </span>
+            <span className="mt-1 block text-sm font-semibold text-ink">{card.zh_name}</span>
+            {active === index ? (
+              <span className="absolute inset-y-3 left-0 w-0.5 rounded-full bg-brand" />
+            ) : null}
+          </button>
+        ))}
+      </div>
+
+      <div className="md:hidden">
+        <AnimatePresence mode="wait">
+          {current ? (
+            <LoreArticle
+              key={`${enterBatchKey}-${current.id}`}
+              card={current}
+              index={active}
+              mobile
+            />
+          ) : null}
+        </AnimatePresence>
+        <div className="mt-3 flex justify-center gap-1.5" aria-hidden="true">
+          {cards.map((card, index) => (
+            <span
+              key={card.id}
+              className={`h-1.5 rounded-full transition-all ${
+                active === index ? "w-6 bg-brand" : "w-1.5 bg-line"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <motion.div className="hidden gap-4 md:grid md:grid-cols-2">
+        {cards.map((card, idx) => (
+          <LoreArticle
+            key={`${enterBatchKey}-${card.id}`}
+            card={card}
+            index={idx}
+            isRegenEnter={isRegenEnter}
+          />
+        ))}
+      </motion.div>
+    </>
+  );
+}
+
+function LoreArticle({
+  card,
+  index,
+  isRegenEnter = false,
+  mobile = false
+}: {
+  card: LoreCard;
+  index: number;
+  isRegenEnter?: boolean;
+  mobile?: boolean;
+}) {
+  return (
+    <motion.article
+      initial={mobile ? { opacity: 0, x: 28 } : isRegenEnter ? { opacity: 0 } : { opacity: 0, y: 24 }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
+      exit={mobile ? { opacity: 0, x: -22 } : undefined}
+      transition={mobile ? { duration: 0.22 } : { duration: 0.3, delay: index * 0.08 }}
+      className="archive-card p-5 sm:p-6"
+    >
+      <div className="archive-kicker">
+        {String(index + 1).padStart(2, "0")} {"\u00b7"} {card.en_label}
+      </div>
+      <h3 className="archive-title mt-3 text-xl">{card.zh_name}</h3>
+      <p className="mt-4 font-display text-lg leading-7 text-brand">{card.headline}</p>
+      <p className="mt-4 text-sm leading-7 text-body">{card.intro}</p>
+      <ul className="mt-4 space-y-2 text-sm leading-6 text-body">
+        {card.points.map((point) => (
+          <li key={point} className="flex gap-2.5">
+            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true" />
+            <span>{point}</span>
+          </li>
+        ))}
+      </ul>
+      <CardSourceLine source={card.source} sourceUrls={card.source_urls ?? []} />
+    </motion.article>
   );
 }

@@ -15,6 +15,7 @@ function searchParamIsOn(
   return false;
 }
 import { SearchBox } from "@/components/search-box";
+import { RecentWorkRecorder } from "@/components/recent-work-recorder";
 import { CommunityRecsSkeleton } from "@/components/skeletons/CommunityRecsSkeleton";
 import { RelatedWorksSkeleton } from "@/components/skeletons/RelatedWorksSkeleton";
 import { WorkHeroSkeleton } from "@/components/skeletons/WorkHeroSkeleton";
@@ -36,7 +37,8 @@ export default function WorkPage({
   const debugTyping = searchParamIsOn(searchParams?.debugTyping);
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
+    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
+      <RecentWorkRecorder title={query} />
       <WorkPageNav query={query} />
       <div className="mt-6">
         <SearchBox defaultValue={query} />

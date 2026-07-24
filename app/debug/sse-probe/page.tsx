@@ -98,9 +98,9 @@ export default function SseProbePage() {
   }, [runProbe]);
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-10 text-zinc-100">
+    <main className="mx-auto max-w-2xl px-6 py-10 text-ink">
       <h1 className="text-2xl font-bold">SSE 流式探针</h1>
-      <p className="mt-2 text-sm text-zinc-400">
+      <p className="mt-2 text-sm text-muted">
         GET /api/debug/sse-probe — 每 200ms 一条 tick，共 20 条。若下方列表逐步增加则基础 SSE
         正常；若约 4 秒后一次性出现 20 行，则存在 Response/SSE 缓冲。
       </p>
@@ -122,14 +122,14 @@ export default function SseProbePage() {
       <button
         type="button"
         onClick={() => void runProbe()}
-        className="mt-4 rounded-lg border border-zinc-600 bg-zinc-800 px-4 py-2 text-sm hover:border-brand"
+        className="mt-4 rounded-lg border border-line bg-soft px-4 py-2 text-sm hover:border-brand"
       >
         重新探测
       </button>
 
-      <ul className="mt-6 space-y-2 rounded-xl border border-zinc-700 bg-zinc-900/60 p-4 font-mono text-sm">
+      <ul className="mt-6 space-y-2 rounded-xl border border-line bg-surface/85 p-4 font-mono text-sm">
         {rows.length === 0 ? (
-          <li className="text-zinc-500">等待 tick…</li>
+          <li className="text-muted">等待 tick…</li>
         ) : (
           rows.map((row) => (
             <li key={`tick-${row.i}-${row.clientMs}`}>

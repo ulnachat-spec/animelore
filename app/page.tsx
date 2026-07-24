@@ -1,27 +1,18 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { HomeColdSection } from "@/components/home-cold-section";
+import { HomeDiscovery } from "@/components/home-discovery";
 import { SearchBox } from "@/components/search-box";
 
 export const dynamic = "force-dynamic";
 
 function ColdHookFallback() {
   return (
-    <section
-      className="mt-12 w-full rounded-2xl border border-zinc-700 bg-zinc-900/40 p-6"
-      aria-busy="true"
-      aria-label="今日冷知识加载中"
-    >
-      <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-400">
-        <span>今日冷知识</span>
-        <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-500">加载中</span>
-      </div>
-      <p className="mt-4 text-sm text-zinc-400">
-        正在拉取冷知识（含外源与模型），首屏标题与搜索框已可用；若网络较慢请稍候。
-      </p>
-      <div className="mt-4 space-y-2">
-        <div className="h-6 w-3/4 max-w-md animate-pulse rounded-lg bg-zinc-800/80" />
-        <div className="h-6 w-1/2 max-w-sm animate-pulse rounded-lg bg-zinc-800/60" />
+    <section className="archive-card h-full p-6" aria-busy="true">
+      <p className="archive-kicker">芽衣正在抽取今日档案</p>
+      <div className="mt-8 space-y-3">
+        <div className="h-7 w-5/6 animate-pulse rounded-lg bg-soft/80" />
+        <div className="h-7 w-2/3 animate-pulse rounded-lg bg-soft/60" />
       </div>
     </section>
   );
@@ -37,32 +28,50 @@ export default function HomePage({
     (Array.isArray(searchParams?.refreshHook) && searchParams.refreshHook[0] === "1");
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col items-center px-6 py-20">
-      <h1 className="text-4xl font-bold md:text-5xl">AnimeLore / 作品图鉴</h1>
-      <p className="mt-3 text-zinc-300">不是百科词条，而是资深同好的安利现场。</p>
-
-      <div className="mt-10 w-full">
-        <SearchBox />
-      </div>
-
-      <Suspense fallback={<ColdHookFallback />}>
-        <HomeColdSection refreshHook={refreshHook} />
-      </Suspense>
-
-      <Link
-        href="/roam"
-        className="mt-4 w-full rounded-2xl border border-zinc-700 bg-zinc-900/70 p-6 transition hover:border-brand/70 hover:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-brand"
-      >
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-sm text-zinc-400">知识漫游</p>
-            <p className="mt-2 text-xl font-medium text-paper">刷一条二次元冷知识</p>
+    <main>
+      <section className="mx-auto grid max-w-6xl gap-10 px-4 pb-12 pt-10 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.7fr)] lg:items-center lg:gap-16 lg:pb-20">
+        <div>
+          <p className="archive-kicker text-brand">Anime work archive · 公开检索中</p>
+          <h1 className="archive-title mt-5 max-w-3xl text-[clamp(2.55rem,8vw,5.4rem)] leading-[0.98]">
+            每部动画，
+            <span className="mt-2 block text-brand">都有第二份档案。</span>
+          </h1>
+          <p className="mt-6 max-w-2xl text-base leading-8 text-body sm:text-lg">
+            和芽衣一起翻开作品背后的梗、争议、幕后与创作谱系。
+            这里不是百科目录，而是一场有来源的同好深聊。
+          </p>
+          <div className="mt-8 max-w-2xl">
+            <SearchBox showSuggestions />
           </div>
-          <span className="rounded-full bg-brand px-3 py-1 text-sm font-semibold text-white">
-            开始 →
-          </span>
         </div>
-      </Link>
+
+        <aside className="relative mx-auto w-full max-w-[420px] lg:max-w-none" aria-label="芽衣档案员">
+          <div className="absolute -left-4 top-10 hidden h-24 w-8 rounded-l-xl border-y border-l border-line bg-sage/20 sm:block" />
+          <div className="archive-card relative aspect-[4/5] overflow-hidden">
+            <Image
+              src="/brand/mei-reference.png"
+              alt="AnimeLore 档案员芽衣：佩戴圆框眼镜和星形书签发夹，手持档案本"
+              fill
+              priority
+              sizes="(max-width: 1023px) 420px, 38vw"
+              className="object-cover object-[35%_38%] transition duration-700 hover:scale-[1.025]"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#201b17]/90 via-[#201b17]/45 to-transparent p-5 pt-20 text-[#fff8eb]">
+              <p className="font-display text-xl font-semibold">芽衣正在值班</p>
+              <p className="mt-1 text-sm text-[#eadfce]">“今天想从哪部作品开始？”</p>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section className="border-y border-line/70 bg-canvas-tint/45">
+        <div className="mx-auto grid max-w-6xl gap-4 px-4 py-8 sm:px-6 sm:py-10 lg:grid-cols-2">
+          <Suspense fallback={<ColdHookFallback />}>
+            <HomeColdSection refreshHook={refreshHook} />
+          </Suspense>
+          <HomeDiscovery />
+        </div>
+      </section>
     </main>
   );
 }

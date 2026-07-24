@@ -45,7 +45,7 @@ export default function ColdKnowledgePage() {
   if (staleMessage) {
     return (
       <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-12">
-        <p className="text-base leading-relaxed text-zinc-300">{staleMessage}</p>
+        <p className="text-base leading-relaxed text-body">{staleMessage}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/"
@@ -55,7 +55,7 @@ export default function ColdKnowledgePage() {
           </Link>
           <Link
             href="/?refreshHook=1"
-            className="rounded-lg border border-zinc-600 px-4 py-2 text-sm text-zinc-300 hover:bg-zinc-800"
+            className="rounded-lg border border-line px-4 py-2 text-sm text-body hover:bg-soft"
           >
             强制新生成（开发）
           </Link>
@@ -67,7 +67,7 @@ export default function ColdKnowledgePage() {
   if (!data) {
     return (
       <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-12">
-        <p className="text-zinc-400">加载中…</p>
+        <p className="text-muted">加载中…</p>
       </main>
     );
   }
@@ -106,11 +106,11 @@ export default function ColdKnowledgePage() {
         <button
           type="button"
           onClick={onBack}
-          className="rounded-lg border border-zinc-600 px-3 py-1.5 text-sm text-zinc-300 hover:bg-zinc-800"
+          className="rounded-lg border border-line px-3 py-1.5 text-sm text-body hover:bg-soft"
         >
           ← 返回首页
         </button>
-        <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-xs text-zinc-400">
+        <span className="rounded-full bg-soft px-2 py-0.5 text-xs text-muted">
           {topicLabel[data.topic_type] || data.topic_type}
         </span>
       </header>
@@ -118,26 +118,26 @@ export default function ColdKnowledgePage() {
       <h1 className="text-2xl font-bold leading-snug md:text-3xl">{data.hook}</h1>
 
       {data.quiz ? (
-        <section className="mt-8 rounded-2xl border border-zinc-700 bg-zinc-900/70 p-5">
-          <p className="text-sm font-medium text-zinc-200">你觉得这是真的吗？</p>
+        <section className="mt-8 rounded-2xl border border-line bg-surface/90 p-5">
+          <p className="text-sm font-medium text-ink">你觉得这是真的吗？</p>
           <div className="mt-4 grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => setQuizChoice(true)}
-              className="rounded-xl border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 transition hover:border-brand/70 hover:bg-zinc-800"
+              className="rounded-xl border border-line bg-canvas/60 px-4 py-3 text-sm text-ink transition hover:border-brand/70 hover:bg-soft"
             >
               像真的
             </button>
             <button
               type="button"
               onClick={() => setQuizChoice(false)}
-              className="rounded-xl border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-sm text-zinc-200 transition hover:border-brand/70 hover:bg-zinc-800"
+              className="rounded-xl border border-line bg-canvas/60 px-4 py-3 text-sm text-ink transition hover:border-brand/70 hover:bg-soft"
             >
               感觉在骗我
             </button>
           </div>
           {quizChoice !== null ? (
-            <div className="mt-5 rounded-xl bg-black/20 p-4 text-sm leading-7 text-zinc-300 animate-[pulse_0.8s_ease-in-out_1]">
+            <div className="mt-5 rounded-xl bg-ink/5 p-4 text-sm leading-7 text-body animate-[pulse_0.8s_ease-in-out_1]">
               <p className="font-medium text-paper">{quizFeedback}</p>
               <p className="mt-2">{data.quiz.explanation}</p>
             </div>
@@ -146,7 +146,7 @@ export default function ColdKnowledgePage() {
       ) : null}
 
       {showInsight ? (
-        <article className="mt-8 space-y-4 text-base leading-relaxed text-zinc-200">
+        <article className="mt-8 space-y-4 text-base leading-relaxed text-ink">
           {formatColdInsightForDisplay(data.insight)
             .split(/\n\n+/)
             .filter(Boolean)
@@ -160,18 +160,18 @@ export default function ColdKnowledgePage() {
 
       {hasRecs && showInsight ? (
         <>
-          <div className="my-10 border-t border-zinc-700" />
+          <div className="my-10 border-t border-line" />
 
-          <p className="text-center text-sm font-medium text-zinc-400">用这几部看懂它</p>
+          <p className="text-center text-sm font-medium text-muted">用这几部看懂它</p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {data.recommendations.map((rec, idx) => (
               <Link
                 key={`${rec.candidate_id || rec.searchQuery}-${idx}`}
                 href={`/work/${encodeURIComponent(rec.searchQuery)}`}
-                className="flex gap-4 rounded-2xl border border-zinc-700 bg-zinc-900/60 p-4 transition hover:border-brand/60 hover:bg-zinc-900"
+                className="flex gap-4 rounded-2xl border border-line bg-surface/85 p-4 transition hover:border-brand/60 hover:bg-surface"
               >
-                <div className="relative h-[120px] w-[85px] shrink-0 overflow-hidden rounded-lg bg-zinc-800">
+                <div className="relative h-[120px] w-[85px] shrink-0 overflow-hidden rounded-lg bg-soft">
                   {rec.coverImage ? (
                     <Image
                       src={rec.coverImage}
@@ -181,7 +181,7 @@ export default function ColdKnowledgePage() {
                       sizes="85px"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-xs text-zinc-500">
+                    <div className="flex h-full w-full items-center justify-center text-xs text-muted">
                       暂无封面
                     </div>
                   )}
@@ -189,9 +189,9 @@ export default function ColdKnowledgePage() {
                 <div className="min-w-0 flex-1">
                   <h2 className="font-semibold text-paper">{rec.displayTitle}</h2>
                   {rec.nativeTitle ? (
-                    <p className="mt-0.5 truncate text-xs text-zinc-500">{rec.nativeTitle}</p>
+                    <p className="mt-0.5 truncate text-xs text-muted">{rec.nativeTitle}</p>
                   ) : null}
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-300 line-clamp-none">
+                  <p className="mt-2 text-sm leading-relaxed text-body line-clamp-none">
                     {rec.reason}
                   </p>
                   <p className="mt-3 text-xs text-brand">查看图鉴 →</p>
@@ -203,7 +203,7 @@ export default function ColdKnowledgePage() {
       ) : null}
 
       {showInsight ? (
-        <div className="mt-10 flex justify-center border-t border-zinc-800 pt-8">
+        <div className="mt-10 flex justify-center border-t border-line/70 pt-8">
           <button
             type="button"
             onClick={() => setShareOpen(true)}

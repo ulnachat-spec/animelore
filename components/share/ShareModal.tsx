@@ -124,7 +124,7 @@ export function ShareModal(props: ShareModalProps) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="share-card-title"
-            className="fixed inset-x-0 bottom-0 z-[71] max-h-[92vh] overflow-y-auto rounded-t-3xl border-t border-zinc-700 bg-zinc-950 p-4 shadow-2xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[90vh] md:w-[min(960px,92vw)] md:rounded-3xl md:border"
+            className="fixed inset-x-0 bottom-0 z-[71] max-h-[92vh] overflow-y-auto rounded-t-3xl border-t border-line bg-canvas p-4 shadow-2xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[90vh] md:w-[min(960px,92vw)] md:rounded-3xl md:border"
             initial={isDesktop ? { y: "calc(-50% + 60px)", x: "-50%", opacity: 0 } : { y: 60, opacity: 0 }}
             animate={isDesktop ? { y: "-50%", x: "-50%", opacity: 1 } : { y: 0, opacity: 1 }}
             exit={isDesktop ? { y: "calc(-50% + 60px)", x: "-50%", opacity: 0 } : { y: 60, opacity: 0 }}
@@ -140,14 +140,14 @@ export function ShareModal(props: ShareModalProps) {
               <button
                 type="button"
                 onClick={props.onClose}
-                className="rounded-lg px-3 py-1.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-paper"
+                className="rounded-lg px-3 py-1.5 text-sm text-muted transition hover:bg-soft hover:text-paper"
               >
                 关闭
               </button>
             </header>
 
             <div className="mt-5 grid gap-5 md:grid-cols-[minmax(0,420px)_1fr]">
-              <div className="mx-auto overflow-hidden rounded-2xl border border-zinc-800 bg-black/30 p-3">
+              <div className="mx-auto overflow-hidden rounded-2xl border border-line/70 bg-black/30 p-3">
                 <div
                   style={{
                     width: 1080 * previewScale,
@@ -182,7 +182,7 @@ export function ShareModal(props: ShareModalProps) {
                 {props.kind === "work" ? (
                   <>
                     <section>
-                      <p className="mb-2 text-sm font-medium text-zinc-300">模板</p>
+                      <p className="mb-2 text-sm font-medium text-body">模板</p>
                       <div className="grid grid-cols-3 gap-2">
                         {templateOptions.map((opt) => (
                           <button
@@ -192,7 +192,7 @@ export function ShareModal(props: ShareModalProps) {
                             className={`rounded-xl border px-3 py-2 text-sm transition ${
                               template === opt.id
                                 ? "border-brand bg-brand/15 text-brand"
-                                : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-500"
+                                : "border-line bg-surface text-body hover:border-brand/40"
                             }`}
                           >
                             {opt.label}
@@ -202,7 +202,7 @@ export function ShareModal(props: ShareModalProps) {
                     </section>
 
                     <section>
-                      <label htmlFor="share-quote" className="text-sm font-medium text-zinc-300">
+                      <label htmlFor="share-quote" className="text-sm font-medium text-body">
                         感想引语
                       </label>
                       <textarea
@@ -210,13 +210,13 @@ export function ShareModal(props: ShareModalProps) {
                         value={quote}
                         onChange={(e) => setQuote(e.target.value)}
                         rows={4}
-                        className="mt-2 w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm leading-relaxed text-paper placeholder:text-zinc-600 focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
+                        className="mt-2 w-full resize-none rounded-xl border border-line bg-surface px-3 py-2 text-sm leading-relaxed text-paper placeholder:text-muted focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
                         placeholder="写一句你想分享的追番感想"
                       />
                     </section>
 
                     <section>
-                      <p className="mb-2 text-sm font-medium text-zinc-300">标签（最多 2 个）</p>
+                      <p className="mb-2 text-sm font-medium text-body">标签（最多 2 个）</p>
                       <div className="flex flex-wrap gap-2">
                         {tagOptions.map((tag) => (
                           <button
@@ -227,7 +227,7 @@ export function ShareModal(props: ShareModalProps) {
                             className={`rounded-full border px-3 py-1.5 text-xs transition ${
                               tags.includes(tag)
                                 ? "border-brand bg-brand/15 text-brand"
-                                : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-500 disabled:cursor-not-allowed disabled:opacity-40"
+                                : "border-line bg-surface text-body hover:border-brand/40 disabled:cursor-not-allowed disabled:opacity-40"
                             }`}
                           >
                             {tag}
@@ -237,7 +237,7 @@ export function ShareModal(props: ShareModalProps) {
                     </section>
                   </>
                 ) : (
-                  <p className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-4 text-sm leading-7 text-zinc-300">
+                  <p className="rounded-2xl border border-line/70 bg-surface/90 p-4 text-sm leading-7 text-body">
                     冷知识分享卡会使用「深夜追番」模板，自动截取 hook 和正文摘要。
                   </p>
                 )}
@@ -258,16 +258,16 @@ export function ShareModal(props: ShareModalProps) {
                 </button>
 
                 {dataUrl ? (
-                  <div className="rounded-xl border border-zinc-800 bg-zinc-900/70 p-3 text-xs leading-6 text-zinc-400">
+                  <div className="rounded-xl border border-line/70 bg-surface/90 p-3 text-xs leading-6 text-muted">
                     如果浏览器没有自动下载，可以长按下方图片保存。
                     <img
                       src={dataUrl}
                       alt={`${title} 分享卡片`}
-                      className="mt-3 max-h-64 w-auto rounded-lg border border-zinc-800"
+                      className="mt-3 max-h-64 w-auto rounded-lg border border-line/70"
                     />
                   </div>
                 ) : (
-                  <p className="text-xs leading-6 text-zinc-500">
+                  <p className="text-xs leading-6 text-muted">
                     iOS Safari 可能无法直接下载，会显示图片供你长按保存。
                   </p>
                 )}

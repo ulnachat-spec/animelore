@@ -3,7 +3,7 @@ const CARD_KEYS = ["card-a", "card-b", "card-c", "card-d"] as const;
 export function SearchBoxSkeleton() {
   return (
     <div
-      className="h-[60px] w-full max-w-2xl animate-pulse rounded-2xl border border-zinc-700 bg-zinc-900"
+      className="h-[60px] w-full max-w-2xl animate-pulse rounded-2xl border border-line bg-surface"
       aria-hidden
     />
   );
@@ -23,7 +23,7 @@ export function WorkPageSkeleton({
   return (
     <>
       <section
-        className="mt-8 flex gap-6 rounded-2xl border border-zinc-700 bg-zinc-900/60 p-5"
+        className="mt-8 flex gap-6 rounded-2xl border border-line bg-surface/85 p-5"
         aria-busy="true"
         aria-label={ariaLabel}
       >
@@ -40,7 +40,7 @@ export function WorkPageSkeleton({
       </section>
 
       {showStatus ? (
-        <p className="mt-6 text-center text-sm text-zinc-500" role="status">
+        <p className="mt-6 text-center text-sm text-muted" role="status">
           正在检索资料与生成图鉴…
         </p>
       ) : null}
@@ -51,7 +51,7 @@ export function WorkPageSkeleton({
 function CoverSkeleton() {
   return (
     <div
-      className="h-[250px] w-[180px] shrink-0 animate-pulse rounded-xl bg-zinc-800/90 ring-1 ring-zinc-700/80"
+      className="h-[250px] w-[180px] shrink-0 animate-pulse rounded-xl bg-soft/90 ring-1 ring-line/80"
       aria-hidden
     />
   );
@@ -60,7 +60,7 @@ function CoverSkeleton() {
 function TitleBlockSkeleton() {
   return (
     <div className="min-w-0 flex-1 space-y-3" aria-hidden>
-      <div className="h-9 w-2/3 max-w-md animate-pulse rounded-lg bg-zinc-800" />
+      <div className="h-9 w-2/3 max-w-md animate-pulse rounded-lg bg-soft" />
       <PulseLine className="h-5 w-1/2 max-w-xs" />
       <PulseLine className="h-4 w-3/5 max-w-sm" />
     </div>
@@ -68,27 +68,27 @@ function TitleBlockSkeleton() {
 }
 
 function PulseLine({ className }: { className: string }) {
-  return <div className={`animate-pulse rounded-lg bg-zinc-800/80 ${className}`} />;
+  return <div className={`animate-pulse rounded-lg bg-soft/80 ${className}`} />;
 }
 
 function LoreCardSkeleton({ variant }: { variant: number }) {
   return (
-    <article className="rounded-2xl border border-zinc-700 bg-zinc-900/70 p-5">
-      <div className="h-3 w-16 animate-pulse rounded bg-zinc-800" />
-      <div className="mt-3 h-5 w-2/5 animate-pulse rounded-lg bg-zinc-800" />
-      <div className="mt-3 h-4 w-4/5 animate-pulse rounded bg-zinc-800/90" />
-      <div className="mt-2 h-4 w-full animate-pulse rounded bg-zinc-800/70" />
-      <div className="mt-2 h-4 w-11/12 animate-pulse rounded bg-zinc-800/60" />
+    <article className="rounded-2xl border border-line bg-surface/90 p-5">
+      <div className="h-3 w-16 animate-pulse rounded bg-soft" />
+      <div className="mt-3 h-5 w-2/5 animate-pulse rounded-lg bg-soft" />
+      <div className="mt-3 h-4 w-4/5 animate-pulse rounded bg-soft/90" />
+      <div className="mt-2 h-4 w-full animate-pulse rounded bg-soft/70" />
+      <div className="mt-2 h-4 w-11/12 animate-pulse rounded bg-soft/60" />
       <div className="mt-4 space-y-2">
         <BulletLine width={variant === 0 ? "w-full" : "w-10/12"} />
         <BulletLine width="w-9/12" />
         <BulletLine width="w-4/5" />
       </div>
-      <div className="mt-4 h-3 w-24 animate-pulse rounded bg-zinc-800/50" />
+      <div className="mt-4 h-3 w-24 animate-pulse rounded bg-soft/50" />
     </article>
   );
 }
 
 function BulletLine({ width }: { width: string }) {
-  return <div className={`h-3 ${width} animate-pulse rounded bg-zinc-800/50`} />;
+  return <div className={`h-3 ${width} animate-pulse rounded bg-soft/50`} />;
 }

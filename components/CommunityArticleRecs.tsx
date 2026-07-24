@@ -28,16 +28,16 @@ export function CommunityArticleRecs({
   return (
     <section
       className={
-        showDivider ? "mt-6 border-t border-zinc-800 pt-5" : "mt-5"
+        showDivider ? "mt-6 border-t border-line/70 pt-5" : "mt-5"
       }
     >
-      <h2 className="text-sm font-medium text-zinc-300">中文社区考据与创作</h2>
-      <p className="mt-1 text-xs text-zinc-500">
+      <h2 className="text-sm font-medium text-body">中文社区考据与创作</h2>
+      <p className="mt-1 text-xs text-muted">
         延伸阅读，非官方事实来源；观点来自对应社区原文。
       </p>
       <ul className="mt-4 space-y-4">
         {recs.map((rec) => (
-          <li key={rec.id} className="border-b border-zinc-800/80 pb-4 last:border-0 last:pb-0">
+          <li key={rec.id} className="border-b border-line/70/80 pb-4 last:border-0 last:pb-0">
             <ArticleRow rec={rec} />
           </li>
         ))}
@@ -67,7 +67,7 @@ function ArticleRow({ rec }: { rec: CommunityArticleRec }) {
   return (
     <article>
       <SourceBadge source={rec.source} />
-      <h3 className="mt-2 text-base font-semibold leading-snug text-zinc-100">
+      <h3 className="mt-2 text-base font-semibold leading-snug text-ink">
         <a
           href={href}
           target="_blank"
@@ -78,21 +78,21 @@ function ArticleRow({ rec }: { rec: CommunityArticleRec }) {
         </a>
       </h3>
       {metaParts.length > 0 ? (
-        <p className="mt-1 text-xs text-zinc-500">{metaParts.join(" · ")}</p>
+        <p className="mt-1 text-xs text-muted">{metaParts.join(" · ")}</p>
       ) : null}
       {isBilibili ? (
-        <p className="mt-1 text-[11px] text-zinc-600">
+        <p className="mt-1 text-[11px] text-muted">
           B站页面首次打开较慢时，可刷新重试
         </p>
       ) : null}
-      <p className="mt-2 text-sm leading-relaxed text-zinc-400">{rec.reason}</p>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{rec.reason}</p>
     </article>
   );
 }
 
 function SourceBadge({ source }: { source: CommunityArticleSource }) {
   return (
-    <span className="inline-block rounded-md border border-zinc-700 bg-zinc-800/80 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-zinc-400">
+    <span className="inline-block rounded-md border border-line bg-soft/80 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-muted">
       {sourceLabel(source)}
     </span>
   );

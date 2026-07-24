@@ -30,7 +30,7 @@ export function emptyStreamingCards(): StreamingCardState[] {
 function StreamCursor({ show }: { show: boolean }) {
   if (!show) return null;
   return (
-    <span className="ml-0.5 inline-block h-3 w-0.5 animate-pulse bg-zinc-400 align-middle" />
+    <span className="ml-0.5 inline-block h-3 w-0.5 animate-pulse bg-muted align-middle" />
   );
 }
 
@@ -49,7 +49,7 @@ export function StreamingLoreGrid({ cards }: { cards: StreamingCardState[] }) {
         return (
           <article
             key={card.id}
-            className="rounded-2xl border border-zinc-700 bg-zinc-900/70 p-5"
+            className="rounded-2xl border border-line bg-surface/90 p-5"
           >
             <CardIndexLabel idx={idx} enLabel={card.en_label} />
             <h3 className="mt-2 text-lg font-semibold">{card.zh_name}</h3>
@@ -62,13 +62,13 @@ export function StreamingLoreGrid({ cards }: { cards: StreamingCardState[] }) {
                   </p>
                 )}
                 {(intro || headline || isStreaming) && (
-                  <p className="mt-2 min-h-[1.25rem] text-sm text-zinc-200">
+                  <p className="mt-2 min-h-[1.25rem] text-sm text-ink">
                     {intro}
                     <StreamCursor show={showCursor && Boolean(headline) && !intro} />
                   </p>
                 )}
                 {showPoints ? (
-                  <ul className="mt-3 min-h-[1rem] list-disc space-y-1 pl-5 text-sm text-zinc-300">
+                  <ul className="mt-3 min-h-[1rem] list-disc space-y-1 pl-5 text-sm text-body">
                     {(activePoints.length ? activePoints : isStreaming ? [""] : []).map(
                       (point, pi) => (
                         <li key={`${card.id}-p-${pi}`}>
@@ -85,7 +85,7 @@ export function StreamingLoreGrid({ cards }: { cards: StreamingCardState[] }) {
                   </ul>
                 ) : null}
                 {card.done && card.finalCard?.source ? (
-                  <div className="mt-3 text-xs text-zinc-500">{card.finalCard.source}</div>
+                  <div className="mt-3 text-xs text-muted">{card.finalCard.source}</div>
                 ) : null}
               </>
             ) : (
@@ -100,7 +100,7 @@ export function StreamingLoreGrid({ cards }: { cards: StreamingCardState[] }) {
 
 function CardIndexLabel({ idx, enLabel }: { idx: number; enLabel: string }) {
   return (
-    <div className="text-xs text-zinc-400">
+    <div className="text-xs text-muted">
       {String(idx + 1).padStart(2, "0")} {"\u00b7"} {enLabel}
     </div>
   );
@@ -109,9 +109,9 @@ function CardIndexLabel({ idx, enLabel }: { idx: number; enLabel: string }) {
 function CardSkeleton() {
   return (
     <div className="mt-4 space-y-2" aria-hidden>
-      <div className="h-4 w-2/3 animate-pulse rounded bg-zinc-800" />
-      <div className="h-4 w-full animate-pulse rounded bg-zinc-800/70" />
-      <div className="h-3 w-4/5 animate-pulse rounded bg-zinc-800/50" />
+      <div className="h-4 w-2/3 animate-pulse rounded bg-soft" />
+      <div className="h-4 w-full animate-pulse rounded bg-soft/70" />
+      <div className="h-3 w-4/5 animate-pulse rounded bg-soft/50" />
     </div>
   );
 }
