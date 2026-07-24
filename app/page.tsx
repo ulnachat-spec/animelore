@@ -20,14 +20,16 @@ function ColdHookFallback() {
   );
 }
 
-export default function HomePage({
+export default async function HomePage({
   searchParams
 }: {
-  searchParams?: { refreshHook?: string | string[] };
+  searchParams?: Promise<{ refreshHook?: string | string[] }>;
 }) {
+  const resolvedSearchParams = await searchParams;
   const refreshHook =
-    searchParams?.refreshHook === "1" ||
-    (Array.isArray(searchParams?.refreshHook) && searchParams.refreshHook[0] === "1");
+    resolvedSearchParams?.refreshHook === "1" ||
+    (Array.isArray(resolvedSearchParams?.refreshHook) &&
+      resolvedSearchParams.refreshHook[0] === "1");
 
   return (
     <main>

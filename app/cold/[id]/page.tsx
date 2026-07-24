@@ -9,9 +9,10 @@ export const dynamic = "force-dynamic";
 export default async function ShareableColdKnowledgePage({
   params
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const id = decodeURIComponent(params.id);
+  const { id: encodedId } = await params;
+  const id = decodeURIComponent(encodedId);
   const record = readColdHookStore().find((item) => item.id === id);
   if (!record) notFound();
 

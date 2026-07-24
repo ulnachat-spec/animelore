@@ -26,15 +26,19 @@ import { WorkHeroSection } from "@/components/work/work-hero-section";
 import { WorkLoreSection } from "@/components/work/work-lore-section";
 import { WorkPageNav } from "@/components/work/work-page-nav";
 
-export default function WorkPage({
+export default async function WorkPage({
   params,
   searchParams
 }: {
-  params: { query: string };
-  searchParams?: { debugTyping?: string | string[] };
+  params: Promise<{ query: string }>;
+  searchParams?: Promise<{ debugTyping?: string | string[] }>;
 }) {
-  const query = decodeURIComponent(params.query);
-  const debugTyping = searchParamIsOn(searchParams?.debugTyping);
+  const [{ query: encodedQuery }, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams
+  ]);
+  const query = decodeURIComponent(encodedQuery);
+  const debugTyping = searchParamIsOn(resolvedSearchParams?.debugTyping);
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
