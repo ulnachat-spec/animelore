@@ -2,19 +2,21 @@ import { Suspense } from "react";
 import Image from "next/image";
 import { HomeColdSection } from "@/components/home-cold-section";
 import { HomeDiscovery } from "@/components/home-discovery";
+import { MeiState } from "@/components/mei-state";
 import { SearchBox } from "@/components/search-box";
 
 export const dynamic = "force-dynamic";
 
 function ColdHookFallback() {
   return (
-    <section className="archive-card h-full p-6" aria-busy="true">
-      <p className="archive-kicker">芽衣正在抽取今日档案</p>
-      <div className="mt-8 space-y-3">
-        <div className="h-7 w-5/6 animate-pulse rounded-lg bg-soft/80" />
-        <div className="h-7 w-2/3 animate-pulse rounded-lg bg-soft/60" />
-      </div>
-    </section>
+    <div aria-busy="true">
+      <MeiState
+        compact
+        eyebrow="今日档案"
+        title="芽衣正在翻找一条冷知识"
+        description="书签已经夹好了，很快就送到你面前。"
+      />
+    </div>
   );
 }
 

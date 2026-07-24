@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ShareModal } from "@/components/share/ShareModal";
+import { MeiState } from "@/components/mei-state";
 import { formatColdInsightForDisplay } from "@/lib/cold-insight-display";
 import {
   coldSessionStaleMessage,
@@ -50,30 +51,33 @@ export function ColdKnowledgeClient({
 
   if (staleMessage) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-12">
-        <p className="text-base leading-relaxed text-body">{staleMessage}</p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/"
-            className="rounded-lg border border-brand/60 bg-brand/10 px-4 py-2 text-sm text-brand hover:bg-brand/20"
-          >
-            回首页重新加载
-          </Link>
-          <Link
-            href="/?refreshHook=1"
-            className="rounded-lg border border-line px-4 py-2 text-sm text-body hover:bg-soft"
-          >
-            强制新生成（开发）
-          </Link>
-        </div>
+      <main className="mx-auto min-h-screen max-w-3xl px-4 py-12 sm:px-6">
+        <MeiState
+          eyebrow="这张临时书签已经失效"
+          title="芽衣找不到刚才那份档案"
+          description={staleMessage}
+        >
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href="/" className="archive-button-primary">
+              回首页重新抽取
+            </Link>
+            <Link href="/roam" className="archive-button">
+              去漫游发现
+            </Link>
+          </div>
+        </MeiState>
       </main>
     );
   }
 
   if (!data) {
     return (
-      <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-12">
-        <p className="text-muted">加载中…</p>
+      <main className="mx-auto min-h-screen max-w-3xl px-4 py-12 sm:px-6">
+        <MeiState
+          eyebrow="正在读取冷知识"
+          title="芽衣正在核对这份档案"
+          description="来源、推荐和正文会一起准备好。"
+        />
       </main>
     );
   }
