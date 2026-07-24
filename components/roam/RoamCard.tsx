@@ -3,12 +3,12 @@
 import type { RoamCard as RoamCardData } from "@/lib/roam/roam-types";
 
 const tagTone: Record<RoamCardData["tag"], string> = {
-  作品: "border-sky-500/40 bg-sky-500/10 text-sky-100",
-  梗: "border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-100",
-  幕后: "border-amber-500/40 bg-amber-500/10 text-amber-100",
-  概念: "border-emerald-500/40 bg-emerald-500/10 text-emerald-100",
-  谱系: "border-violet-500/40 bg-violet-500/10 text-violet-100",
-  社区: "border-orange-500/40 bg-orange-500/10 text-orange-100"
+  作品: "border-sage/35 bg-sage/10 text-sage",
+  梗: "border-brand/35 bg-brand/10 text-brand",
+  幕后: "border-brand/35 bg-brand/10 text-brand",
+  概念: "border-sage/35 bg-sage/10 text-sage",
+  谱系: "border-muted/35 bg-soft text-body",
+  社区: "border-brand/35 bg-brand/10 text-brand"
 };
 
 export function RoamCard({ card }: { card: RoamCardData }) {
@@ -17,8 +17,11 @@ export function RoamCard({ card }: { card: RoamCardData }) {
   const verifiedLabel = card.verification_status === "fallback" ? "安全兜底" : "已校验";
 
   return (
-    <article className="relative overflow-hidden rounded-[2rem] border border-line/80 bg-surface p-6 shadow-2xl shadow-black/40">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(249,115,22,0.18),transparent_34%),radial-gradient(circle_at_85%_18%,rgba(59,130,246,0.12),transparent_28%)]" />
+    <article className="archive-card relative min-h-[430px] overflow-hidden p-6 sm:p-8">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_5%,rgb(var(--c-brand)/0.13),transparent_34%),radial-gradient(circle_at_90%_20%,rgb(var(--c-sage)/0.12),transparent_30%)]" />
+      <span className="pointer-events-none absolute -bottom-12 -right-4 font-display text-[11rem] leading-none text-brand/5" aria-hidden="true">
+        ✦
+      </span>
       <div className="relative">
         <div className="flex items-center justify-between gap-3">
           <span className={`rounded-full border px-3 py-1 text-xs font-medium ${tagTone[card.tag]}`}>
@@ -29,13 +32,13 @@ export function RoamCard({ card }: { card: RoamCardData }) {
           </span>
         </div>
 
-        <h1 className="mt-8 text-3xl font-bold leading-tight tracking-tight text-paper">
+        <h1 className="archive-title mt-8 text-3xl leading-tight sm:text-4xl">
           {card.hook}
         </h1>
         <p className="mt-5 text-base leading-8 text-body">{card.blurb}</p>
 
-        <div className="mt-8 rounded-2xl border border-line/70 bg-ink/5 p-4">
-          <p className="text-xs text-muted">深入目标</p>
+        <div className="mt-8 rounded-2xl border border-line/70 bg-canvas/55 p-4">
+          <p className="archive-kicker">深入目标</p>
           <p className="mt-1 text-sm font-medium text-ink">{card.target.title}</p>
           <p className="mt-2 text-xs text-muted">
             {card.next_seeds.slice(0, 3).join(" / ") || card.topic_key}

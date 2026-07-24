@@ -30,6 +30,7 @@ export function ColdKnowledgeClient({
   const [staleMessage, setStaleMessage] = useState<string | null>(null);
   const [quizChoice, setQuizChoice] = useState<boolean | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (initialData) return;
@@ -78,6 +79,8 @@ export function ColdKnowledgeClient({
   }
 
   const hasRecs = data.recommendations.length > 0;
+  const sourceUrls = (data.source_urls ?? []).filter((url) => /^https?:\/\//.test(url));
+  const confidence = data.confidence ? Math.round(data.confidence * 100) : null;
   const showInsight = !data.quiz || quizChoice !== null;
   const quizFeedback =
     data.quiz && quizChoice !== null
@@ -104,39 +107,84 @@ export function ColdKnowledgeClient({
     router.push("/");
   };
 
+  const copyPermanentLink = async () => {
+    if (!data.record_id) return;
+    try {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}/cold/${encodeURIComponent(data.record_id)}`
+      );
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      setCopied(false);
+    }
+  };
+
   return (
     <>
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-8">
-      <header className="mb-8 flex items-center gap-4">
+    <main className="mx-auto flex min-h-screen max-w-4xl flex-col px-4 py-6 sm:px-6 sm:py-10">
+      <header className="mb-7 flex items-center justify-between gap-4">
         <button
           type="button"
           onClick={onBack}
-          className="rounded-lg border border-line px-3 py-1.5 text-sm text-body hover:bg-soft"
+          className="archive-button"
         >
-          ← 返回首页
+          ← 返回
         </button>
-        <span className="rounded-full bg-soft px-2 py-0.5 text-xs text-muted">
+        <span className="rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-muted">
           {topicLabel[data.topic_type] || data.topic_type}
         </span>
       </header>
 
-      <h1 className="text-2xl font-bold leading-snug md:text-3xl">{data.hook}</h1>
+      <section className="archive-card relative overflow-hidden p-5 sm:p-8">
+        <span className="absolute -right-4 -top-10 font-display text-[10rem] leading-none text-brand/5" aria-hidden="true">
+          ?
+        </span>
+        <div className="relative">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="archive-kicker text-brand">Cold knowledge dossier</p>
+            {data.record_id ? (
+              <span className="font-mono text-[0.62rem] text-muted">
+                #{data.record_id.slice(-8).toUpperCase()}
+              </span>
+            ) : null}
+          </div>
+          <h1 className="archive-title mt-4 max-w-3xl text-3xl leading-tight sm:text-4xl">
+            {data.hook}
+          </h1>
+          {data.blurb ? (
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-body sm:text-base">
+              {data.blurb}
+            </p>
+          ) : null}
+          <div className="mt-6 flex flex-wrap gap-2 text-xs text-muted">
+            <span className="rounded-full bg-soft px-3 py-1.5">
+              {data.verification_status === "verified" ? "已校验" : "内容兜底"}
+            </span>
+            {confidence ? <span className="rounded-full bg-soft px-3 py-1.5">置信度 {confidence}%</span> : null}
+            {sourceUrls.length ? (
+              <span className="rounded-full bg-soft px-3 py-1.5">来源 {sourceUrls.length} 个</span>
+            ) : null}
+          </div>
+        </div>
+      </section>
 
       {data.quiz ? (
-        <section className="mt-8 rounded-2xl border border-line bg-surface/90 p-5">
-          <p className="text-sm font-medium text-ink">你觉得这是真的吗？</p>
+        <section className="archive-card mt-5 p-5 sm:p-6">
+          <p className="archive-kicker">先猜一下 · Quick quiz</p>
+          <p className="mt-3 font-display text-lg font-semibold text-ink">你觉得这是真的吗？</p>
           <div className="mt-4 grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => setQuizChoice(true)}
-              className="rounded-xl border border-line bg-canvas/60 px-4 py-3 text-sm text-ink transition hover:border-brand/70 hover:bg-soft"
+              className="archive-button"
             >
               像真的
             </button>
             <button
               type="button"
               onClick={() => setQuizChoice(false)}
-              className="rounded-xl border border-line bg-canvas/60 px-4 py-3 text-sm text-ink transition hover:border-brand/70 hover:bg-soft"
+              className="archive-button"
             >
               感觉在骗我
             </button>
@@ -151,7 +199,7 @@ export function ColdKnowledgeClient({
       ) : null}
 
       {showInsight ? (
-        <article className="mt-8 space-y-4 text-base leading-relaxed text-ink">
+        <article className="mx-auto mt-8 w-full max-w-3xl space-y-5 font-display text-[1.04rem] leading-8 text-ink sm:text-lg sm:leading-9">
           {formatColdInsightForDisplay(data.insight)
             .split(/\n\n+/)
             .filter(Boolean)
@@ -161,6 +209,36 @@ export function ColdKnowledgeClient({
               </p>
             ))}
         </article>
+      ) : null}
+
+      {sourceUrls.length > 0 && showInsight ? (
+        <section className="mt-9 rounded-2xl border border-line bg-canvas-tint/45 p-5">
+          <div className="flex items-center justify-between gap-3">
+            <p className="archive-kicker">资料来源 · Sources</p>
+            <span className="text-xs text-muted">建议交叉阅读</span>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {sourceUrls.map((url, index) => {
+              let host = `来源 ${index + 1}`;
+              try {
+                host = new URL(url).hostname.replace(/^www\./, "");
+              } catch {
+                // Keep fallback label.
+              }
+              return (
+                <a
+                  key={url}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="archive-button min-h-10 text-xs"
+                >
+                  {host} ↗
+                </a>
+              );
+            })}
+          </div>
+        </section>
       ) : null}
 
       {hasRecs && showInsight ? (
@@ -174,7 +252,7 @@ export function ColdKnowledgeClient({
               <Link
                 key={`${rec.candidate_id || rec.searchQuery}-${idx}`}
                 href={`/work/${encodeURIComponent(rec.searchQuery)}`}
-                className="flex gap-4 rounded-2xl border border-line bg-surface/85 p-4 transition hover:border-brand/60 hover:bg-surface"
+                className="archive-card flex gap-4 p-4 transition hover:-translate-y-0.5 hover:border-brand/50"
               >
                 <div className="relative h-[120px] w-[85px] shrink-0 overflow-hidden rounded-lg bg-soft">
                   {rec.coverImage ? (
@@ -208,14 +286,19 @@ export function ColdKnowledgeClient({
       ) : null}
 
       {showInsight ? (
-        <div className="mt-10 flex justify-center border-t border-line/70 pt-8">
+        <div className="mt-10 flex flex-wrap justify-center gap-3 border-t border-line/70 pt-8">
           <button
             type="button"
             onClick={() => setShareOpen(true)}
-            className="rounded-full border border-brand/60 bg-brand/10 px-5 py-2.5 text-sm font-semibold text-brand transition hover:border-brand hover:bg-brand/15"
+            className="archive-button-primary"
           >
             分享这条冷知识
           </button>
+          {data.record_id ? (
+            <button type="button" onClick={copyPermanentLink} className="archive-button">
+              {copied ? "链接已复制" : "复制永久链接"}
+            </button>
+          ) : null}
         </div>
       ) : null}
     </main>
