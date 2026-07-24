@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Animelore — 首页</title>
+  <style>
+    :root {
+      --bg:      oklch(13% 0.014 70);
+      --surface: oklch(17% 0.016 70);
+      --fg:      oklch(93% 0.006 95);
+      --muted:   oklch(58% 0.012 70);
+      --border:  oklch(26% 0.014 70);
+      --accent:  oklch(52% 0.10 28);
+
+      --font-display: 'Iowan Old Style', 'Charter', Georgia, serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-mono:    ui-monospace, 'IBM Plex Mono', Menlo, monospace;
+
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100dvh;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding:
+        calc(52px + var(--safe-top))
+        20px
+        calc(24px + var(--safe-bottom));
+    }
+
+    /* Status bar spacer (inside frame) */
+    .status-spacer { height: 0; }
+
+    /* Header */
+    .header {
+      margin-bottom: 32px;
+    }
+    .brand-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 5vw, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .brand-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .archive-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid color-mix(in oklch, var(--accent) 40%, var(--border));
+      padding: 5px 8px;
+      white-space: nowrap;
+    }
+
+    /* Search */
+    .search-zone {
+      margin-bottom: 28px;
+    }
+    .search-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      appearance: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0;
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: 17px;
+      padding: 16px 48px 16px 16px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .search-input::placeholder { color: var(--muted); }
+    .search-input:focus {
+      border-color: color-mix(in oklch, var(--accent) 55%, var(--border));
+      box-shadow: 0 0 0 1px color-mix(in oklch, var(--accent) 30%, transparent);
+    }
+    .search-btn {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-btn svg { width: 20px; height: 20px; }
+
+    .search-hints {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .hint-chip {
+      font-size: 13px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+    }
+    .hint-chip:hover, .hint-chip:focus-visible {
+      color: var(--fg);
+      border-color: var(--muted);
+      outline: none;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 24px;
+    }
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 400;
+    }
+    .section-meta {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Cold knowledge card */
+    .cold-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 18px 18px 16px;
+      position: relative;
+      cursor: pointer;
+      transition: border-color .25s;
+    }
+    .cold-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+    .cold-card:hover, .cold-card.expanded {
+      border-color: color-mix(in oklch, var(--accent) 35%, var(--border));
+    }
+    .cold-card.expanded::before { opacity: 1; }
+    .cold-kicker {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .cold-hook {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      line-height: 1.45;
+      margin-bottom: 0;
+      transition: margin .25s;
+    }
+    .cold-card.expanded .cold-hook { margin-bottom: 12px; }
+    .cold-insight {
+      font-size: 14px;
+      color: color-mix(in oklch, var(--fg) 85%, var(--muted));
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height .35s ease, opacity .25s;
+    }
+    .cold-card.expanded .cold-insight {
+      max-height: 200px;
+      opacity: 1;
+    }
+    .cold-footer {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cold-expand-hint {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* Roam module */
+    .roam-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      background: linear-gradient(
+        135deg,
+        color-mix(in oklch, var(--surface) 100%, transparent) 0%,
+        color-mix(in oklch, var(--accent) 8%, var(--surface)) 100%
+      );
+      border: 1px solid var(--border);
+      padding: 18px;
+    }
+    .roam-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+    .roam-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .roam-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 1px solid color-mix(in oklch, var(--accent) 50%, var(--border));
+      background: color-mix(in oklch, var(--accent) 12%, var(--surface));
+      color: var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform .2s, background .2s;
+    }
+    .roam-btn:active { transform: scale(.94); }
+    .roam-btn.spinning { animation: spin-dice .6s ease; }
+    @keyframes spin-dice {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.08); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    .roam-btn svg { width: 24px; height: 24px; }
+    .roam-result {
+      grid-column: 1 / -1;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity .3s, transform .3s;
+    }
+    .roam-result.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Recent */
+    .recent-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .recent-scroll::-webkit-scrollbar { display: none; }
+    .recent-item {
+      flex: 0 0 120px;
+      scroll-snap-align: start;
+      text-decoration: none;
+      color: inherit;
+    }
+    .recent-cover {
+      aspect-ratio: 3/4;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .recent-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(.85) contrast(1.05);
+    }
+    .recent-cover .placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    .recent-name {
+      font-size: 13px;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .footer-note {
+      margin-top: auto;
+      padding-top: 20px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: color-mix(in oklch, var(--muted) 70%, transparent);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand-row">
+        <div>
+          <h1 class="brand">Animelore</h1>
+          <p class="brand-sub">Anime Work Archive</p>
+        </div>
+        <span class="archive-badge">档案库 · 开放检索</span>
+      </div>
+    </header>
+
+    <section class="search-zone" aria-label="搜索作品">
+      <p class="search-label">检索一份作品档案</p>
+      <div class="search-box">
+        <input
+          type="search"
+          class="search-input"
+          id="searchInput"
+          placeholder="输入作品名，如 EVA、钢之炼金术师…"
+          autocomplete="off"
+          enterkeyhint="search"
+        >
+        <button type="button" class="search-btn" id="searchBtn" aria-label="搜索">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <circle cx="11" cy="11" r="7"/>
+            <path d="M20 20l-4-4"/>
+          </svg>
+        </button>
+      </div>
+      <div class="search-hints" id="searchHints">
+        <button type="button" class="hint-chip" data-q="新世纪福音战士">EVA</button>
+        <button type="button" class="hint-chip" data-q="钢之炼金术师 FULLMETAL ALCHEMIST">钢炼</button>
+        <button type="button" class="hint-chip" data-q="命运石之门">石头门</button>
+      </div>
+    </section>
+
+    <section class="section" aria-label="今日冷知识">
+      <div class="section-head">
+        <h2 class="section-title">今日冷知识</h2>
+        <span class="section-meta">Daily · 05/24</span>
+      </div>
+      <article class="cold-card" id="coldCard" tabindex="0" role="button" aria-expanded="false">
+        <p class="cold-kicker">Concept · 圣地巡礼</p>
+        <h3 class="cold-hook">「圣地巡礼」到底在巡什么？</h3>
+        <p class="cold-insight">原本是宗教朝圣用语，在二次元社区指粉丝前往动画取景地打卡——《你的名字。》飞驒古川、《灌篮高手》镰仓高校前道口都是经典案例。2010 年代《幸运星》带火鹫宫町后，这词彻底出圈。</p>
+        <div class="cold-footer">
+          <span class="cold-expand-hint" id="coldHint">点击展开</span>
+          <span class="section-meta">1 / 冷知识库</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="section" aria-label="今日漫游">
+      <div class="section-head">
+        <h2 class="section-title">今日漫游</h2>
+        <span class="section-meta">Random dossier</span>
+      </div>
+      <div class="roam-card">
+        <div>
+          <h3 class="roam-title">随机打开一份档案</h3>
+          <p class="roam-desc">不知道搜什么？让档案馆替你抽一份四卡解读。</p>
+        </div>
+        <button type="button" class="roam-btn" id="roamBtn" aria-label="随机漫游">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/>
+            <path d="M17 14v6M14 17h6"/>
+          </svg>
+        </button>
+        <p class="roam-result" id="roamResult" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="section" aria-label="最近浏览">
+      <div class="section-head">
+        <h2 class="section-title">最近打开</h2>
+        <span class="section-meta">Recent</span>
+      </div>
+      <div class="recent-scroll">
+        <a class="recent-item" href="work-dossier.html?q=eva" data-work="eva">
+          <div class="recent-cover">
+            <div class="placeholder" style="background: linear-gradient(160deg, oklch(22% 0.04 280), oklch(15% 0.02 70));">EVA</div>
+          </div>
+          <p class="recent-name">新世纪福音战士</p>
+        </a>
+        <a class="recent-item" href="work-dossier.html?q=fma" data-work="fma">
+          <div class="recent-cover">
+            <div class="placeholder" style="background: linear-gradient(160deg, oklch(28% 0.06 45), oklch(16% 0.02 70));">FMA</div>
+          </div>
+          <p class="recent-name">钢之炼金术师</p>
+        </a>
+        <a class="recent-item" href="work-dossier.html?q=sg" data-work="sg">
+          <div class="recent-cover">
+            <div class="placeholder" style="background: linear-gradient(160deg, oklch(24% 0.05 200), oklch(14% 0.02 70));">SG</div>
+          </div>
+          <p class="recent-name">命运石之门</p>
+        </a>
+      </div>
+    </section>
+
+    <p class="footer-note">四卡档案 · Legacy · Meme · Behind · Lineage</p>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const coldCard = document.getElementById('coldCard');
+    const coldHint = document.getElementById('coldHint');
+    const roamBtn = document.getElementById('roamBtn');
+    const roamResult = document.getElementById('roamResult');
+
+    const roamPool = [
+      { title: '星际牛仔', q: 'cowboy-bebop' },
+      { title: '魔法少女小圆', q: 'madoka' },
+      { title: '攻壳机动队 SAC', q: 'ghost-in-the-shell' },
+      { title: '物语系列', q: 'monogatari' },
+    ];
+
+    function goSearch(q) {
+      const query = (q || searchInput.value).trim();
+      if (!query) {
+        searchInput.focus();
+        searchInput.style.borderColor = 'oklch(52% 0.10 28)';
+        setTimeout(() => { searchInput.style.borderColor = ''; }, 600);
+        return;
+      }
+      window.location.href = 'work-dossier.html?q=' + encodeURIComponent(query);
+    }
+
+    searchBtn.addEventListener('click', () => goSearch());
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') goSearch();
+    });
+
+    document.getElementById('searchHints').addEventListener('click', (e) => {
+      const chip = e.target.closest('.hint-chip');
+      if (!chip) return;
+      searchInput.value = chip.dataset.q;
+      goSearch(chip.dataset.q);
+    });
+
+    coldCard.addEventListener('click', toggleCold);
+    coldCard.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleCold();
+      }
+    });
+
+    function toggleCold() {
+      const open = coldCard.classList.toggle('expanded');
+      coldCard.setAttribute('aria-expanded', open);
+      coldHint.textContent = open ? '点击收起' : '点击展开';
+    }
+
+    roamBtn.addEventListener('click', () => {
+      roamBtn.classList.add('spinning');
+      roamResult.classList.remove('show');
+      setTimeout(() => {
+        roamBtn.classList.remove('spinning');
+        const pick = roamPool[Math.floor(Math.random() * roamPool.length)];
+        roamResult.textContent = '→ 正在打开《' + pick.title + '》档案…';
+        roamResult.classList.add('show');
+        setTimeout(() => {
+          window.location.href = 'work-dossier.html?q=' + encodeURIComponent(pick.q);
+        }, 700);
+      }, 600);
+    });
+
+    document.querySelectorAll('.recent-item').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = a.getAttribute('href');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "Animelore 移动端 UI 原型",
+  "entry": "animelore-mobile-ui.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-05-23T19:56:56.408Z",
+  "updatedAt": "2026-05-23T19:56:56.443Z",
+  "metadata": {
+    "identifier": "animelore-mobile-ui",
+    "artifactType": "text/html",
+    "inferred": false
+  }
+}

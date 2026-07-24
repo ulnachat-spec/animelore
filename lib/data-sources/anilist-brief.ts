@@ -1,0 +1,90 @@
+/**
+ * AniList 轻量条目查询：用于冷知识推荐候选验真（含 countryOfOrigin）。
+ */
+const ANILIST_ENDPOINT = "https://graphql.anilist.co";
+
+export type AniListMediaBrief = {
+  anilistId: number;
+  title: string;
+  nativeTitle?: string;
+  coverImage?: string;
+  countryOfOrigin: string;
+  format?: string;
+};
+
+type GqlMedia = {
+  id?: number;
+  type?: string;
+  countryOfOrigin?: string;
+  format?: string;
+  title?: { romaji?: string; english?: string; native?: string };
+  coverImage?: { extraLarge?: string };
+};
+
+function displayTitle(m: GqlMedia): string {
+  return m.title?.english || m.title?.romaji || m.title?.native || "";
+}
+
+export async function fetchAniListMediaBrief(
+  anilistId: number
+): Promise<AniListMediaBrief | null> {
+  if (!Number.isFinite(anilistId) || anilistId <= 0) return null;
+  const query = `
+    query ($id: Int!) {
+      Media(id: $id) {
+        id
+        type
+        countryOfOrigin
+        format
+        title { romaji english native }
+        coverImage { extraLarge }
+      }
+    }
+  `;
+  try {
+    const resp = await fetch(ANILIST_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "User-Agent": "AnimeLore/0.1"
+      },
+      body: JSON.stringify({ query, variables: { id: anilistId } }),
+      cache: "no-store"
+    });
+    if (!resp.ok) return null;
+    const data = (await resp.json()) as {
+      errors?: unknown[];
+      data?: { Media?: GqlMedia | null };
+    };
+    if (data.errors?.length || !data.data?.Media?.id) return null;
+    const m = data.data.Media;
+    if (m.type && m.type !== "ANIME") return null;
+    const title = displayTitle(m);
+    if (!title) return null;
+    return {
+      anilistId: m.id!,
+      title,
+      nativeTitle: m.title?.native,
+      coverImage: m.coverImage?.extraLarge,
+      countryOfOrigin: m.countryOfOrigin || "UNKNOWN",
+      format: m.format
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchAniListMediaBriefBatch(
+  ids: number[]
+): Promise<Map<number, AniListMediaBrief>> {
+  const unique = [...new Set(ids.filter((id) => id > 0))];
+  const out = new Map<number, AniListMediaBrief>();
+  await Promise.all(
+    unique.map(async (id) => {
+      const brief = await fetchAniListMediaBrief(id);
+      if (brief) out.set(id, brief);
+    })
+  );
+  return out;
+}

@@ -1,0 +1,1279 @@
+{
+  "benchmark": {
+    "meta": {
+      "name": "AnimeLore Multi-Source RAG Benchmark v1",
+      "version": "1.0.0",
+      "created_at": "2026-05-27",
+      "total_works": 10,
+      "total_questions": 50,
+      "sources": [
+        "AniList",
+        "Wikipedia",
+        "萌娘百科",
+        "NGA"
+      ],
+      "question_types": {
+        "hard_fact": "可核验硬事实（导演、年份、集数、制作公司等）",
+        "community_meme": "社区梗/冷知识（需标注社区来源语气）",
+        "conflict": "多源可能冲突或需立场 hedging 的问题"
+      },
+      "evaluation_rules": {
+        "is_accurate": "Y=核心事实与 gold_answer 一致或落在 acceptable_answers 内；N=关键错误/遗漏",
+        "has_hallucination": "Y=编造不存在的 staff/年份/集数/情节/单一化争议立场；N=无捏造",
+        "null_before_run": "system_answer/is_accurate/has_hallucination 为 null 表示待跑分"
+      }
+    },
+    "works": [
+      {
+        "id": "eva",
+        "title_zh": "新世纪福音战士",
+        "title_en": "Neon Genesis Evangelion",
+        "genre": [
+          "机战",
+          "心理",
+          "90年代TV"
+        ],
+        "questions": [
+          {
+            "id": "eva-q1",
+            "type": "hard_fact",
+            "question": "《新世纪福音战士》TV版首播年份是哪一年？",
+            "gold_answer": "1995年（TV于1995年10月4日首播）",
+            "source_hint": "AniList / Wikipedia",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "eva-q2",
+            "type": "hard_fact",
+            "question": "《新世纪福音战士》TV版共多少集？",
+            "gold_answer": "26集",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "eva-q3",
+            "type": "community_meme",
+            "question": "中文社区常说的「不能逃避」出自哪部作品、与哪个角色相关？",
+            "gold_answer": "出自《新世纪福音战士》，与碇真嗣相关（其经典台词/心理主题）",
+            "source_hint": "萌娘百科 / NGA",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "eva-q4",
+            "type": "community_meme",
+            "question": "「橙汁」在 EVA 社区梗里通常指什么？",
+            "gold_answer": "指第三新东京市/LCL 溶解等场景中被调侃为「被榨成橙汁」的视觉梗，常与使徒攻击、人类补完相关讨论连用",
+            "source_hint": "NGA / 萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "eva-q5",
+            "type": "conflict",
+            "question": "《新世纪福音战士》最终结局应以 TV 第26集为准还是以《Air/真心为你》为准？",
+            "gold_answer": "存在版本分歧：TV 原结局（第25-26集）与 1997 年剧场版《Air/真心为你》叙事不同；应说明「TV 版结局」与「剧场版改/补完结局」是两套常被并列讨论的版本，不宜混为一谈",
+            "conflict_note": "TV 与剧场版结局关系、是否「官方正统」在社区与资料库表述不一",
+            "acceptable_answers": [
+              "区分 TV 26 集结局与剧场版 Air/真心为你",
+              "说明两者并行存在、非简单替换关系"
+            ],
+            "source_hint": "Wikipedia / 萌娘百科 / NGA",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      },
+      {
+        "id": "frieren",
+        "title_zh": "葬送的芙莉莲",
+        "title_en": "Frieren: Beyond Journey's End",
+        "genre": [
+          "奇幻",
+          "公路片",
+          "2020年代TV"
+        ],
+        "questions": [
+          {
+            "id": "fri-q1",
+            "type": "hard_fact",
+            "question": "《葬送的芙莉莲》动画由哪家公司制作？",
+            "gold_answer": "Madhouse（Madhouse Inc.）",
+            "source_hint": "AniList / Wikipedia",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "fri-q2",
+            "type": "hard_fact",
+            "question": "《葬送的芙莉莲》TV 动画首播年份？",
+            "gold_answer": "2023年（2023年9月29日首播）",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "fri-q3",
+            "type": "community_meme",
+            "question": "芙莉莲常被观众吐槽「情感表达迟钝」，这与她哪种设定直接相关？",
+            "gold_answer": "她是长寿的精灵，与人类同伴相处时时间尺度不同，因此对短暂的人类情感反应慢、后知后觉",
+            "source_hint": "萌娘百科 / 社区讨论",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "fri-q4",
+            "type": "community_meme",
+            "question": "「杀意」梗在《葬送的芙莉莲》里通常关联哪个角色名场面？",
+            "gold_answer": "与芙莉莲对魔族/敌人展现压倒性实力时的「杀意」表情或分镜相关，常被做成表情包",
+            "source_hint": "NGA / B站梗",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "fri-q5",
+            "type": "conflict",
+            "question": "《葬送的芙莉莲》漫画原作者是山田钟人还是 Abe Tsukasa？",
+            "gold_answer": "漫画为山田钟人（原作/剧本）与 Abe Tsukasa（漫画）合作；中文常简称为「山田钟人原作」，但精确署名应为二人组合，不宜只说一人",
+            "conflict_note": "中文简写常只提山田钟人，英文/官方资料强调二人分工",
+            "acceptable_answers": [
+              "山田钟人原作、Abe 作画",
+              "二人共同创作，分工不同"
+            ],
+            "source_hint": "Wikipedia / AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      },
+      {
+        "id": "spy-family",
+        "title_zh": "间谍过家家",
+        "title_en": "Spy x Family",
+        "genre": [
+          "喜剧",
+          "家庭",
+          "2020年代TV"
+        ],
+        "questions": [
+          {
+            "id": "spy-q1",
+            "type": "hard_fact",
+            "question": "《间谍过家家》动画第一季由哪家 studio 制作？",
+            "gold_answer": "WIT STUDIO 与 CloverWorks 共同制作（第一季）",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "spy-q2",
+            "type": "hard_fact",
+            "question": "角色「阿尼亚」的读心能力在作品中如何称呼？",
+            "gold_answer": "读心术（テレパシー / telepathy）",
+            "source_hint": "萌娘百科 / AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "spy-q3",
+            "type": "community_meme",
+            "question": "「哇库哇库」梗来自哪个角色、表达什么情绪？",
+            "gold_answer": "来自阿尼亚（Anya），表示兴奋、期待（わくわく）",
+            "source_hint": "B站 / 萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "spy-q4",
+            "type": "community_meme",
+            "question": "约尔在中文社区常被戏称为什么职业相关的「妈妈」形象？",
+            "gold_answer": "杀手妈妈 / 职业杀手母亲（黄昏假扮家庭的妻子，真实身份杀手）",
+            "source_hint": "社区梗",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "spy-q5",
+            "type": "conflict",
+            "question": "《间谍过家家》动画第二季是否仍由 WIT STUDIO 与 CloverWorks 联合制作？",
+            "gold_answer": "第二季制作公司分工与第一季不同：第二季主要由 TBD Animation / 其他团队参与（官方资料以 AniList 当季 credits 为准）；不宜沿用第一季「WIT+CloverWorks」而不注明季别",
+            "conflict_note": "不同季度制作表差异大，营销号常笼统写 WIT/CloverWorks",
+            "acceptable_answers": [
+              "应按季度查 credits，第二季与第一季制作方不完全相同",
+              "第二季制作阵容有变动"
+            ],
+            "source_hint": "AniList 分季 credits",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      },
+      {
+        "id": "aot",
+        "title_zh": "进击的巨人",
+        "title_en": "Attack on Titan",
+        "genre": [
+          "黑暗奇幻",
+          "动作",
+          "2010年代TV"
+        ],
+        "questions": [
+          {
+            "id": "aot-q1",
+            "type": "hard_fact",
+            "question": "《进击的巨人》动画前三季主要由哪家公司制作？",
+            "gold_answer": "WIT STUDIO（第1-3季）",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "aot-q2",
+            "type": "hard_fact",
+            "question": "《进击的巨人》最终季动画由哪家公司接手制作？",
+            "gold_answer": "MAPPA（最终季）",
+            "source_hint": "AniList / Wikipedia",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "aot-q3",
+            "type": "community_meme",
+            "question": "「莱纳，你坐啊」在中文社区指什么名场面？",
+            "gold_answer": "最终季/Re 相关对话名场面，莱纳与艾伦在地下室对峙，艾伦让莱纳坐下，成为广泛传播的 meme",
+            "source_hint": "NGA / B站",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "aot-q4",
+            "type": "community_meme",
+            "question": "「兵长」指哪位角色，其外号的由来是什么？",
+            "gold_answer": "利威尔·阿克曼（Levi Ackerman），调查兵团士兵长，因职位与战力被尊称兵长",
+            "source_hint": "萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "aot-q5",
+            "type": "conflict",
+            "question": "《进击的巨人》漫画结局在中文社区的评价是否一致？",
+            "gold_answer": "不一致：存在强烈分歧，部分读者认为结局仓促/主题反转争议大，部分仍肯定完成度；应表述为「社区评价高度分化」，避免单一立场当作客观事实",
+            "conflict_note": "NGA/贴吧/知乎评价两极，不存在唯一「正确答案」",
+            "acceptable_answers": [
+              "评价分化",
+              "争议大、无共识"
+            ],
+            "source_hint": "NGA / 社区",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      },
+      {
+        "id": "haruhi",
+        "title_zh": "凉宫春日的忧郁",
+        "title_en": "The Melancholy of Haruhi Suzumiya",
+        "genre": [
+          "校园",
+          "科幻",
+          "2000年代TV"
+        ],
+        "questions": [
+          {
+            "id": "haruhi-q1",
+            "type": "hard_fact",
+            "question": "《凉宫春日的忧郁》2006年版 TV 动画共多少集？",
+            "gold_answer": "14集（2006年放送版）",
+            "source_hint": "AniList / 萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "haruhi-q2",
+            "type": "hard_fact",
+            "question": "凉宫春日的配音声优（日语）是谁？",
+            "gold_answer": "平野绫",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "haruhi-q3",
+            "type": "community_meme",
+            "question": "「SOS 团」全称/含义在作品中是什么？",
+            "gold_answer": "SOS 团由凉宫春日发起，团名含义在作中有多解（如 Save the world by Overworking Haruhi 等），以「让凉宫不无聊、避免世界危机」为核心动机",
+            "source_hint": "萌娘百科 / 原作",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "haruhi-q4",
+            "type": "community_meme",
+            "question": "「God knows」在凉宫社区通常指什么？",
+            "gold_answer": "2009版中凉宫春日（平野绫）在文化祭上演唱《God knows...》的经典 live 场景/神回",
+            "source_hint": "NGA / B站",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "haruhi-q5",
+            "type": "conflict",
+            "question": "观看《凉宫春日的忧郁》2006版时应按放送顺序还是按时间线顺序？",
+            "gold_answer": "2006版故意非线性放送；新观众常建议「放送顺序」体验原作意图，也有人推荐 chronological 顺序。应说明两种顺序都存在支持者，无唯一标准",
+            "conflict_note": "社区长期争论，2009版已按时间线重排",
+            "acceptable_answers": [
+              "两种顺序皆可，取决于是否保留2006版叙事惊喜",
+              "说明2006非线性 vs 2009线性差异"
+            ],
+            "source_hint": "萌娘百科 / NGA",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      },
+      {
+        "id": "steins-gate",
+        "title_zh": "命运石之门",
+        "title_en": "Steins;Gate",
+        "genre": [
+          "科幻",
+          "悬疑",
+          "2010年代TV"
+        ],
+        "questions": [
+          {
+            "id": "sg-q1",
+            "type": "hard_fact",
+            "question": "《命运石之门》TV 动画首播年份？",
+            "gold_answer": "2011年",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "sg-q2",
+            "type": "hard_fact",
+            "question": "《命运石之门》动画由哪家公司制作？",
+            "gold_answer": "WHITE FOX",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "sg-q3",
+            "type": "community_meme",
+            "question": "「El Psy Kongroo」在作品中通常由谁使用、大致含义？",
+            "gold_answer": "冈部伦太郎（凤凰院凶真）的口头禅/暗号式签名，无固定字面翻译，象征其中二身份",
+            "source_hint": "萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "sg-q4",
+            "type": "community_meme",
+            "question": "中文社区常把哪个角色称为「助手」？",
+            "gold_answer": "牧濑红莉栖（Okabe 对其称呼「助手」）",
+            "source_hint": "社区 / 萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "sg-q5",
+            "type": "conflict",
+            "question": "《命运石之门》与《Steins;Gate 0》哪一部是「真结局」续篇？",
+            "gold_answer": "《Steins;Gate 0》可视作原动画「失败世界线/β线延伸」的正式续篇，与主线「Steins Gate 世界线达成」并存于同一体系；不宜简单说 0 是「后日谈」或完全独立",
+            "conflict_note": "游戏/动画/小说线层级复杂，入门资料常简化",
+            "acceptable_answers": [
+              "0 为 β 线延伸续篇，与主线互补",
+              "说明世界线结构而非单一续作"
+            ],
+            "source_hint": "Wikipedia / 萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      },
+      {
+        "id": "spirited-away",
+        "title_zh": "千与千寻",
+        "title_en": "Spirited Away",
+        "genre": [
+          "动画电影",
+          "吉卜力",
+          "奇幻"
+        ],
+        "questions": [
+          {
+            "id": "sa-q1",
+            "type": "hard_fact",
+            "question": "《千与千寻》的导演是谁？",
+            "gold_answer": "宫崎骏",
+            "source_hint": "Wikipedia / AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "sa-q2",
+            "type": "hard_fact",
+            "question": "《千与千寻》在日本上映年份？",
+            "gold_answer": "2001年",
+            "source_hint": "Wikipedia",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "sa-q3",
+            "type": "community_meme",
+            "question": "「不要吃太多不然会变成猪」关联哪个情节？",
+            "gold_answer": "千寻父母在神灵世界店铺暴食后被变成猪，是核心寓言情节",
+            "source_hint": "通用文化梗 / 影片",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "sa-q4",
+            "type": "community_meme",
+            "question": "无脸男在中文社区常被如何概括其形象？",
+            "gold_answer": "面具、沉默、通过吞噬/金钱换取关注，象征孤独与欲望膨胀（解读多样，但此为常见社区概括）",
+            "source_hint": "社区影评 / 萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "sa-q5",
+            "type": "conflict",
+            "question": "《千与千寻》是否获得过奥斯卡最佳动画长片奖？",
+            "gold_answer": "是，2003 年第 75 届奥斯卡最佳动画长片；但部分中文资料误写年份或与其他吉卜力作品混淆，应注明奥斯卡届次/年份",
+            "conflict_note": "中文二手资料常把获奖年份写成 2001/2002",
+            "acceptable_answers": [
+              "2003年奥斯卡最佳动画长片",
+              "第75届奥斯卡最佳动画长片"
+            ],
+            "source_hint": "Wikipedia / 奥斯卡官网",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      },
+      {
+        "id": "clannad",
+        "title_zh": "CLANNAD",
+        "title_en": "CLANNAD",
+        "genre": [
+          "校园",
+          "Key系",
+          "2000年代TV"
+        ],
+        "questions": [
+          {
+            "id": "cl-q1",
+            "type": "hard_fact",
+            "question": "《CLANNAD》TV 动画由哪家公司制作？",
+            "gold_answer": "京都动画（Kyoto Animation）",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "cl-q2",
+            "type": "hard_fact",
+            "question": "《CLANNAD》TV 动画分几季/部？官方常用名称是什么？",
+            "gold_answer": "通常分为《CLANNAD》（2007）与《CLANNAD～After Story～》（2008-2009）两部",
+            "source_hint": "AniList / 萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "cl-q3",
+            "type": "community_meme",
+            "question": "「团子大家族」与 CLANNAD 的关系是什么？",
+            "gold_answer": "作中插曲/ED 及象征性意象，团子形象成为系列标志性萌化符号",
+            "source_hint": "萌娘百科 / B站",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "cl-q4",
+            "type": "community_meme",
+            "question": "中文社区为何常称 CLANNAD 为「催泪弹」？",
+            "gold_answer": "After Story 及多条路线以家庭、离别、重生为主题，情感冲击强，观众常用「催泪」形容",
+            "source_hint": "社区评价",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "cl-q5",
+            "type": "conflict",
+            "question": "玩 CLANNAD 游戏应先推哪条路线才算「正确顺序」？",
+            "gold_answer": "游戏存在推荐路线顺序（常建议先渚等再 After Story 解锁条件）；动画已是单一渚线改编。应区分「游戏攻略顺序」与「动画叙事顺序」，避免混答",
+            "conflict_note": "游戏多线 vs 动画单线，社区建议不一",
+            "acceptable_answers": [
+              "游戏有解锁 After Story 的前置路线要求",
+              "动画不等于游戏顺序"
+            ],
+            "source_hint": "萌娘百科 / Key 社区",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      },
+      {
+        "id": "bocchi",
+        "title_zh": "孤独摇滚！",
+        "title_en": "Bocchi the Rock!",
+        "genre": [
+          "音乐",
+          "日常",
+          "2020年代TV"
+        ],
+        "questions": [
+          {
+            "id": "boc-q1",
+            "type": "hard_fact",
+            "question": "《孤独摇滚！》动画由哪家公司制作？",
+            "gold_answer": "CloverWorks",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "boc-q2",
+            "type": "hard_fact",
+            "question": "主角后藤一里的昵称「ぼっち」大致是什么意思？",
+            "gold_answer": "社恐/独处的人、孤零零的人（ひとりぼっち的简称语感）",
+            "source_hint": "萌娘百科 / 原作",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "boc-q3",
+            "type": "community_meme",
+            "question": "「下北泽大天使」在社区指谁？",
+            "gold_answer": "伊地知虹夏（乐队队长，常被粉丝爱称下北泽大天使）",
+            "source_hint": "NGA / B站",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "boc-q4",
+            "type": "community_meme",
+            "question": "波奇在动画中极度社恐时常见的物理表现梗是什么？",
+            "gold_answer": "蜷缩进纸箱/墙缝、灵魂出窍、夸张变形等夸张演出",
+            "source_hint": "社区梗",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "boc-q5",
+            "type": "conflict",
+            "question": "《孤独摇滚！》是否改编自真实存在的乐队故事？",
+            "gold_answer": "否，为原创四格漫画改编，角色与乐队「結束バンド」为虚构；但下北泽等地点为真实地名，易与「真实乐队纪录片」混淆，应明确「虚构作品+真实地理元素」",
+            "conflict_note": "营销文案偶称「真实感」引发误解",
+            "acceptable_answers": [
+              "虚构作品，非真实乐队传记",
+              "漫画原创，非纪实"
+            ],
+            "source_hint": "Wikipedia / 萌娘百科",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      },
+      {
+        "id": "madoka",
+        "title_zh": "魔法少女小圆",
+        "title_en": "Puella Magi Madoka Magica",
+        "genre": [
+          "魔法少女",
+          "黑暗奇幻",
+          "2010年代TV"
+        ],
+        "questions": [
+          {
+            "id": "mad-q1",
+            "type": "hard_fact",
+            "question": "《魔法少女小圆》TV 动画由哪家公司制作？",
+            "gold_answer": "SHAFT",
+            "source_hint": "AniList",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "mad-q2",
+            "type": "hard_fact",
+            "question": "《魔法少女小圆》的剧本统筹（系列构成）是谁？",
+            "gold_answer": "虚渊玄",
+            "source_hint": "AniList / Wikipedia",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "mad-q3",
+            "type": "community_meme",
+            "question": "「已经没什么好害怕的了」是哪一角色、哪类场景的名台词？",
+            "gold_answer": "美树沙耶香（Sayaka）相关悲剧场景中的名台词，常被用作 MAD/刀向 meme",
+            "source_hint": "萌娘百科 / NGA",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "mad-q4",
+            "type": "community_meme",
+            "question": "QB（丘比）在中文社区常被贴上什么标签？",
+            "gold_answer": "「传销/契约恶魔/万恶之源」等，指其诱导少女成为魔法少女的不道德形象",
+            "source_hint": "社区梗",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          },
+          {
+            "id": "mad-q5",
+            "type": "conflict",
+            "question": "《魔法少女小圆》TV 第3 集后是否「换类型」、应否在安利时剧透？",
+            "gold_answer": "前3集后揭示黑暗向转折是公认体验设计；安利时是否剧透存在社区规范分歧。应说明「存在转折」而不必详述细节，或标注剧透警告",
+            "conflict_note": "「不能剧透转折」vs「不说明会误导」长期争论",
+            "acceptable_answers": [
+              "承认第3集后基调转折，剧透策略因人而异",
+              "提示有转折但不展开"
+            ],
+            "source_hint": "NGA / 社区规范",
+            "system_answer": null,
+            "is_accurate": null,
+            "has_hallucination": null
+          }
+        ]
+      }
+    ]
+  },
+  "scoring": {
+    "summary": {
+      "total_questions": 50,
+      "evaluated": 0,
+      "accurate_count": null,
+      "inaccurate_count": null,
+      "accuracy_rate": null,
+      "hallucination_count": null,
+      "no_hallucination_count": null,
+      "hallucination_rate": null,
+      "notes": "跑完系统后将 is_accurate/has_hallucination 填 Y/N，再计算 accuracy_rate=accurate_count/total_questions，hallucination_rate=hallucination_count/total_questions"
+    },
+    "by_question_type": {
+      "hard_fact": {
+        "total": 20,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      "community_meme": {
+        "total": 20,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      "conflict": {
+        "total": 10,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      }
+    },
+    "by_work": [
+      {
+        "work_id": "eva",
+        "title_zh": "新世纪福音战士",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      {
+        "work_id": "frieren",
+        "title_zh": "葬送的芙莉莲",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      {
+        "work_id": "spy-family",
+        "title_zh": "间谍过家家",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      {
+        "work_id": "aot",
+        "title_zh": "进击的巨人",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      {
+        "work_id": "haruhi",
+        "title_zh": "凉宫春日的忧郁",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      {
+        "work_id": "steins-gate",
+        "title_zh": "命运石之门",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      {
+        "work_id": "spirited-away",
+        "title_zh": "千与千寻",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      {
+        "work_id": "clannad",
+        "title_zh": "CLANNAD",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      {
+        "work_id": "bocchi",
+        "title_zh": "孤独摇滚！",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      },
+      {
+        "work_id": "madoka",
+        "title_zh": "魔法少女小圆",
+        "total": 5,
+        "accurate_count": null,
+        "accuracy_rate": null,
+        "hallucination_count": null,
+        "hallucination_rate": null
+      }
+    ],
+    "results": [
+      {
+        "work_id": "eva",
+        "question_id": "eva-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "1995年（TV于1995年10月4日首播）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "eva",
+        "question_id": "eva-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "26集",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "eva",
+        "question_id": "eva-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "出自《新世纪福音战士》，与碇真嗣相关（其经典台词/心理主题）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "eva",
+        "question_id": "eva-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "指第三新东京市/LCL 溶解等场景中被调侃为「被榨成橙汁」的视觉梗，常与使徒攻击、人类补完相关讨论连用",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "eva",
+        "question_id": "eva-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "存在版本分歧：TV 原结局（第25-26集）与 1997 年剧场版《Air/真心为你》叙事不同；应说明「TV 版结局」与「剧场版改/补完结局」是两套常被并列讨论的版本，不宜混为一谈",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "frieren",
+        "question_id": "fri-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "Madhouse（Madhouse Inc.）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "frieren",
+        "question_id": "fri-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "2023年（2023年9月29日首播）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "frieren",
+        "question_id": "fri-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "她是长寿的精灵，与人类同伴相处时时间尺度不同，因此对短暂的人类情感反应慢、后知后觉",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "frieren",
+        "question_id": "fri-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "与芙莉莲对魔族/敌人展现压倒性实力时的「杀意」表情或分镜相关，常被做成表情包",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "frieren",
+        "question_id": "fri-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "漫画为山田钟人（原作/剧本）与 Abe Tsukasa（漫画）合作；中文常简称为「山田钟人原作」，但精确署名应为二人组合，不宜只说一人",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "WIT STUDIO 与 CloverWorks 共同制作（第一季）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "读心术（テレパシー / telepathy）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "来自阿尼亚（Anya），表示兴奋、期待（わくわく）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "杀手妈妈 / 职业杀手母亲（黄昏假扮家庭的妻子，真实身份杀手）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "第二季制作公司分工与第一季不同：第二季主要由 TBD Animation / 其他团队参与（官方资料以 AniList 当季 credits 为准）；不宜沿用第一季「WIT+CloverWorks」而不注明季别",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "aot",
+        "question_id": "aot-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "WIT STUDIO（第1-3季）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "aot",
+        "question_id": "aot-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "MAPPA（最终季）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "aot",
+        "question_id": "aot-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "最终季/Re 相关对话名场面，莱纳与艾伦在地下室对峙，艾伦让莱纳坐下，成为广泛传播的 meme",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "aot",
+        "question_id": "aot-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "利威尔·阿克曼（Levi Ackerman），调查兵团士兵长，因职位与战力被尊称兵长",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "aot",
+        "question_id": "aot-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "不一致：存在强烈分歧，部分读者认为结局仓促/主题反转争议大，部分仍肯定完成度；应表述为「社区评价高度分化」，避免单一立场当作客观事实",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "14集（2006年放送版）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "平野绫",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "SOS 团由凉宫春日发起，团名含义在作中有多解（如 Save the world by Overworking Haruhi 等），以「让凉宫不无聊、避免世界危机」为核心动机",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "2009版中凉宫春日（平野绫）在文化祭上演唱《God knows...》的经典 live 场景/神回",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "2006版故意非线性放送；新观众常建议「放送顺序」体验原作意图，也有人推荐 chronological 顺序。应说明两种顺序都存在支持者，无唯一标准",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "2011年",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "WHITE FOX",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "冈部伦太郎（凤凰院凶真）的口头禅/暗号式签名，无固定字面翻译，象征其中二身份",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "牧濑红莉栖（Okabe 对其称呼「助手」）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "《Steins;Gate 0》可视作原动画「失败世界线/β线延伸」的正式续篇，与主线「Steins Gate 世界线达成」并存于同一体系；不宜简单说 0 是「后日谈」或完全独立",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "宫崎骏",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "2001年",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "千寻父母在神灵世界店铺暴食后被变成猪，是核心寓言情节",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "面具、沉默、通过吞噬/金钱换取关注，象征孤独与欲望膨胀（解读多样，但此为常见社区概括）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "是，2003 年第 75 届奥斯卡最佳动画长片；但部分中文资料误写年份或与其他吉卜力作品混淆，应注明奥斯卡届次/年份",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "京都动画（Kyoto Animation）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "通常分为《CLANNAD》（2007）与《CLANNAD～After Story～》（2008-2009）两部",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "作中插曲/ED 及象征性意象，团子形象成为系列标志性萌化符号",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "After Story 及多条路线以家庭、离别、重生为主题，情感冲击强，观众常用「催泪」形容",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "游戏存在推荐路线顺序（常建议先渚等再 After Story 解锁条件）；动画已是单一渚线改编。应区分「游戏攻略顺序」与「动画叙事顺序」，避免混答",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "CloverWorks",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "社恐/独处的人、孤零零的人（ひとりぼっち的简称语感）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "伊地知虹夏（乐队队长，常被粉丝爱称下北泽大天使）",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "蜷缩进纸箱/墙缝、灵魂出窍、夸张变形等夸张演出",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "否，为原创四格漫画改编，角色与乐队「結束バンド」为虚构；但下北泽等地点为真实地名，易与「真实乐队纪录片」混淆，应明确「虚构作品+真实地理元素」",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q1",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "SHAFT",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q2",
+        "type": "hard_fact",
+        "system_answer": null,
+        "gold_answer": "虚渊玄",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q3",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "美树沙耶香（Sayaka）相关悲剧场景中的名台词，常被用作 MAD/刀向 meme",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q4",
+        "type": "community_meme",
+        "system_answer": null,
+        "gold_answer": "「传销/契约恶魔/万恶之源」等，指其诱导少女成为魔法少女的不道德形象",
+        "is_accurate": null,
+        "has_hallucination": null
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q5",
+        "type": "conflict",
+        "system_answer": null,
+        "gold_answer": "前3集后揭示黑暗向转折是公认体验设计；安利时是否剧透存在社区规范分歧。应说明「存在转折」而不必详述细节，或标注剧透警告",
+        "is_accurate": null,
+        "has_hallucination": null
+      }
+    ]
+  }
+}

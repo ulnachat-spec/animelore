@@ -1,0 +1,36 @@
+{
+  "name": "animelore",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "dev:clean": "npx kill-port 3000 --method=tcp && next dev -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "cold:clear": "node scripts/clear-cold-hooks.mjs",
+    "cold:seed": "node scripts/seed-cold-hooks.mjs",
+    "cold:stats": "node scripts/cold-stats.mjs",
+    "benchmark:run": "node scripts/run-benchmark.mjs"
+  },
+  "dependencies": {
+    "@google/genai": "^2.3.0",
+    "framer-motion": "^11.3.19",
+    "html2canvas": "^1.4.1",
+    "next": "14.2.5",
+    "openai": "^4.56.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "kill-port": "^2.0.1",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.7",
+    "typescript": "^5.5.4"
+  }
+}
