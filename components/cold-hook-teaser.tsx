@@ -25,7 +25,7 @@ export function ColdHookTeaser({ payload }: { payload: ColdHookPayload }) {
     } catch {
       // The detail page will show its recovery state when storage is unavailable.
     }
-    router.push("/cold");
+    router.push(payload.record_id ? `/cold/${encodeURIComponent(payload.record_id)}` : "/cold");
   };
 
   return (
