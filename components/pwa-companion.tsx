@@ -41,7 +41,7 @@ export function PwaCompanion() {
           AL
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-paper">把档案馆装到主屏幕</p>
+          <p className="text-sm font-semibold text-ink">把档案馆装到主屏幕</p>
           <p className="mt-0.5 text-xs text-muted">独立窗口打开，更像一款 App。</p>
         </div>
         <button type="button" onClick={install} className="archive-button-primary min-h-9 px-3 text-xs">

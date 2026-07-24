@@ -39,7 +39,7 @@ export function MeiState({
       <div className={compact ? "min-w-0" : "mx-auto mt-4 max-w-xl text-center"}>
         <p className="archive-kicker text-brand">{eyebrow}</p>
         <h2
-          className={`font-display font-semibold text-paper ${
+          className={`font-display font-semibold text-ink ${
             compact ? "mt-1 text-base" : "mt-2 text-xl sm:text-2xl"
           }`}
         >

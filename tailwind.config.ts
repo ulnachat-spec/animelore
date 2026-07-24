@@ -16,8 +16,7 @@ const config: Config = {
         line: "rgb(var(--c-line) / <alpha-value>)",
         brand: "rgb(var(--c-brand) / <alpha-value>)",
         "brand-strong": "rgb(var(--c-brand-strong) / <alpha-value>)",
-        sage: "rgb(var(--c-sage) / <alpha-value>)",
-        paper: "rgb(var(--c-elevated) / <alpha-value>)"
+        sage: "rgb(var(--c-sage) / <alpha-value>)"
       },
       fontFamily: {
         display: ["var(--font-display)"],

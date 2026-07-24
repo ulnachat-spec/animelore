@@ -139,14 +139,14 @@ export function ShareModal(props: ShareModalProps) {
             <header className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] text-brand">AnimeLore Share</p>
-                <h2 id="share-card-title" className="mt-1 text-xl font-semibold text-paper">
+                <h2 id="share-card-title" className="mt-1 text-xl font-semibold text-ink">
                   {isWork ? "生成追番分享卡片" : "分享这条冷知识"}
                 </h2>
               </div>
               <button
                 type="button"
                 onClick={props.onClose}
-                className="rounded-lg px-3 py-1.5 text-sm text-muted transition hover:bg-soft hover:text-paper"
+                className="rounded-lg px-3 py-1.5 text-sm text-muted transition hover:bg-soft hover:text-ink"
               >
                 关闭
               </button>
@@ -216,7 +216,7 @@ export function ShareModal(props: ShareModalProps) {
                         value={quote}
                         onChange={(e) => setQuote(e.target.value)}
                         rows={4}
-                        className="mt-2 w-full resize-none rounded-xl border border-line bg-surface px-3 py-2 text-sm leading-relaxed text-paper placeholder:text-muted focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
+                        className="mt-2 w-full resize-none rounded-xl border border-line bg-surface px-3 py-2 text-sm leading-relaxed text-ink placeholder:text-muted focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
                         placeholder="写一句你想分享的追番感想"
                       />
                     </section>

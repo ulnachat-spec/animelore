@@ -204,7 +204,7 @@ export function WorkChatDrawer({
                   className="mt-2 size-10 shrink-0 rounded-full border border-brand/20 object-cover md:mt-0"
                 />
                 <div className="min-w-0 pt-2 md:pt-0">
-                  <h2 id="work-chat-title" className="text-base font-semibold text-paper">
+                  <h2 id="work-chat-title" className="text-base font-semibold text-ink">
                     和{CHAT_ASSISTANT_NAME}聊聊这部作品
                   </h2>
                   <p className="mt-0.5 truncate text-xs text-muted">{workTitle}</p>
@@ -213,7 +213,7 @@ export function WorkChatDrawer({
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-2 py-1 text-sm text-muted transition hover:bg-soft hover:text-paper"
+                    className="rounded-lg px-2 py-1 text-sm text-muted transition hover:bg-soft hover:text-ink"
                     aria-label="关闭"
                   >
                     ✕
@@ -312,7 +312,7 @@ export function WorkChatDrawer({
                     placeholder={
                       canSend ? "输入问题，Enter 发送" : "暂时还不能发送哦"
                     }
-                    className="min-h-[44px] flex-1 resize-none rounded-xl border border-line bg-canvas/80 px-3 py-2 text-sm text-paper placeholder:text-muted focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="min-h-[44px] flex-1 resize-none rounded-xl border border-line bg-canvas/80 px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   <button
                     type="button"

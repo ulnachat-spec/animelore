@@ -262,7 +262,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
               if (info.offset.x < -90 || info.velocity.x < -500) goNext();
               if (info.offset.x > 90 || info.velocity.x > 500) goDeep();
             }}
-            className="absolute inset-x-0 top-0 cursor-grab active:cursor-grabbing"
+            className="relative cursor-grab active:cursor-grabbing"
           >
             <RoamCard card={activeCard} />
           </motion.div>

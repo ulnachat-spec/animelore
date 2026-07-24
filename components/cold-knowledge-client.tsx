@@ -195,7 +195,7 @@ export function ColdKnowledgeClient({
           </div>
           {quizChoice !== null ? (
             <div className="mt-5 rounded-xl bg-ink/5 p-4 text-sm leading-7 text-body animate-[pulse_0.8s_ease-in-out_1]">
-              <p className="font-medium text-paper">{quizFeedback}</p>
+              <p className="font-medium text-ink">{quizFeedback}</p>
               <p className="mt-2">{data.quiz.explanation}</p>
             </div>
           ) : null}
@@ -274,7 +274,7 @@ export function ColdKnowledgeClient({
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h2 className="font-semibold text-paper">{rec.displayTitle}</h2>
+                  <h2 className="font-semibold text-ink">{rec.displayTitle}</h2>
                   {rec.nativeTitle ? (
                     <p className="mt-0.5 truncate text-xs text-muted">{rec.nativeTitle}</p>
                   ) : null}
