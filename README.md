@@ -64,11 +64,14 @@ npm run check
 
 推荐使用支持 Next.js Node 运行时与流式响应的平台。部署时：
 
-1. 设置生产环境变量，特别是 `DEEPSEEK_API_KEY` 与公开站点的 `NEXT_PUBLIC_BASE_URL`。
-2. 构建命令使用 `npm run build`，启动命令使用 `npm run start`。
-3. 验证平台没有缓冲 `text/event-stream`，否则关闭 `WORK_LORE_STREAMING`。
-4. 将 `data/cold-hooks.json` 视为随版本发布的只读内容；若未来允许在线写入，需要迁移到持久数据库。
-5. 当前限流是单实例内存实现，适合作为首层保护。多实例正式流量应替换为 Redis/Upstash 等共享限流存储。
+1. 使用 `npm ci` 按锁文件安装依赖。
+2. 设置生产环境变量，特别是 `DEEPSEEK_API_KEY` 与公开站点的 `NEXT_PUBLIC_BASE_URL`。
+3. 构建命令使用 `npm run build`，启动命令使用 `npm run start`。
+4. 验证平台没有缓冲 `text/event-stream`，否则关闭 `WORK_LORE_STREAMING`。
+5. 将 `data/cold-hooks.json` 视为随版本发布的只读内容；若未来允许在线写入，需要迁移到持久数据库。
+6. 当前限流是单实例内存实现，适合作为首层保护。多实例正式流量应替换为 Redis/Upstash 等共享限流存储。
+
+完整验收、后续功能边界和回退点见 `docs/RELEASE_CANDIDATE.md`，安全说明见 `SECURITY.md`。
 
 ## 数据来源与可信度
 

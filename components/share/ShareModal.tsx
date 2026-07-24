@@ -8,6 +8,7 @@ import {
   type ShareTemplate
 } from "@/components/share/ShareCardCanvas";
 import { useShareCard } from "@/components/share/useShareCard";
+import { useDialogFocus } from "@/lib/use-dialog-focus";
 
 const templateOptions: Array<{ id: ShareTemplate; label: string }> = [
   { id: "midnight", label: "深夜追番" },
@@ -56,11 +57,14 @@ export function ShareModal(props: ShareModalProps) {
   const [isDesktop, setIsDesktop] = useState(false);
   const [previewScale, setPreviewScale] = useState(0.28);
   const cardRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const { saving, error, dataUrl, saveCard, resetShareImage } = useShareCard();
 
   const isWork = props.kind === "work";
   const title = isWork ? props.workTitle : props.hook;
   const workInitialQuote = props.kind === "work" ? props.initialQuote : "";
+
+  useDialogFocus({ open, onClose, dialogRef });
 
   useEffect(() => {
     if (!open) return;
@@ -76,15 +80,10 @@ export function ShareModal(props: ShareModalProps) {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
     };
-  }, [open, onClose]);
+  }, [open]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -127,9 +126,11 @@ export function ShareModal(props: ShareModalProps) {
             onClick={onClose}
           />
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="share-card-title"
+            tabIndex={-1}
             className="fixed inset-x-0 bottom-0 z-[71] max-h-[92vh] overflow-y-auto rounded-t-3xl border-t border-line bg-canvas p-4 shadow-2xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[90vh] md:w-[min(960px,92vw)] md:rounded-3xl md:border"
             initial={isDesktop ? { y: "calc(-50% + 60px)", x: "-50%", opacity: 0 } : { y: 60, opacity: 0 }}
             animate={isDesktop ? { y: "-50%", x: "-50%", opacity: 1 } : { y: 0, opacity: 1 }}

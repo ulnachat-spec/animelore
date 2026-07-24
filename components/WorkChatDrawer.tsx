@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { ShareModal } from "@/components/share/ShareModal";
 import { CHAT_ASSISTANT_NAME } from "@/lib/chat/persona";
+import { useDialogFocus } from "@/lib/use-dialog-focus";
 import type { LoreCard } from "@/lib/types";
 
 export type ChatMessage = {
@@ -37,9 +38,13 @@ export function WorkChatDrawer({
   const [error, setError] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const dialogRef = useRef<HTMLElement>(null);
   const [isMobileSheet, setIsMobileSheet] = useState(false);
 
   const canSend = ready && cards.length > 0 && !loading;
+  const closeDialog = useCallback(() => setOpen(false), []);
+
+  useDialogFocus({ open, onClose: closeDialog, dialogRef });
 
   function pickSubstantiveQuote(text: string): string {
     const parts = text
@@ -84,15 +89,6 @@ export function WorkChatDrawer({
     return () => {
       document.body.style.overflow = prev;
     };
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: globalThis.KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
   async function handleSend() {
@@ -182,9 +178,11 @@ export function WorkChatDrawer({
               onClick={() => setOpen(false)}
             />
             <motion.aside
+              ref={dialogRef}
               role="dialog"
               aria-modal="true"
               aria-labelledby="work-chat-title"
+              tabIndex={-1}
               className="fixed z-50 flex w-full flex-col border-line bg-surface shadow-2xl inset-x-0 bottom-0 top-auto max-h-[min(88vh,720px)] rounded-t-2xl border-t md:inset-y-0 md:left-auto md:right-0 md:top-0 md:max-h-none md:w-full md:max-w-md md:rounded-none md:rounded-l-2xl md:border-l md:border-t-0"
               initial={isMobileSheet ? { y: "100%", x: 0 } : { x: "100%", y: 0 }}
               animate={{ y: 0, x: 0 }}
