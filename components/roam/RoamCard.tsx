@@ -17,7 +17,7 @@ export function RoamCard({ card }: { card: RoamCardData }) {
   const verifiedLabel = card.verification_status === "fallback" ? "安全兜底" : "已校验";
 
   return (
-    <article className="archive-card relative min-h-[430px] overflow-hidden p-6 sm:p-8">
+    <article className="archive-card relative min-h-[360px] overflow-hidden p-5 sm:min-h-[430px] sm:p-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_5%,rgb(var(--c-brand)/0.13),transparent_34%),radial-gradient(circle_at_90%_20%,rgb(var(--c-sage)/0.12),transparent_30%)]" />
       <span className="pointer-events-none absolute -bottom-12 -right-4 font-display text-[11rem] leading-none text-brand/5" aria-hidden="true">
         ✦
@@ -32,18 +32,20 @@ export function RoamCard({ card }: { card: RoamCardData }) {
           </span>
         </div>
 
-        <h1 className="archive-title mt-8 text-3xl leading-tight sm:text-4xl">
+        <h1 className="archive-title mt-5 text-2xl leading-tight sm:mt-8 sm:text-4xl">
           {card.hook}
         </h1>
         <p className="mt-5 text-base leading-8 text-body">{card.blurb}</p>
 
-        <div className="mt-8 rounded-2xl border border-line/70 bg-canvas/55 p-4">
-          <p className="archive-kicker">深入目标</p>
-          <p className="mt-1 text-sm font-medium text-ink">{card.target.title}</p>
-          <p className="mt-2 text-xs text-muted">
-            {card.next_seeds.slice(0, 3).join(" / ") || card.topic_key}
-          </p>
-        </div>
+        <details className="archive-disclosure mt-5 rounded-2xl border border-line/70 bg-canvas/55 p-2 sm:mt-8" name="roam-context">
+          <summary>看看这条线索会通向哪里</summary>
+          <div className="px-2 pb-2">
+            <p className="mt-1 text-sm font-medium text-ink">{card.target.title}</p>
+            <p className="mt-2 text-xs text-muted">
+              {card.next_seeds.slice(0, 3).join(" / ") || card.topic_key}
+            </p>
+          </div>
+        </details>
 
         <footer className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-muted">
           <span>

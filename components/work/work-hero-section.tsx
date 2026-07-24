@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { LibraryActions } from "@/components/library-actions";
 import { getWorkMetaQuickCached } from "@/lib/work-page-loaders";
 import type { WorkMeta } from "@/lib/types";
 
@@ -62,6 +63,20 @@ function WorkHeroContent({
               {studio}
             </span>
           ))}
+        </div>
+        <div className="mt-4 clear-both pt-1 sm:clear-none">
+          <LibraryActions
+            compact
+            item={{
+              id: `work:${title}`,
+              kind: "work",
+              title,
+              subtitle: meta.nativeTitle,
+              href: `/work/${encodeURIComponent(fallbackTitle)}`,
+              image: meta.coverImage,
+              tags: studios
+            }}
+          />
         </div>
         <p className="mt-5 hidden max-w-xl text-sm leading-7 text-body sm:block">
           下面四份档案分别从作品遗产、社区迷因、制作幕后与创作谱系切入。

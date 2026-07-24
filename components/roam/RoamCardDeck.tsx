@@ -14,6 +14,7 @@ import {
 } from "@/lib/roam/roam-session";
 import type { RoamCard as RoamCardData, RoamCardTag } from "@/lib/roam/roam-types";
 import type { ColdHookPayload, ColdTopicType } from "@/lib/types";
+import { readLibrary, recordLibraryHistory, writeLibrary } from "@/lib/user-library-client";
 
 type RoamPrefs = {
   likedTags: RoamCardTag[];
@@ -38,7 +39,7 @@ function uniqLimit<T>(items: T[], limit: number): T[] {
 
 function loadPrefs(): RoamPrefs {
   try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) ?? sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return emptyPrefs;
     const parsed = JSON.parse(raw) as Partial<RoamPrefs>;
     return {
@@ -54,7 +55,18 @@ function loadPrefs(): RoamPrefs {
 
 function savePrefs(prefs: RoamPrefs): void {
   try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+    const library = readLibrary();
+    writeLibrary({
+      ...library,
+      preferences: {
+        ...library.preferences,
+        likedTags: prefs.likedTags,
+        skippedTags: prefs.skippedTags,
+        likedSeeds: prefs.likedSeeds
+      }
+    });
   } catch {
     /* ignore private mode / quota */
   }
@@ -217,6 +229,13 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
       recentTopicKeys: uniqLimit([...prefs.recentTopicKeys, activeCard.topic_key], 10)
     }));
     startTransition(() => {
+      recordLibraryHistory({
+        id: `${activeCard.target.kind}:${activeCard.topic_key}`,
+        kind: activeCard.target.kind === "work" ? "work" : "cold",
+        title: activeCard.target.title || activeCard.hook,
+        subtitle: activeCard.hook,
+        href: activeCard.target.href
+      });
       if (activeCard.target.kind === "cold") {
         try {
           sessionStorage.setItem(ROAM_RETURN_STORAGE_KEY, "/roam");
@@ -247,7 +266,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
         <span>{progressText}</span>
       </div>
 
-      <div className="relative min-h-[430px]">
+      <div className="relative min-h-[360px] sm:min-h-[430px]">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={activeCard.id}
@@ -269,7 +288,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
         </AnimatePresence>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="sticky bottom-[calc(5rem+var(--safe-bottom))] z-10 mt-4 grid grid-cols-2 gap-3 rounded-2xl bg-canvas/90 p-2 backdrop-blur-lg md:static md:mt-6 md:bg-transparent md:p-0">
         <button
           type="button"
           onClick={goNext}

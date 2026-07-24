@@ -85,6 +85,92 @@ body {
     @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2 text-sm font-semibold text-white shadow-card transition duration-200 hover:-translate-y-0.5 hover:bg-brand-strong focus-visible:outline-none;
   }
 
+  .nav-link {
+    @apply relative rounded-xl px-4 py-2 text-sm font-medium text-body transition hover:bg-soft hover:text-ink;
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    right: 1rem;
+    bottom: 0.15rem;
+    left: 1rem;
+    height: 2px;
+    border-radius: 999px;
+    background: rgb(var(--c-brand));
+    transform: scaleX(0);
+    transition: transform 220ms ease;
+  }
+
+  .nav-link-active {
+    @apply bg-brand/10 text-brand;
+  }
+
+  .nav-link-active::after {
+    transform: scaleX(1);
+  }
+
+  .mobile-nav-link {
+    @apply relative flex min-h-[4.5rem] flex-col items-center justify-center gap-1 text-[0.68rem] font-medium text-muted transition;
+  }
+
+  .mobile-nav-link-active {
+    @apply text-brand;
+  }
+
+  .mobile-nav-indicator {
+    position: absolute;
+    top: 0.35rem;
+    width: 1.25rem;
+    height: 0.18rem;
+    border-radius: 999px;
+    background: rgb(var(--c-brand));
+    opacity: 0;
+    transform: scaleX(0.3);
+    transition: opacity 180ms ease, transform 220ms ease;
+  }
+
+  .mobile-nav-link-active .mobile-nav-indicator {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .archive-toast {
+    @apply pointer-events-none fixed bottom-[calc(5.75rem+var(--safe-bottom))] left-1/2 z-50 -translate-x-1/2 translate-y-2 rounded-full border border-brand/30 bg-elevated px-4 py-2 text-xs font-medium text-brand opacity-0 shadow-card transition md:bottom-8;
+  }
+
+  .archive-toast-visible {
+    @apply translate-y-0 opacity-100;
+  }
+
+  .archive-disclosure summary {
+    @apply inline-flex min-h-10 cursor-pointer items-center rounded-lg px-2 text-xs font-medium text-brand hover:bg-brand/10;
+  }
+
+  .archive-disclosure[open] summary {
+    @apply bg-brand/10;
+  }
+
+  .mei-star-burst {
+    @apply pointer-events-none absolute inset-0;
+  }
+
+  .mei-star-burst i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    color: rgb(var(--c-brand));
+    font-style: normal;
+    font-size: 0.75rem;
+    animation: mei-star 780ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .mei-star-burst i:nth-child(1) { --star-x: -2.2rem; --star-y: -1.8rem; }
+  .mei-star-burst i:nth-child(2) { --star-x: 0.2rem; --star-y: -2.5rem; }
+  .mei-star-burst i:nth-child(3) { --star-x: 2.2rem; --star-y: -1.2rem; }
+  .mei-star-burst i:nth-child(4) { --star-x: -1.8rem; --star-y: 1.5rem; }
+  .mei-star-burst i:nth-child(5) { --star-x: 2rem; --star-y: 1.7rem; }
+
   .paper-grain {
     position: relative;
     isolation: isolate;
@@ -102,6 +188,24 @@ body {
       repeating-linear-gradient(90deg, transparent 0 7px, rgb(var(--c-ink) / 0.08) 7px 8px);
     mix-blend-mode: multiply;
   }
+}
+
+@keyframes mei-star {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(0deg); }
+  28% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--star-x)), calc(-50% + var(--star-y))) scale(1.1) rotate(90deg);
+  }
+}
+
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

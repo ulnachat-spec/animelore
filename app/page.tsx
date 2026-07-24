@@ -33,7 +33,7 @@ export default async function HomePage({
 
   return (
     <main>
-      <section className="mx-auto grid max-w-6xl gap-10 px-4 pb-12 pt-10 sm:px-6 sm:pt-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.7fr)] lg:items-center lg:gap-16 lg:pb-20">
+      <section className="mx-auto grid max-w-6xl gap-7 px-4 pb-9 pt-7 sm:px-6 sm:pt-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.7fr)] lg:items-center lg:gap-16 lg:pb-16">
         <div>
           <p className="archive-kicker text-brand">Anime work archive · 公开检索中</p>
           <h1 className="archive-title mt-5 max-w-3xl text-[clamp(2.55rem,8vw,5.4rem)] leading-[0.98]">
@@ -51,14 +51,14 @@ export default async function HomePage({
 
         <aside className="relative mx-auto w-full max-w-[420px] lg:max-w-none" aria-label="芽衣档案员">
           <div className="absolute -left-4 top-10 hidden h-24 w-8 rounded-l-xl border-y border-l border-line bg-sage/20 sm:block" />
-          <div className="archive-card relative aspect-[4/5] overflow-hidden">
+          <div className="archive-card relative aspect-[16/10] overflow-hidden sm:aspect-[4/3] lg:aspect-[4/5]">
             <Image
               src="/brand/mei-reference.png"
               alt="AnimeLore 档案员芽衣：佩戴圆框眼镜和星形书签发夹，手持档案本"
               fill
               priority
               sizes="(max-width: 1023px) 420px, 38vw"
-              className="object-cover object-[35%_38%] transition duration-700 hover:scale-[1.025]"
+              className="object-cover object-[35%_35%] transition duration-500 hover:scale-[1.018]"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#201b17]/90 via-[#201b17]/45 to-transparent p-5 pt-20 text-[#fff8eb]">
               <p className="font-display text-xl font-semibold">芽衣正在值班</p>

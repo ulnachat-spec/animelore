@@ -7,6 +7,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { LoreCard } from "@/lib/types";
+import { LibraryActions } from "@/components/library-actions";
 
 function validHttpUrls(urls: string[] | undefined): string[] {
   return (urls ?? [])
@@ -198,14 +199,40 @@ function LoreArticle({
       <p className="mt-4 font-display text-lg leading-7 text-brand">{card.headline}</p>
       <p className="mt-4 text-sm leading-7 text-body">{card.intro}</p>
       <ul className="mt-4 space-y-2 text-sm leading-6 text-body">
-        {card.points.map((point) => (
+        {(mobile ? card.points.slice(0, 2) : card.points).map((point) => (
           <li key={point} className="flex gap-2.5">
             <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true" />
             <span>{point}</span>
           </li>
         ))}
       </ul>
+      {mobile && card.points.length > 2 ? (
+        <details className="archive-disclosure mt-3">
+          <summary>展开其余 {card.points.length - 2} 条</summary>
+          <ul className="mt-3 space-y-2 text-sm leading-6 text-body">
+            {card.points.slice(2).map((point) => (
+              <li key={point} className="flex gap-2.5">
+                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true" />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
       <CardSourceLine source={card.source} sourceUrls={card.source_urls ?? []} />
+      <div className="mt-4 border-t border-line/70 pt-3">
+        <LibraryActions
+          compact
+          item={{
+            id: `card:${card.id}:${card.headline}`,
+            kind: "card",
+            title: card.headline,
+            subtitle: card.zh_name,
+            href: typeof window === "undefined" ? "/" : window.location.pathname,
+            tags: [card.zh_name, card.en_label]
+          }}
+        />
+      </div>
     </motion.article>
   );
 }

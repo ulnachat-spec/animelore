@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ShareModal } from "@/components/share/ShareModal";
 import { MeiState } from "@/components/mei-state";
+import { LibraryActions } from "@/components/library-actions";
 import { formatColdInsightForDisplay } from "@/lib/cold-insight-display";
 import {
   coldSessionStaleMessage,
@@ -14,6 +15,7 @@ import {
 } from "@/lib/cold-session";
 import { ROAM_RETURN_STORAGE_KEY } from "@/lib/roam/roam-session";
 import type { ColdHookPayload } from "@/lib/types";
+import { recordLibraryHistory } from "@/lib/user-library-client";
 
 const topicLabel: Record<string, string> = {
   work: "作品向",
@@ -48,6 +50,18 @@ export function ColdKnowledgeClient({
       setStaleMessage(coldSessionStaleMessage("invalid_json"));
     }
   }, [initialData, router]);
+
+  useEffect(() => {
+    if (!data) return;
+    const href = data.record_id ? `/cold/${encodeURIComponent(data.record_id)}` : "/cold";
+    recordLibraryHistory({
+      id: `cold:${data.record_id || data.topic_key || data.hook}`,
+      kind: "cold",
+      title: data.hook,
+      subtitle: data.blurb,
+      href
+    });
+  }, [data]);
 
   if (staleMessage) {
     return (
@@ -169,6 +183,18 @@ export function ColdKnowledgeClient({
             {sourceUrls.length ? (
               <span className="rounded-full bg-soft px-3 py-1.5">来源 {sourceUrls.length} 个</span>
             ) : null}
+          </div>
+          <div className="mt-5">
+            <LibraryActions
+              compact
+              item={{
+                id: `cold:${data.record_id || data.topic_key || data.hook}`,
+                kind: "cold",
+                title: data.hook,
+                subtitle: data.blurb,
+                href: data.record_id ? `/cold/${encodeURIComponent(data.record_id)}` : "/cold"
+              }}
+            />
           </div>
         </div>
       </section>

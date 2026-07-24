@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUserLibrary } from "@/lib/use-user-library";
 
 type RecentWork = { title: string; at: string };
 
@@ -17,17 +18,12 @@ const randomWorks = [
 
 export function HomeDiscovery() {
   const router = useRouter();
-  const [recent, setRecent] = useState<RecentWork[]>([]);
+  const { library, ready } = useUserLibrary();
   const [rolling, setRolling] = useState(false);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("animelore.recent-works.v1");
-      setRecent(raw ? (JSON.parse(raw) as RecentWork[]).slice(0, 3) : []);
-    } catch {
-      setRecent([]);
-    }
-  }, []);
+  const recent = library.history
+    .filter((item) => item.kind === "work")
+    .slice(0, 3)
+    .map((item) => ({ title: item.title, at: item.visitedAt } satisfies RecentWork));
 
   const openRandom = () => {
     if (rolling) return;
@@ -71,7 +67,7 @@ export function HomeDiscovery() {
           <p className="archive-kicker">最近打开</p>
           <span className="text-xs text-muted">仅保存在本机</span>
         </div>
-        {recent.length ? (
+        {ready && recent.length ? (
           <div className="flex gap-2 overflow-x-auto pb-1">
             {recent.map((item) => (
               <Link
