@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type ReactNode } from "react";
 import { BrandMark } from "@/components/brand-mark";
+import { PwaCompanion } from "@/components/pwa-companion";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
@@ -105,6 +106,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           })}
         </div>
       </nav>
+      <PwaCompanion />
     </div>
   );
 }
