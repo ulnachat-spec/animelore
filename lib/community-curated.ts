@@ -21,21 +21,8 @@ interface CuratedEntry {
  * 示例结构（勿提交未验证链接）：
  * { match: ["葬送的芙莉莲", "Frieren"], items: [{ source: "manual", title: "…", url: "https://…" }] }
  */
-// TODO: 替换为真实社区链接；以下为临时 E2E 测试数据。
-const CURATED_COMMUNITY_ARTICLES: CuratedEntry[] = [
-  {
-    match: ["葬送的芙莉莲", "Frieren", "葬送のフリーレン"],
-    items: [
-      {
-        source: "manual",
-        title: "测试：葬送的芙莉莲社区考据推荐",
-        url: "https://example.com/frieren-community-test",
-        author: "测试作者",
-        snippet: "这是一条用于验证中文社区推荐模块是否显示的测试候选。"
-      }
-    ]
-  }
-];
+// 只收录人工复核过的真实链接；测试夹具必须放在 tests/，不能进入生产内容。
+const CURATED_COMMUNITY_ARTICLES: CuratedEntry[] = [];
 
 function normalizeMatchKey(s: string): string {
   return s.trim().toLowerCase().replace(/\s+/g, "");
