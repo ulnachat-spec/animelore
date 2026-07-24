@@ -14,6 +14,10 @@ import type { RagDebugRound } from "@/lib/rag/types";
  * - RAG_DEBUG_TRUNCATE_SNIPPET=600 控制每条 evidence 摘要长度
  */
 export async function GET(req: NextRequest) {
+  if (process.env.NODE_ENV !== "development") {
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
+
   const query = req.nextUrl.searchParams.get("q");
   if (!query) {
     return NextResponse.json(

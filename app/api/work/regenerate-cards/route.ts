@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { normalizeSeenContentByCard } from "@/lib/regenerate-dedupe";
 import { regenerateLoreCardsFromEvidence } from "@/lib/regenerate-work-lore";
+import { enforceRateLimit } from "@/lib/rate-limit-response";
 
 const evidenceSourceSchema = z.enum([
   "anilist",
@@ -64,6 +65,9 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: Request) {
+  const { blocked } = enforceRateLimit(req, "regenerate-cards", 10, 10 * 60_000);
+  if (blocked) return blocked;
+
   try {
     const json = await req.json();
     const parsed = bodySchema.safeParse(json);

@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { enforceRateLimit } from "@/lib/rate-limit-response";
 import { loadWorkCore } from "@/lib/load-work-core";
 
 /** 首屏：meta + lore + RAG 证据（四卡）；延伸阅读见 /api/work/community-recs 与 /api/work/related */
 export async function GET(req: NextRequest) {
+  const { blocked } = enforceRateLimit(req, "work", 30, 5 * 60_000);
+  if (blocked) return blocked;
+
   try {
     const query = req.nextUrl.searchParams.get("q");
     if (!query) {

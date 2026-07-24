@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import { buildWorkChatSystemPrompt } from "@/lib/chat/build-system-prompt";
 import { prepareChatTurn } from "@/lib/chat/run-chat-turn";
 import { chatRequestBodySchema } from "@/lib/chat/schemas";
+import { enforceRateLimit } from "@/lib/rate-limit-response";
 
 export async function POST(req: Request) {
+  const { blocked } = enforceRateLimit(req, "chat", 20, 10 * 60_000);
+  if (blocked) return blocked;
+
   try {
     const json = await req.json();
     const parsed = chatRequestBodySchema.safeParse(json);

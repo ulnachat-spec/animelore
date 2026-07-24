@@ -24,6 +24,13 @@ function encodeSse(event: string, data: unknown): Uint8Array {
 
 /** 最小 SSE 探针：每 200ms 一条 tick，共 20 条，用于区分缓冲 vs 业务逻辑问题 */
 export async function GET() {
+  if (process.env.NODE_ENV !== "development") {
+    return new Response(JSON.stringify({ error: "not_found" }), {
+      status: 404,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const startedAt = Date.now();

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ShareCardCanvas,
   type ShareTag,
@@ -49,10 +49,12 @@ function normalizeQuote(quote: string): string {
 }
 
 export function ShareModal(props: ShareModalProps) {
+  const { open, onClose } = props;
   const [template, setTemplate] = useState<ShareTemplate>("midnight");
   const [quote, setQuote] = useState("");
   const [tags, setTags] = useState<ShareTag[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [previewScale, setPreviewScale] = useState(0.28);
   const cardRef = useRef<HTMLDivElement>(null);
   const { saving, error, dataUrl, saveCard, resetShareImage } = useShareCard();
 
@@ -61,28 +63,28 @@ export function ShareModal(props: ShareModalProps) {
   const workInitialQuote = props.kind === "work" ? props.initialQuote : "";
 
   useEffect(() => {
-    if (!props.open) return;
+    if (!open) return;
     resetShareImage();
     setTemplate("midnight");
     setTags([]);
     if (isWork) {
       setQuote(normalizeQuote(workInitialQuote) || "这部值得留一张追番打卡。");
     }
-  }, [props.open, isWork, workInitialQuote, resetShareImage]);
+  }, [open, isWork, workInitialQuote, resetShareImage]);
 
   useEffect(() => {
-    if (!props.open) return;
+    if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") props.onClose();
+      if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
-  }, [props.open, props.onClose]);
+  }, [open, onClose]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -92,10 +94,14 @@ export function ShareModal(props: ShareModalProps) {
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const previewScale = useMemo(() => {
-    if (typeof window === "undefined") return 0.28;
-    return Math.min(0.34, Math.max(0.22, (window.innerWidth - 64) / 1080));
-  }, [props.open]);
+  useEffect(() => {
+    if (!open) return;
+    const update = () =>
+      setPreviewScale(Math.min(0.34, Math.max(0.22, (window.innerWidth - 64) / 1080)));
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [open]);
 
   const toggleTag = (tag: ShareTag) => {
     setTags((prev) => {
@@ -109,7 +115,7 @@ export function ShareModal(props: ShareModalProps) {
 
   return (
     <AnimatePresence>
-      {props.open ? (
+      {open ? (
         <>
           <motion.button
             type="button"
@@ -118,7 +124,7 @@ export function ShareModal(props: ShareModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={props.onClose}
+            onClick={onClose}
           />
           <motion.div
             role="dialog"
