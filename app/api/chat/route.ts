@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { buildWorkChatSystemPrompt } from "@/lib/chat/build-system-prompt";
 import { prepareChatTurn } from "@/lib/chat/run-chat-turn";
 import { chatRequestBodySchema } from "@/lib/chat/schemas";
+import { assessChatReply, looksLikePromptInjection } from "@/lib/chat/grounding";
 import { enforceRateLimit } from "@/lib/rate-limit-response";
 
 export async function POST(req: Request) {
@@ -24,14 +25,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: prepared.error, detail: prepared.detail }, { status: 400 });
     }
 
-    const systemPrompt = buildWorkChatSystemPrompt(workTitle, cards);
-    const message = await prepared.run(systemPrompt);
+    const latestUserMessage = [...messages].reverse().find((item) => item.role === "user")?.content ?? "";
+    if (looksLikePromptInjection(latestUserMessage)) {
+      return NextResponse.json(assessChatReply("", latestUserMessage, cards));
+    }
 
-    return NextResponse.json({ message });
+    const systemPrompt = buildWorkChatSystemPrompt(workTitle, cards);
+    const rawMessage = await prepared.run(systemPrompt);
+    const assessed = assessChatReply(rawMessage, latestUserMessage, cards);
+
+    return NextResponse.json(assessed);
   } catch (e) {
     console.error("[chat]", e);
     return NextResponse.json(
-      { error: "chat_failed", detail: (e as Error).message },
+      { error: "chat_failed", detail: "芽衣暂时没有组织好回答，请稍后再试。" },
       { status: 500 }
     );
   }

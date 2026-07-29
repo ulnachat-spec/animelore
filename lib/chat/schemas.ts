@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { CHAT_MAX_HISTORY_MESSAGES, CHAT_MAX_USER_MESSAGE_CHARS } from "@/lib/chat/constants";
+import {
+  CHAT_MAX_ASSISTANT_MESSAGE_CHARS,
+  CHAT_MAX_HISTORY_MESSAGES,
+  CHAT_MAX_USER_MESSAGE_CHARS
+} from "@/lib/chat/constants";
 
 export const loreCardChatSchema = z.object({
   id: z.enum(["legacy", "meme", "behind", "lineage"]),
@@ -12,15 +16,21 @@ export const loreCardChatSchema = z.object({
   source_urls: z.array(z.string().max(500)).max(20).optional().default([])
 });
 
-export const chatMessageSchema = z.object({
-  role: z.enum(["user", "assistant"]),
-  content: z.string().max(CHAT_MAX_USER_MESSAGE_CHARS + 2000)
-});
+export const chatMessageSchema = z.discriminatedUnion("role", [
+  z.object({
+    role: z.literal("user"),
+    content: z.string().max(CHAT_MAX_USER_MESSAGE_CHARS)
+  }),
+  z.object({
+    role: z.literal("assistant"),
+    content: z.string().max(CHAT_MAX_ASSISTANT_MESSAGE_CHARS)
+  })
+]);
 
 export const chatRequestBodySchema = z.object({
   workTitle: z.string().min(1).max(200),
   cards: z.array(loreCardChatSchema).min(1).max(4),
-  messages: z.array(chatMessageSchema).max(CHAT_MAX_HISTORY_MESSAGES + 4)
+  messages: z.array(chatMessageSchema).max(CHAT_MAX_HISTORY_MESSAGES)
 });
 
 export type ChatRequestBody = z.infer<typeof chatRequestBodySchema>;

@@ -5,13 +5,23 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { ShareModal } from "@/components/share/ShareModal";
 import { CHAT_ASSISTANT_NAME } from "@/lib/chat/persona";
+import {
+  CHAT_CLIENT_TIMEOUT_MS,
+  CHAT_MAX_HISTORY_MESSAGES
+} from "@/lib/chat/constants";
+import type { ChatGrounding } from "@/lib/chat/grounding";
+import {
+  clearRememberedConversation,
+  readChatMemoryEnabled,
+  readRememberedConversation,
+  type RememberedChatMessage,
+  writeChatMemoryEnabled,
+  writeRememberedConversation
+} from "@/lib/chat/memory";
 import { useDialogFocus } from "@/lib/use-dialog-focus";
 import type { LoreCard } from "@/lib/types";
 
-export type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
+export type ChatMessage = RememberedChatMessage;
 
 export interface WorkChatDrawerProps {
   workTitle: string;
@@ -36,9 +46,13 @@ export function WorkChatDrawer({
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [memoryEnabled, setMemoryEnabled] = useState(true);
+  const [memoryReady, setMemoryReady] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
+  const skipMemoryWriteRef = useRef(false);
+  const requestControllerRef = useRef<AbortController | null>(null);
   const [isMobileSheet, setIsMobileSheet] = useState(false);
 
   const canSend = ready && cards.length > 0 && !loading;
@@ -67,6 +81,30 @@ export function WorkChatDrawer({
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
+
+  useEffect(() => {
+    skipMemoryWriteRef.current = true;
+    const enabled = readChatMemoryEnabled();
+    setMemoryEnabled(enabled);
+    setMessages(enabled ? readRememberedConversation(workTitle) : []);
+    setMemoryReady(true);
+  }, [workTitle]);
+
+  useEffect(() => {
+    if (!memoryReady || !memoryEnabled) return;
+    if (skipMemoryWriteRef.current) {
+      skipMemoryWriteRef.current = false;
+      return;
+    }
+    writeRememberedConversation(workTitle, messages);
+  }, [memoryEnabled, memoryReady, messages, workTitle]);
+
+  useEffect(
+    () => () => {
+      requestControllerRef.current?.abort();
+    },
+    []
+  );
 
   const scrollToBottom = useCallback(() => {
     const el = listRef.current;
@@ -102,39 +140,68 @@ export function WorkChatDrawer({
     setMessages(nextMessages);
     setInput("");
     setLoading(true);
+    const controller = new AbortController();
+    requestControllerRef.current = controller;
+    const timeout = window.setTimeout(() => controller.abort(), CHAT_CLIENT_TIMEOUT_MS);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           workTitle,
           cards,
-          messages: nextMessages
+          messages: nextMessages.slice(-CHAT_MAX_HISTORY_MESSAGES)
         })
       });
       const data = (await res.json()) as {
         message?: string;
+        grounding?: ChatGrounding;
+        citations?: RememberedChatMessage["citations"];
         error?: string;
         detail?: string;
       };
       if (!res.ok) {
         throw new Error(
-          typeof data.detail === "string"
-            ? data.detail
-            : data.error || `请求失败（${res.status}）`
+          res.status === 429
+            ? "聊得有点快啦，稍等一会儿再问芽衣。"
+            : typeof data.detail === "string"
+              ? data.detail
+              : data.error || `请求失败（${res.status}）`
         );
       }
       if (!data.message?.trim()) {
-        throw new Error("空回复");
+        throw new Error("芽衣没有返回有效内容，请重新试一次。");
       }
-      setMessages((prev) => [...prev, { role: "assistant", content: data.message! }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.message!,
+          grounding: data.grounding,
+          citations: data.citations
+        }
+      ]);
       if (candidateQuote) {
         setShareQuote(candidateQuote);
       }
-    } catch (e) {
-      setError((e as Error).message);
+    } catch (caught) {
+      setMessages((current) => {
+        const last = current.at(-1);
+        return last?.role === "user" && last.content === text ? current.slice(0, -1) : current;
+      });
+      setInput(text);
+      setError(
+        caught instanceof DOMException && caught.name === "AbortError"
+          ? "芽衣思考得太久了，这次请求已停止。你的问题还在，可以直接重试。"
+          : (caught as Error).message
+      );
     } finally {
+      window.clearTimeout(timeout);
+      if (requestControllerRef.current === controller) {
+        requestControllerRef.current = null;
+      }
       setLoading(false);
     }
   }
@@ -144,6 +211,27 @@ export function WorkChatDrawer({
       e.preventDefault();
       void handleSend();
     }
+  }
+
+  function toggleMemory() {
+    if (memoryEnabled) {
+      const confirmed = window.confirm("关闭本机对话记忆，并清除这部作品当前保存的对话吗？");
+      if (!confirmed) return;
+      clearRememberedConversation(workTitle);
+      setMessages([]);
+      setShareQuote("");
+    }
+    const next = !memoryEnabled;
+    writeChatMemoryEnabled(next);
+    setMemoryEnabled(next);
+  }
+
+  function clearConversation() {
+    if (messages.length && !window.confirm("清空这部作品的本机对话记录？")) return;
+    clearRememberedConversation(workTitle);
+    setMessages([]);
+    setShareQuote("");
+    setError(null);
   }
 
   return (
@@ -210,6 +298,17 @@ export function WorkChatDrawer({
                 <div className="flex shrink-0 items-center gap-2">
                   <button
                     type="button"
+                    onClick={toggleMemory}
+                    aria-pressed={memoryEnabled}
+                    className={`min-h-9 rounded-lg px-2 text-xs transition ${
+                      memoryEnabled ? "bg-sage/10 text-sage" : "text-muted hover:bg-soft"
+                    }`}
+                    title="对话只保存在当前浏览器，最多保留 30 天"
+                  >
+                    {memoryEnabled ? "记忆已开" : "记忆已关"}
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => setOpen(false)}
                     className="rounded-lg px-2 py-1 text-sm text-muted transition hover:bg-soft hover:text-ink"
                     aria-label="关闭"
@@ -260,6 +359,9 @@ export function WorkChatDrawer({
                         </span>
                       ) : null}
                       <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                      {m.role === "assistant" && m.grounding ? (
+                        <GroundingNote grounding={m.grounding} citations={m.citations ?? []} />
+                      ) : null}
                     </motion.div>
                   </motion.div>
                 ))}
@@ -271,6 +373,18 @@ export function WorkChatDrawer({
               </motion.div>
 
               <footer className="shrink-0 border-t border-line/70 px-4 py-3 md:px-5">
+                <div className="mb-2 flex items-center justify-between gap-3 text-[11px] text-muted">
+                  <span>{memoryEnabled ? "仅在本机记住本作品对话 · 30 天" : "本机记忆已关闭"}</span>
+                  {messages.length ? (
+                    <button
+                      type="button"
+                      onClick={clearConversation}
+                      className="min-h-8 shrink-0 rounded-lg px-2 hover:bg-soft hover:text-ink"
+                    >
+                      清空对话
+                    </button>
+                  ) : null}
+                </div>
                 {!ready ? (
                   <p className="mb-2 text-center text-xs text-amber-400/90" role="status">
                     {readyHint}
@@ -335,5 +449,50 @@ export function WorkChatDrawer({
         coverImage={coverImage}
       />
     </>
+  );
+}
+
+function GroundingNote({
+  grounding,
+  citations
+}: {
+  grounding: ChatGrounding;
+  citations: NonNullable<RememberedChatMessage["citations"]>;
+}) {
+  const labels: Record<ChatGrounding, string> = {
+    source_backed: "有来源支撑",
+    archive_context: "依据站内档案",
+    opinion: "观感交流",
+    insufficient: "资料不足"
+  };
+  const tone =
+    grounding === "source_backed"
+      ? "text-sage"
+      : grounding === "insufficient"
+        ? "text-brand"
+        : "text-muted";
+
+  return (
+    <div className={`mt-2 border-t border-line/70 pt-2 text-[10px] ${tone}`}>
+      <span>{labels[grounding]}</span>
+      {citations.map((citation) => {
+        const href = citation.urls[0];
+        return href ? (
+          <a
+            key={citation.card}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-2 underline decoration-line underline-offset-2 hover:text-ink"
+          >
+            卡{citation.card} · {citation.label}
+          </a>
+        ) : (
+          <span key={citation.card} className="ml-2">
+            卡{citation.card} · {citation.label}
+          </span>
+        );
+      })}
+    </div>
   );
 }

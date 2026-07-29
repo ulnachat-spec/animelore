@@ -217,7 +217,7 @@ export async function generateChatReply(
         { role: "system", content: systemPrompt },
         ...messages.map((m) => ({ role: m.role as "user" | "assistant", content: m.content }))
       ],
-      temperature: 0.75
+      temperature: 0.45
     });
 
     const text = completion.choices[0]?.message?.content?.trim();

@@ -2,22 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useState, useTransition } from "react";
+import { recordLibraryHistory } from "@/lib/user-library-client";
 
 const suggestions = ["新世纪福音战士", "葬送的芙莉莲", "孤独摇滚！"];
 
 function rememberSearch(title: string) {
-  try {
-    const key = "animelore.recent-works.v1";
-    const raw = localStorage.getItem(key);
-    const current = raw ? (JSON.parse(raw) as { title: string; at: string }[]) : [];
-    const next = [
-      { title, at: new Date().toISOString() },
-      ...current.filter((item) => item.title !== title)
-    ].slice(0, 8);
-    localStorage.setItem(key, JSON.stringify(next));
-  } catch {
-    // Browsing history is an optional local enhancement.
-  }
+  recordLibraryHistory({
+    id: `work:${title}`,
+    kind: "work",
+    title,
+    href: `/work/${encodeURIComponent(title)}`
+  });
 }
 
 export function SearchBox({

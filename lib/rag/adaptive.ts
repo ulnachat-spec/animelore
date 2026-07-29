@@ -2,6 +2,7 @@ import { buildStableCommunityHint } from "@/lib/community-hint";
 import { verifyLoreWithGemini } from "@/lib/gemini-verifier";
 import { buildLorePromptFromAdaptive } from "@/lib/prompt";
 import { generateLore } from "@/lib/llm";
+import { sanitizeLoreAgainstEvidence } from "@/lib/lore-claim-safety";
 import { analyzeWorkQuery } from "@/lib/rag/analyzer";
 import { evaluateEvidence } from "@/lib/rag/evaluator";
 import { insufficientEvidenceLore } from "@/lib/rag/insufficient";
@@ -266,6 +267,15 @@ export async function runAdaptiveWorkLore(
       } else {
         pushTrace("gemini.verify.skipped", {
           reason: "non_blocking_prod_path"
+        });
+      }
+
+      if (outcomeKind === "success") {
+        const claimSafety = sanitizeLoreAgainstEvidence(finalLore, kept);
+        finalLore = claimSafety.value;
+        pushTrace("claim_safety", {
+          removed_claims: claimSafety.removedClaims,
+          downgraded_fields: claimSafety.downgradedFields
         });
       }
 

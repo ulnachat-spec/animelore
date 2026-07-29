@@ -5,6 +5,7 @@ import {
   generateLoreCardStream
 } from "@/lib/llm-stream";
 import { LORE_CARD_META, LORE_CARD_ORDER } from "@/lib/lore-card-meta";
+import { sanitizeLoreCardAgainstEvidence } from "@/lib/lore-claim-safety";
 import { insufficientEvidenceLore } from "@/lib/rag/insufficient";
 import type { SseSender } from "@/lib/sse";
 import type { Evidence } from "@/lib/rag/types";
@@ -139,11 +140,14 @@ export async function runWorkLoreStream(
           }
         });
         logCardStreamStats(cardId, result.stats);
-        cards.push(result.card);
-        send("card_done", { card: result.card, timed_out: result.timedOut === true });
+        const claimSafety = sanitizeLoreCardAgainstEvidence(result.card, ctx.evidence);
+        cards.push(claimSafety.value);
+        send("card_done", { card: claimSafety.value, timed_out: result.timedOut === true });
         logStage(trimmed, `card_done:${cardId}`, t0, {
           repaired: result.repaired,
           timed_out: result.timedOut === true,
+          removed_claims: claimSafety.removedClaims,
+          downgraded_fields: claimSafety.downgradedFields,
           delta_event_count: result.stats.delta_event_count,
           point_delta_event_count: result.stats.point_delta_event_count
         });
