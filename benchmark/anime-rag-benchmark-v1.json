@@ -212,11 +212,11 @@
             "id": "spy-q5",
             "type": "conflict",
             "question": "《间谍过家家》动画第二季是否仍由 WIT STUDIO 与 CloverWorks 联合制作？",
-            "gold_answer": "第二季制作公司分工与第一季不同：第二季主要由 TBD Animation / 其他团队参与（官方资料以 AniList 当季 credits 为准）；不宜沿用第一季「WIT+CloverWorks」而不注明季别",
-            "conflict_note": "不同季度制作表差异大，营销号常笼统写 WIT/CloverWorks",
+            "gold_answer": "第二季仍由 WIT STUDIO 与 CloverWorks 联合制作；应按第二季官方 staff 信息回答，不能凭空写成制作公司已更换",
+            "conflict_note": "CloverWorks 官方作品页明确写明 Animation Production: WIT STUDIO x CloverWorks",
             "acceptable_answers": [
-              "应按季度查 credits，第二季与第一季制作方不完全相同",
-              "第二季制作阵容有变动"
+              "WIT STUDIO 与 CloverWorks 联合制作",
+              "第二季仍由 WIT 与 CloverWorks 制作"
             ],
             "source_hint": "AniList 分季 credits",
             "system_answer": null,
@@ -955,7 +955,7 @@
         "question_id": "spy-q5",
         "type": "conflict",
         "system_answer": null,
-        "gold_answer": "第二季制作公司分工与第一季不同：第二季主要由 TBD Animation / 其他团队参与（官方资料以 AniList 当季 credits 为准）；不宜沿用第一季「WIT+CloverWorks」而不注明季别",
+        "gold_answer": "第二季仍由 WIT STUDIO 与 CloverWorks 联合制作；应按第二季官方 staff 信息回答，不能凭空写成制作公司已更换",
         "is_accurate": null,
         "has_hallucination": null
       },

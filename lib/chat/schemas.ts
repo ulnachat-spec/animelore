@@ -29,6 +29,14 @@ export const chatMessageSchema = z.discriminatedUnion("role", [
 
 export const chatRequestBodySchema = z.object({
   workTitle: z.string().min(1).max(200),
+  workMeta: z.object({
+    title: z.string().min(1).max(200),
+    nativeTitle: z.string().max(200).optional(),
+    anilistId: z.number().int().positive().optional(),
+    seasonYear: z.number().int().min(1900).max(2200).optional(),
+    season: z.string().max(40).optional(),
+    studios: z.array(z.string().max(120)).max(12).optional()
+  }).optional(),
   cards: z.array(loreCardChatSchema).min(1).max(4),
   messages: z.array(chatMessageSchema).max(CHAT_MAX_HISTORY_MESSAGES)
 });

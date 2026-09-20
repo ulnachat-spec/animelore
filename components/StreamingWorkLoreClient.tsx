@@ -385,6 +385,7 @@ export function StreamingWorkLoreClient({
     </section>
     <WorkChatDrawer
       workTitle={meta?.title ?? query.trim()}
+      workMeta={meta ?? undefined}
       cards={[]}
       ready={false}
       readyHint="四卡还在生成中，稍后再聊哦～"

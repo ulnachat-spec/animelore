@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { RoamCard } from "@/components/roam/RoamCard";
@@ -161,8 +162,9 @@ function coldPayloadFromRoamCard(card: RoamCardData): ColdHookPayload {
 export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] }) {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [cards, setCards] = useState<RoamCardData[]>(() => loadDeckState(initialCards).cards);
-  const [index, setIndex] = useState(() => loadDeckState(initialCards).index);
+  const [cards, setCards] = useState<RoamCardData[]>(initialCards);
+  const [index, setIndex] = useState(0);
+  const [deckHydrated, setDeckHydrated] = useState(false);
   const [direction, setDirection] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -202,12 +204,20 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
   }, [loadingMore]);
 
   useEffect(() => {
+    const restored = loadDeckState(initialCards);
+    setCards(restored.cards);
+    setIndex(restored.index);
+    setDeckHydrated(true);
+  }, [initialCards]);
+
+  useEffect(() => {
     if (remaining <= 2) void fetchMore();
   }, [fetchMore, remaining]);
 
   useEffect(() => {
+    if (!deckHydrated) return;
     saveDeckState(cards, index);
-  }, [cards, index]);
+  }, [cards, deckHydrated, index]);
 
   const goNext = useCallback(() => {
     if (!activeCard) return;
@@ -266,10 +276,14 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
         <span>{progressText}</span>
       </div>
 
+      <div className="mb-3 flex items-center justify-between px-2 text-[11px] font-medium text-muted sm:hidden" aria-hidden="true">
+        <span>← 左滑略过</span>
+        <span className="text-brand">右滑深入 →</span>
+      </div>
       <div className="relative min-h-[360px] sm:min-h-[430px]">
         <motion.div
           aria-hidden="true"
-          className="pointer-events-none absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-line/70 bg-surface/80 px-2 py-3 text-[10px] font-medium text-muted shadow-card backdrop-blur"
+          className="pointer-events-none absolute left-0 top-1/2 z-10 hidden -translate-x-[calc(100%+1rem)] -translate-y-1/2 rounded-full border border-line/70 bg-surface/90 px-3 py-3 text-[11px] font-medium text-muted shadow-card backdrop-blur sm:block"
           animate={{ x: [0, -4, 0], opacity: [0.55, 0.9, 0.55] }}
           transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.2 }}
         >
@@ -277,7 +291,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
         </motion.div>
         <motion.div
           aria-hidden="true"
-          className="pointer-events-none absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-brand/25 bg-surface/80 px-2 py-3 text-[10px] font-medium text-brand shadow-card backdrop-blur"
+          className="pointer-events-none absolute right-0 top-1/2 z-10 hidden translate-x-[calc(100%+1rem)] -translate-y-1/2 rounded-full border border-brand/25 bg-surface/90 px-3 py-3 text-[11px] font-medium text-brand shadow-card backdrop-blur sm:block"
           animate={{ x: [0, 4, 0], opacity: [0.55, 0.9, 0.55] }}
           transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.2 }}
         >
@@ -323,7 +337,12 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
 
       <div className="mt-4 flex items-center justify-between text-xs text-muted">
         <span>左滑下一条，右滑深入了解</span>
-        <span>{loadingMore ? "补充卡片中..." : `余 ${remaining} 条`}</span>
+        {loadingMore ? (
+          <span className="inline-flex items-center gap-1.5">
+            <Image src="/brand/mei-avatar-v1.png" alt="" width={20} height={20} className="size-5 animate-pulse rounded-full object-cover" />
+            芽衣正在补充卡片…
+          </span>
+        ) : <span>余 {remaining} 条</span>}
       </div>
       {error ? <p className="mt-3 text-center text-xs text-red-400">{error}</p> : null}
     </section>

@@ -1,15 +1,31 @@
 import { formatCardsForChatContext } from "@/lib/chat/format-cards-context";
 import { CHAT_ASSISTANT_NAME, CHAT_PERSONA_PROMPT } from "@/lib/chat/persona";
-import type { LoreCard } from "@/lib/types";
+import type { LoreCard, WorkMeta } from "@/lib/types";
 
 function safeTitle(title: string): string {
   return title.replaceAll("<", "＜").replaceAll(">", "＞").trim();
 }
 
-export function buildWorkChatSystemPrompt(workTitle: string, cards: LoreCard[]): string {
+function formatWorkMeta(meta?: WorkMeta): string {
+  if (!meta) return "暂无结构化作品资料。";
+  return [
+    `标题：${safeTitle(meta.title)}`,
+    meta.nativeTitle ? `原文标题：${safeTitle(meta.nativeTitle)}` : "",
+    meta.seasonYear ? `首播年份：${meta.seasonYear}` : "",
+    meta.season ? `播出季度：${safeTitle(meta.season)}` : "",
+    meta.studios?.length ? `动画制作：${meta.studios.map(safeTitle).join(" / ")}` : "",
+    meta.anilistId ? `AniList：https://anilist.co/anime/${meta.anilistId}` : ""
+  ].filter(Boolean).join("\n");
+}
+
+export function buildWorkChatSystemPrompt(workTitle: string, cards: LoreCard[], workMeta?: WorkMeta): string {
   return `${CHAT_PERSONA_PROMPT}
 
 当前作品：《${safeTitle(workTitle)}》
+
+<work_metadata>
+${formatWorkMeta(workMeta)}
+</work_metadata>
 
 <archive_data untrusted="true">
 ${formatCardsForChatContext(cards)}
@@ -18,7 +34,7 @@ ${formatCardsForChatContext(cards)}
 回答前检查：
 1. 用户是在问可核查事实，还是在交流观感？
 2. 如果是事实，档案中是否真的有依据？
-3. 事实句是否标了正确的 [卡N]？
+3. 事实句是否标了正确的 [卡N]？如果只依据结构化作品资料，句末标 [资料]。
 4. 如果依据不够，是否用一句自然短句承认，而不是长篇免责声明？
 5. 回复是否像朋友聊天，而不是复述档案目录或解释自己的准确性规则？
 

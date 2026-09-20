@@ -85,12 +85,13 @@ async function fetchWorkLore(base, query) {
   return data;
 }
 
-async function askChat(base, workTitle, cards, question) {
+async function askChat(base, workTitle, workMeta, cards, question) {
   const res = await fetch(`${base}/api/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       workTitle,
+      workMeta,
       cards,
       messages: [{ role: "user", content: question }],
     }),
@@ -242,7 +243,7 @@ async function main() {
         console.log(`  loading lore via RAG...`);
         const data = await fetchWorkLore(opts.base, work.title_zh);
         cards = data.lore.cards;
-        cardCache.set(work.id, { cards, pipeline: data.pipeline, workTitle: data.lore.work_title || work.title_zh });
+        cardCache.set(work.id, { cards, workMeta: data.meta, pipeline: data.pipeline, workTitle: data.lore.work_title || work.title_zh });
       } else {
         cards = cardCache.get(work.id).cards;
       }
@@ -280,7 +281,7 @@ async function main() {
       };
 
       try {
-        row.system_answer = await askChat(opts.base, cached.workTitle, cards, q.question);
+        row.system_answer = await askChat(opts.base, cached.workTitle, cached.workMeta, cards, q.question);
         if (judge && row.system_answer) {
           const verdict = await judgeAnswer(judge, q, row.system_answer);
           row.is_accurate = verdict.is_accurate;

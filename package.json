@@ -13,7 +13,8 @@
     "cold:clear": "node scripts/clear-cold-hooks.mjs",
     "cold:seed": "node scripts/seed-cold-hooks.mjs",
     "cold:stats": "node scripts/cold-stats.mjs",
-    "benchmark:run": "node scripts/run-benchmark.mjs"
+    "benchmark:run": "node scripts/run-benchmark.mjs",
+    "benchmark:cold": "node scripts/run-cold-quality-harness.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.3.0",

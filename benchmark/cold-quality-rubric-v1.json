@@ -1,0 +1,24 @@
+{
+  "name": "AnimeLore Cold Knowledge Quality Harness v1",
+  "purpose": "对冷知识与知识漫游共用库存做可重复的上线前质量门禁",
+  "dimensions": {
+    "completeness": "标题、反差导语、正文、来源、推荐与置信度必须齐全",
+    "traceability": "每条内容至少有一个 HTTPS 外部来源，且不能把 fallback 当成已校验",
+    "truth_risk": "判断题必须是有唯一答案的客观陈述，禁止主观最高级和观感词",
+    "editorial_quality": "禁止后台术语、空钩子、免责声明尾巴和模板化占位语",
+    "diversity": "topic_key 与标题不得重复，标题/导语近似度不能过高",
+    "recommendation_fit": "至少一个可打开的作品推荐，并给出具体关联理由"
+  },
+  "thresholds": {
+    "minimum_records": 50,
+    "minimum_pass_rate": 0.95,
+    "minimum_contrast_hook_rate": 0.7,
+    "maximum_near_duplicate_pairs": 2,
+    "minimum_quiz_count": 12
+  },
+  "notes": [
+    "本 harness 检查可自动验证的内容风险，不用模型自评代替事实核验。",
+    "跨来源语义真实性另由 anime-rag-benchmark-v1 的 50 道金标问题检查。",
+    "来源存在不等于事实必然正确；高风险题仍需人工抽检或权威来源交叉核验。"
+  ]
+}

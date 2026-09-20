@@ -11,9 +11,9 @@ import { useShareCard } from "@/components/share/useShareCard";
 import { useDialogFocus } from "@/lib/use-dialog-focus";
 
 const templateOptions: Array<{ id: ShareTemplate; label: string }> = [
-  { id: "midnight", label: "深夜追番" },
-  { id: "legend", label: "封神之作" },
-  { id: "bittersweet", label: "意难平" }
+  { id: "midnight", label: "星夜书签" },
+  { id: "legend", label: "典藏红章" },
+  { id: "bittersweet", label: "芽衣手帐" }
 ];
 
 const tagOptions: ShareTag[] = ["已完结", "二刷", "神作", "意难平", "安利必看", "还在追"];
@@ -37,7 +37,18 @@ export type ShareModalProps =
 
 function summarizeInsight(insight: string): string {
   const clean = insight.replace(/\s+/g, " ").trim();
-  return clean.length > 60 ? `${clean.slice(0, 60)}…` : clean;
+  const sentences = clean.match(/[^。！？!?]+[。！？!?]?/g) ?? [];
+  let summary = "";
+  for (const sentence of sentences) {
+    const candidate = `${summary}${sentence.trim()}`;
+    if (candidate.length > 110) break;
+    summary = candidate;
+  }
+  if (summary) return summary;
+
+  const clipped = clean.slice(0, 106);
+  const clauseEnd = Math.max(clipped.lastIndexOf("，"), clipped.lastIndexOf("；"), clipped.lastIndexOf("、"));
+  return `${(clauseEnd >= 36 ? clipped.slice(0, clauseEnd) : clipped).replace(/[，；、\s]+$/, "")}。`;
 }
 
 function normalizeQuote(quote: string): string {
@@ -53,6 +64,8 @@ export function ShareModal(props: ShareModalProps) {
   const { open, onClose } = props;
   const [template, setTemplate] = useState<ShareTemplate>("midnight");
   const [quote, setQuote] = useState("");
+  const [coldTitle, setColdTitle] = useState("");
+  const [coldSummary, setColdSummary] = useState("");
   const [tags, setTags] = useState<ShareTag[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
   const [previewScale, setPreviewScale] = useState(0.28);
@@ -63,6 +76,8 @@ export function ShareModal(props: ShareModalProps) {
   const isWork = props.kind === "work";
   const title = isWork ? props.workTitle : props.hook;
   const workInitialQuote = props.kind === "work" ? props.initialQuote : "";
+  const coldInitialTitle = props.kind === "cold" ? props.hook : "";
+  const coldInitialSummary = props.kind === "cold" ? summarizeInsight(props.insight) : "";
 
   useDialogFocus({ open, onClose, dialogRef });
 
@@ -73,8 +88,11 @@ export function ShareModal(props: ShareModalProps) {
     setTags([]);
     if (isWork) {
       setQuote(normalizeQuote(workInitialQuote) || "这部值得留一张追番打卡。");
+    } else {
+      setColdTitle(coldInitialTitle.slice(0, 48));
+      setColdSummary(coldInitialSummary);
     }
-  }, [open, isWork, workInitialQuote, resetShareImage]);
+  }, [coldInitialSummary, coldInitialTitle, isWork, open, resetShareImage, workInitialQuote]);
 
   useEffect(() => {
     if (!open) return;
@@ -177,8 +195,9 @@ export function ShareModal(props: ShareModalProps) {
                       <ShareCardCanvas
                         ref={cardRef}
                         kind="cold"
-                        hook={props.hook}
-                        summary={summarizeInsight(props.insight)}
+                        template={template}
+                        hook={coldTitle}
+                        summary={coldSummary}
                       />
                     )}
                   </div>
@@ -186,28 +205,27 @@ export function ShareModal(props: ShareModalProps) {
               </div>
 
               <div className="space-y-5">
+                <section>
+                  <p className="mb-2 text-sm font-medium text-body">卡片样式</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {templateOptions.map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setTemplate(opt.id)}
+                        className={`min-h-12 rounded-xl border px-2 py-2 text-xs font-medium transition ${
+                          template === opt.id
+                            ? "border-brand bg-brand/15 text-brand"
+                            : "border-line bg-surface text-body hover:border-brand/40"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </section>
                 {props.kind === "work" ? (
                   <>
-                    <section>
-                      <p className="mb-2 text-sm font-medium text-body">模板</p>
-                      <div className="grid grid-cols-3 gap-2">
-                        {templateOptions.map((opt) => (
-                          <button
-                            key={opt.id}
-                            type="button"
-                            onClick={() => setTemplate(opt.id)}
-                            className={`rounded-xl border px-3 py-2 text-sm transition ${
-                              template === opt.id
-                                ? "border-brand bg-brand/15 text-brand"
-                                : "border-line bg-surface text-body hover:border-brand/40"
-                            }`}
-                          >
-                            {opt.label}
-                          </button>
-                        ))}
-                      </div>
-                    </section>
-
                     <section>
                       <label htmlFor="share-quote" className="text-sm font-medium text-body">
                         感想引语
@@ -244,9 +262,33 @@ export function ShareModal(props: ShareModalProps) {
                     </section>
                   </>
                 ) : (
-                  <p className="rounded-2xl border border-line/70 bg-surface/90 p-4 text-sm leading-7 text-body">
-                    冷知识分享卡会使用「深夜追番」模板，自动截取 hook 和正文摘要。
-                  </p>
+                  <>
+                    <section>
+                      <label htmlFor="cold-share-title" className="text-sm font-medium text-body">
+                        分享标题 <span className="font-normal text-muted">{coldTitle.length}/48</span>
+                      </label>
+                      <textarea
+                        id="cold-share-title"
+                        value={coldTitle}
+                        onChange={(event) => setColdTitle(event.target.value.slice(0, 48))}
+                        rows={2}
+                        className="mt-2 w-full resize-none rounded-xl border border-line bg-surface px-3 py-2 text-sm leading-relaxed text-ink focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
+                      />
+                    </section>
+                    <section>
+                      <label htmlFor="cold-share-summary" className="text-sm font-medium text-body">
+                        分享正文 <span className="font-normal text-muted">{coldSummary.length}/120</span>
+                      </label>
+                      <textarea
+                        id="cold-share-summary"
+                        value={coldSummary}
+                        onChange={(event) => setColdSummary(event.target.value.slice(0, 120))}
+                        rows={5}
+                        className="mt-2 w-full resize-none rounded-xl border border-line bg-surface px-3 py-2 text-sm leading-relaxed text-ink focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
+                      />
+                      <p className="mt-2 text-xs leading-5 text-muted">图片中只是推荐初稿，你可以改成真正想分享的内容。</p>
+                    </section>
+                  </>
                 )}
 
                 {error ? (

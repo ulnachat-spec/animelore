@@ -22,6 +22,14 @@ export function WorkPageSkeleton({
 
   return (
     <>
+      <div className="mt-6 max-w-2xl">
+        <MeiState
+          compact
+          eyebrow="正在调取作品档案"
+          title={`芽衣正在翻找《${query?.trim() || "这部作品"}》`}
+          description="海报、来源和四张档案卡会分批出现，你不用盯着空白页等。"
+        />
+      </div>
       <section
         className="mt-8 flex gap-6 rounded-2xl border border-line bg-surface/85 p-5"
         aria-busy="true"
@@ -92,3 +100,4 @@ function LoreCardSkeleton({ variant }: { variant: number }) {
 function BulletLine({ width }: { width: string }) {
   return <div className={`h-3 ${width} animate-pulse rounded bg-soft/50`} />;
 }
+import { MeiState } from "@/components/mei-state";

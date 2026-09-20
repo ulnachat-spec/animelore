@@ -23,6 +23,7 @@ export type WorkShareCardProps = {
 
 export type ColdShareCardProps = {
   kind: "cold";
+  template: ShareTemplate;
   hook: string;
   summary: string;
 };
@@ -67,13 +68,13 @@ const templateStyles: Record<
 
 function truncateText(text: string, max: number): string {
   const clean = text.trim();
-  return clean.length > max ? `${clean.slice(0, max - 1)}…` : clean;
+  return clean.slice(0, max);
 }
 
 export const ShareCardCanvas = forwardRef<HTMLDivElement, ShareCardCanvasProps>(
   function ShareCardCanvas(props, ref) {
     if (props.kind === "cold") {
-      const styles = templateStyles.midnight;
+      const styles = templateStyles[props.template];
       return (
         <div
           ref={ref}
@@ -89,74 +90,57 @@ export const ShareCardCanvas = forwardRef<HTMLDivElement, ShareCardCanvasProps>(
           }}
         >
           <div style={{ position: "absolute", inset: 0, background: styles.glow }} />
-          <div
-            style={{
-              position: "absolute",
-              inset: 72,
-              border: "1px solid rgba(148, 163, 184, 0.22)",
-              borderRadius: 58,
-              background: "rgba(5, 9, 18, 0.64)",
-              boxShadow: "0 36px 120px rgba(0,0,0,0.38)"
-            }}
-          />
-          <div style={{ position: "relative", zIndex: 1, padding: "96px 92px" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 24, background: styles.accent }} />
+          <div style={{ position: "absolute", inset: 58, border: "1px solid rgba(255,255,255,0.20)", borderRadius: 44, background: styles.panel, boxShadow: "0 36px 120px rgba(0,0,0,0.34)" }} />
+          <div style={{ position: "relative", zIndex: 1, height: "100%", padding: "86px 88px" }}>
             <div
               style={{
                 display: "inline-flex",
                 padding: "12px 22px",
                 borderRadius: 999,
-                border: "1px solid rgba(96, 165, 250, 0.45)",
+                border: `1px solid ${styles.accent}88`,
                 background: styles.tag,
-                color: "#bfdbfe",
+                color: "#f8fafc",
                 fontSize: 28,
                 letterSpacing: 2
               }}
             >
-              二次元冷知识 / AnimeLore
+              ANIMELORE · COLD NOTE
+            </div>
+            <div style={{ position: "absolute", right: 90, top: 76, width: 116, height: 116, borderRadius: 999, overflow: "hidden", border: `3px solid ${styles.accent}`, background: "rgba(255,255,255,.12)" }}>
+              <img src="/brand/mei-avatar-v1.png" alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <h1
               style={{
-                margin: "210px 0 0",
-                fontSize: 78,
-                lineHeight: 1.15,
+                margin: "230px 0 0",
+                maxWidth: 860,
+                fontFamily: '"Noto Serif SC", "Songti SC", Georgia, serif',
+                fontSize: 76,
+                lineHeight: 1.2,
                 letterSpacing: -2,
-                textAlign: "center",
-                fontWeight: 800
+                textAlign: "left",
+                fontWeight: 700
               }}
             >
-              {truncateText(props.hook, 42)}
+              {truncateText(props.hook, 48)}
             </h1>
+            <div style={{ marginTop: 52, width: 92, height: 8, borderRadius: 999, background: styles.accent }} />
             <p
               style={{
-                margin: "80px auto 0",
-                maxWidth: 820,
-                color: "#d4d4d8",
-                fontSize: 42,
-                lineHeight: 1.65,
-                textAlign: "center"
+                margin: "46px 0 0",
+                maxWidth: 850,
+                color: "#e7e1d7",
+                fontSize: 39,
+                lineHeight: 1.72,
+                textAlign: "left"
               }}
             >
-              {truncateText(props.summary, 68)}
+              {truncateText(props.summary, 120)}
             </p>
-            <div
-              style={{
-                margin: "220px auto 0",
-                width: 720,
-                borderTop: "1px solid rgba(148, 163, 184, 0.28)"
-              }}
-            />
-            <p
-              style={{
-                marginTop: 34,
-                textAlign: "center",
-                color: "#e5e7eb",
-                fontSize: 34,
-                fontWeight: 700,
-                letterSpacing: 1
-              }}
-            >
-              AnimeLore
-            </p>
+            <div style={{ position: "absolute", left: 88, right: 88, bottom: 108, borderTop: "1px solid rgba(255,255,255,.20)", paddingTop: 26, display: "flex", justifyContent: "space-between", alignItems: "center", color: "#eee7dc", fontSize: 27 }}>
+              <span style={{ fontFamily: '"Noto Serif SC", Georgia, serif', fontWeight: 700 }}>AnimeLore 动画档案馆</span>
+              <span style={{ color: styles.accent }}>芽衣的今日书签 ✦</span>
+            </div>
           </div>
         </div>
       );

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import { AniListPoster } from "@/components/anilist-poster";
 import type { RoamCard as RoamCardData } from "@/lib/roam/roam-types";
 
@@ -14,10 +16,14 @@ const tagTone: Record<RoamCardData["tag"], string> = {
 };
 
 export function RoamCard({ card }: { card: RoamCardData }) {
+  const [quizChoice, setQuizChoice] = useState<boolean | null>(null);
   const sourceCount = card.source_urls.length;
   const confidencePercent = Math.round(card.confidence * 100);
   const verifiedLabel = card.verification_status === "fallback" ? "安全兜底" : "已校验";
   const recommendations = card.cold_payload?.recommendations ?? [];
+  const quiz = card.cold_payload?.quiz;
+  const showTrail = !quiz || quizChoice !== null;
+  const quizCorrect = quiz && quizChoice !== null ? quizChoice === quiz.answer : null;
 
   return (
     <article className="archive-card relative min-h-[360px] overflow-hidden p-5 sm:min-h-[430px] sm:p-8">
@@ -40,9 +46,58 @@ export function RoamCard({ card }: { card: RoamCardData }) {
         </h1>
         <p className="mt-5 text-base leading-8 text-body">{card.blurb}</p>
 
-        <details className="archive-disclosure mt-5 rounded-2xl border border-line/70 bg-canvas/55 p-2 sm:mt-8" name="roam-context">
-          <summary>看看这条线索会通向哪里</summary>
-          <div className="px-2 pb-2">
+        {quiz ? (
+          <section className="mt-6 rounded-2xl border border-brand/20 bg-brand/[0.045] p-4 sm:p-5">
+            <p className="archive-kicker text-brand">先判断一下 · True or false</p>
+            <p className="mt-2 font-display text-base font-semibold leading-7 text-ink sm:text-lg">
+              {quiz.statement}
+            </p>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setQuizChoice(true)}
+                className={`archive-button ${quizChoice === true ? "border-brand bg-brand/10 text-brand" : ""}`}
+              >
+                ✓ 我觉得是真的
+              </button>
+              <button
+                type="button"
+                onClick={() => setQuizChoice(false)}
+                className={`archive-button ${quizChoice === false ? "border-brand bg-brand/10 text-brand" : ""}`}
+              >
+                × 我觉得是假的
+              </button>
+            </div>
+            <AnimatePresence initial={false}>
+              {quizChoice !== null ? (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: -6 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-4 border-t border-line/70 pt-4">
+                    <p className="font-semibold text-ink">
+                      {quizCorrect ? "答对了，芽衣盖章。" : "差一点，这条确实很会骗人。"}
+                    </p>
+                    <p className="mt-2 text-sm leading-7 text-body">{quiz.explanation}</p>
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </section>
+        ) : null}
+
+        <AnimatePresence initial={false}>
+          {showTrail ? (
+            <motion.section
+              initial={quiz ? { opacity: 0, y: 10 } : false}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-5 rounded-2xl border border-line/70 bg-canvas/55 p-4 sm:mt-8"
+            >
+              <p className="archive-kicker text-brand">
+                {quiz ? "答案背后的档案线索" : "看看这条线索会通向哪里"}
+              </p>
             <Link href={card.target.href} className="mt-1 inline-flex text-sm font-semibold text-brand hover:underline">
               {card.target.title} →
             </Link>
@@ -68,8 +123,9 @@ export function RoamCard({ card }: { card: RoamCardData }) {
                 ))}
               </div>
             ) : null}
-          </div>
-        </details>
+            </motion.section>
+          ) : null}
+        </AnimatePresence>
 
         <footer className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs text-muted">
           <span>

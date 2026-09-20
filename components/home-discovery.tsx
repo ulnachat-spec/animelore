@@ -4,17 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUserLibrary } from "@/lib/use-user-library";
+import { RANDOM_WORK_POOL, takeRandomWork } from "@/lib/random-work-pool";
 
 type RecentWork = { title: string; at: string };
-
-const randomWorks = [
-  "星际牛仔",
-  "魔法少女小圆",
-  "攻壳机动队 SAC",
-  "命运石之门",
-  "钢之炼金术师 FULLMETAL ALCHEMIST",
-  "来自深渊"
-];
 
 export function HomeDiscovery() {
   const router = useRouter();
@@ -28,7 +20,7 @@ export function HomeDiscovery() {
   const openRandom = () => {
     if (rolling) return;
     setRolling(true);
-    const pick = randomWorks[Math.floor(Math.random() * randomWorks.length)];
+    const pick = takeRandomWork();
     window.setTimeout(() => router.push(`/work/${encodeURIComponent(pick)}`), 420);
   };
 
@@ -51,7 +43,7 @@ export function HomeDiscovery() {
         </button>
       </div>
       <p className="mt-4 text-sm leading-7 text-body">
-        随机抽一份作品档案，或者进入漫游卡组，顺着一个梗找到下一部作品。
+        从 {RANDOM_WORK_POOL.length} 部作品里无重复抽一份档案，或者进入漫游卡组，顺着一个梗找到下一部作品。
       </p>
       <div className="mt-6 flex flex-wrap gap-2">
         <Link href="/roam" className="archive-button-primary">

@@ -1,0 +1,27 @@
+{
+  "benchmark": "AnimeLore Cold Knowledge Quality Harness v1",
+  "run_at": "2026-09-20T08:50:39.465Z",
+  "summary": {
+    "total_records": 50,
+    "passed_records": 50,
+    "failed_records": 0,
+    "pass_rate": 1,
+    "quiz_count": 16,
+    "contrast_hook_count": 35,
+    "contrast_hook_rate": 0.7,
+    "near_duplicate_pairs": 0,
+    "duplicate_topic_keys": 0,
+    "gates": {
+      "minimum_records": true,
+      "minimum_pass_rate": true,
+      "minimum_contrast_hook_rate": true,
+      "duplicate_topics": true,
+      "maximum_near_duplicates": true,
+      "minimum_quiz_count": true
+    },
+    "passed": true
+  },
+  "failures": [],
+  "duplicate_pairs": [],
+  "duplicate_topic_keys": []
+}

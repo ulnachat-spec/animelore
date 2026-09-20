@@ -1,4 +1,4 @@
-import type { LoreCard } from "@/lib/types";
+import type { LoreCard, WorkMeta } from "@/lib/types";
 
 export type ChatGrounding =
   | "source_backed"
@@ -43,7 +43,8 @@ function validUrls(urls: string[] | undefined): string[] {
 export function assessChatReply(
   rawMessage: string,
   latestUserMessage: string,
-  cards: LoreCard[]
+  cards: LoreCard[],
+  workMeta?: WorkMeta
 ): AssessedChatReply {
   if (looksLikePromptInjection(latestUserMessage)) {
     return {
@@ -55,12 +56,20 @@ export function assessChatReply(
 
   const citedNumbers = [...rawMessage.matchAll(/\[卡(\d+)\]/g)].map((match) => Number(match[1]));
   const validNumbers = [...new Set(citedNumbers.filter((number) => number >= 1 && number <= cards.length))];
-  const message = rawMessage.replace(/\[卡\d+\]/g, "").replace(/ {2,}/g, " ").trim();
-  const citations = validNumbers.map((number) => ({
+  const citesMetadata = /\[资料\]/.test(rawMessage) && Boolean(workMeta);
+  const message = rawMessage.replace(/\[卡\d+\]|\[资料\]/g, "").replace(/ {2,}/g, " ").trim();
+  const citations: ChatCitation[] = validNumbers.map((number) => ({
     card: number,
     label: cards[number - 1].zh_name,
     urls: validUrls(cards[number - 1].source_urls)
   }));
+  if (citesMetadata && workMeta) {
+    citations.push({
+      card: 0,
+      label: "AniList 作品资料",
+      urls: workMeta.anilistId ? [`https://anilist.co/anime/${workMeta.anilistId}`] : []
+    });
+  }
   const mode = classifyChatQuestion(latestUserMessage);
 
   if ((mode === "fact" || mode === "mixed") && citations.length === 0) {

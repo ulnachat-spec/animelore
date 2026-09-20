@@ -196,6 +196,7 @@ export function WorkLoreClient({ meta, initialCards, evidenceForRegenerate }: Wo
     </section>
     <WorkChatDrawer
       workTitle={meta.title}
+      workMeta={meta}
       cards={cards}
       coverImage={meta.coverImage}
       ready={!insufficient}

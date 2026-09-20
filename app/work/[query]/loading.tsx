@@ -11,7 +11,7 @@ export default function WorkPageLoading() {
       <div className="mt-6">
         <SearchBoxSkeleton />
       </div>
-      <div className="mt-5 sm:hidden">
+      <div className="mt-5 max-w-2xl">
         <MeiState
           compact
           eyebrow="正在调取作品档案"

@@ -45,6 +45,14 @@ describe("chat grounding and injection defense", () => {
     expect(result.message).not.toContain("[卡1]");
   });
 
+  it("accepts structured work metadata as a narrow factual source", () => {
+    const meta = { title: "测试作品", anilistId: 42, seasonYear: 2023, studios: ["Madhouse"] };
+    const result = assessChatReply("2023 年首播，由 Madhouse 制作。[资料]", "哪年首播，哪个公司制作？", cards, meta);
+    expect(result.grounding).toBe("source_backed");
+    expect(result.citations[0]).toMatchObject({ card: 0, label: "AniList 作品资料" });
+    expect(result.message).not.toContain("[资料]");
+  });
+
   it("keeps opinions distinct from facts and rejects prompt injection", () => {
     expect(assessChatReply("我更喜欢它克制的节奏。", "你怎么看节奏？", cards).grounding).toBe(
       "opinion"

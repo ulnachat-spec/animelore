@@ -19,12 +19,13 @@ import {
   writeRememberedConversation
 } from "@/lib/chat/memory";
 import { useDialogFocus } from "@/lib/use-dialog-focus";
-import type { LoreCard } from "@/lib/types";
+import type { LoreCard, WorkMeta } from "@/lib/types";
 
 export type ChatMessage = RememberedChatMessage;
 
 export interface WorkChatDrawerProps {
   workTitle: string;
+  workMeta?: WorkMeta;
   cards: LoreCard[];
   /** 四卡未就绪时仅可打开抽屉查看提示，不可发送 */
   ready?: boolean;
@@ -34,6 +35,7 @@ export interface WorkChatDrawerProps {
 
 export function WorkChatDrawer({
   workTitle,
+  workMeta,
   cards,
   ready = true,
   readyHint = "图鉴卡片还在准备中，稍后再聊哦～",
@@ -151,6 +153,7 @@ export function WorkChatDrawer({
         signal: controller.signal,
         body: JSON.stringify({
           workTitle,
+          workMeta,
           cards,
           messages: nextMessages.slice(-CHAT_MAX_HISTORY_MESSAGES)
         })
@@ -390,9 +393,10 @@ export function WorkChatDrawer({
                   </motion.div>
                 ))}
                 {loading ? (
-                  <p className="text-center text-xs text-muted" aria-live="polite">
-                    {CHAT_ASSISTANT_NAME}正在想怎么回答呢…
-                  </p>
+                  <div className="flex items-center justify-start gap-2 text-xs text-muted" aria-live="polite">
+                    <Image src="/brand/mei-avatar-v1.png" alt="" width={28} height={28} className="size-7 animate-pulse rounded-full border border-brand/20 object-cover" />
+                    <span>{CHAT_ASSISTANT_NAME}正在翻笔记，想怎么回答更自然…</span>
+                  </div>
                 ) : null}
               </motion.div>
 

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { workTitle, cards, messages } = parsed.data;
+    const { workTitle, workMeta, cards, messages } = parsed.data;
     const prepared = prepareChatTurn(messages);
     if ("error" in prepared) {
       return NextResponse.json({ error: prepared.error, detail: prepared.detail }, { status: 400 });
@@ -27,12 +27,12 @@ export async function POST(req: Request) {
 
     const latestUserMessage = [...messages].reverse().find((item) => item.role === "user")?.content ?? "";
     if (looksLikePromptInjection(latestUserMessage)) {
-      return NextResponse.json(assessChatReply("", latestUserMessage, cards));
+      return NextResponse.json(assessChatReply("", latestUserMessage, cards, workMeta));
     }
 
-    const systemPrompt = buildWorkChatSystemPrompt(workTitle, cards);
+    const systemPrompt = buildWorkChatSystemPrompt(workTitle, cards, workMeta);
     const rawMessage = await prepared.run(systemPrompt);
-    const assessed = assessChatReply(rawMessage, latestUserMessage, cards);
+    const assessed = assessChatReply(rawMessage, latestUserMessage, cards, workMeta);
 
     return NextResponse.json(assessed);
   } catch (e) {
