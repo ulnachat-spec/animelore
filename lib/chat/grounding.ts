@@ -74,7 +74,7 @@ export function assessChatReply(
 
   if ((mode === "fact" || mode === "mixed") && citations.length === 0) {
     return {
-      message: "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+      message: "这个细节我手边还没有可靠出处，先不替你下定论。我们可以先把它留作待核对项，不让一个很像答案的猜测混进这段聊天里。",
       grounding: "insufficient",
       citations: []
     };

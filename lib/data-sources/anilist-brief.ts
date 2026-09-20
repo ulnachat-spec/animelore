@@ -1,3 +1,5 @@
+import { chineseAnimeTitle } from "@/lib/anime-title-registry";
+
 /**
  * AniList 轻量条目查询：用于冷知识推荐候选验真（含 countryOfOrigin）。
  */
@@ -24,7 +26,8 @@ type GqlMedia = {
 };
 
 function displayTitle(m: GqlMedia): string {
-  return m.title?.english || m.title?.romaji || m.title?.native || "";
+  const fallback = m.title?.english || m.title?.romaji || m.title?.native || "";
+  return chineseAnimeTitle(m.id, fallback);
 }
 
 export async function fetchAniListMediaBrief(

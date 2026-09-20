@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
-    "dev:clean": "npx kill-port 3000 --method=tcp && next dev -p 3000",
+    "dev": "node --no-deprecation node_modules/next/dist/bin/next dev -p 3000",
+    "dev:clean": "npx kill-port 3000 --method=tcp && node --no-deprecation node_modules/next/dist/bin/next dev -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "eslint app components lib tests --ext .js,.jsx,.ts,.tsx --max-warnings=0",

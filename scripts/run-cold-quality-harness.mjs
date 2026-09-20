@@ -9,6 +9,7 @@ const outputPath = path.join(root, "benchmark", "cold-quality-results-v1.json");
 const subjectiveQuizPattern = /最(可怕|感人|重要|厉害|好看|适合)|观众觉得|常被认为|感觉|核心在于|真正|出圈|很适合/;
 const internalCopyPattern = /\b(prompt|hook|insight|fallback)\b|自动截取|后台内部|后面还藏着|挺好玩的细节|资料待补充/i;
 const contrastPattern = /[？?：]|竟|原来|其实|不是|为什么|真的|本身|不只是|不等于|最|会|藏|只|没有|反而|却/;
+const openQuizHookPattern = /[？?]|为什么|究竟|到底|真的|哪[位座家支次个部]|是否/;
 
 function cjkLength(value = "") {
   return (value.match(/[\u3400-\u9fff]/g) || []).length;
@@ -57,6 +58,8 @@ function auditRecord(record) {
     if (subjectiveQuizPattern.test(record.quiz.statement)) failures.push("subjective_quiz");
     if (typeof record.quiz.answer !== "boolean") failures.push("quiz_without_boolean_answer");
     if (cjkLength(record.quiz.explanation) < 8) failures.push("quiz_explanation_too_short");
+    if (!openQuizHookPattern.test(record.hook || "")) failures.push("quiz_hook_reveals_or_closes_answer");
+    if (normalize(record.hook).includes(normalize(record.quiz.statement))) failures.push("quiz_hook_copies_answer_statement");
   }
 
   return { id: record.id, topic_key: record.topic_key, failures: [...new Set(failures)] };

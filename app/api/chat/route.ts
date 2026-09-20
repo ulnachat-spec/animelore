@@ -35,7 +35,9 @@ export async function POST(req: Request) {
       return NextResponse.json(assessChatReply("", latestUserMessage, cards, workMeta));
     }
 
-    const systemPrompt = buildWorkChatSystemPrompt(workTitle, cards, workMeta);
+    const previousAssistant = [...messages].reverse().find((item) => item.role === "assistant")?.content ?? "";
+    const avoidFollowUp = /[？?]\s*$/.test(previousAssistant.trim());
+    const systemPrompt = buildWorkChatSystemPrompt(workTitle, cards, workMeta, avoidFollowUp);
     const rawMessage = await prepared.run(systemPrompt);
     const assessed = assessChatReply(rawMessage, latestUserMessage, cards, workMeta);
 

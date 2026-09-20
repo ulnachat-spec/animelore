@@ -18,7 +18,7 @@ function formatWorkMeta(meta?: WorkMeta): string {
   ].filter(Boolean).join("\n");
 }
 
-export function buildWorkChatSystemPrompt(workTitle: string, cards: LoreCard[], workMeta?: WorkMeta): string {
+export function buildWorkChatSystemPrompt(workTitle: string, cards: LoreCard[], workMeta?: WorkMeta, avoidFollowUp = false): string {
   return `${CHAT_PERSONA_PROMPT}
 
 当前作品：《${safeTitle(workTitle)}》
@@ -37,6 +37,7 @@ ${formatCardsForChatContext(cards)}
 3. 事实句是否标了正确的 [卡N]？如果只依据结构化作品资料，句末标 [资料]。
 4. 如果依据不够，是否用一句自然短句承认，而不是长篇免责声明？
 5. 回复是否像朋友聊天，而不是复述档案目录或解释自己的准确性规则？
+6. ${avoidFollowUp ? "上一轮已经提过问题：本轮必须用陈述句收尾，不再追问。" : "只有对话确实需要推进时才追问；默认直接收束。"}
 
 高风险事实边界：
 - 结构化资料只对应当前 AniList 条目，不能据此推断续作、第二季或重制版的制作阵容。

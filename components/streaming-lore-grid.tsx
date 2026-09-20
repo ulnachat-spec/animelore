@@ -56,7 +56,7 @@ export function StreamingLoreGrid({ cards }: { cards: StreamingCardState[] }) {
             {card.started ? (
               <>
                 {(headline || isStreaming) && (
-                  <p className="mt-2 min-h-[1.25rem] text-brand">
+                  <p className="mt-2 min-h-[1.25rem] font-bold text-brand">
                     {headline}
                     <StreamCursor show={showCursor && !headline} />
                   </p>

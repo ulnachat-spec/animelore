@@ -105,7 +105,7 @@ export function RoamCard({ card }: { card: RoamCardData }) {
               {card.next_seeds.slice(0, 3).join(" / ") || card.topic_key}
             </p>
             {recommendations.length ? (
-              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              <div className={`mt-4 grid gap-2 ${recommendations.length > 1 ? "sm:grid-cols-2" : "grid-cols-1"}`}>
                 {recommendations.slice(0, 2).map((rec) => (
                   <Link
                     key={`${rec.candidate_id}-${rec.anilistId}`}

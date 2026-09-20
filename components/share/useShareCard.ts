@@ -33,7 +33,7 @@ export function useShareCard() {
   });
 
   const saveCard = useCallback(
-    async (node: HTMLElement | null, filenameBase: string) => {
+    async (node: HTMLElement | null, filenameBase: string, size: { width: number; height: number }) => {
       if (!node) return;
       setState((prev) => ({ ...prev, saving: true, error: null }));
       try {
@@ -44,10 +44,10 @@ export function useShareCard() {
           allowTaint: false,
           logging: false,
           scale: 1,
-          width: 1080,
-          height: 1440,
-          windowWidth: 1080,
-          windowHeight: 1440
+          width: size.width,
+          height: size.height,
+          windowWidth: size.width,
+          windowHeight: size.height
         });
         const dataUrl = canvas.toDataURL("image/png");
         setState({ saving: false, error: null, dataUrl });

@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import {
   ShareCardCanvas,
+  SHARE_CARD_SIZES,
+  type ShareOrientation,
   type ShareTag,
   type ShareTemplate
 } from "@/components/share/ShareCardCanvas";
@@ -63,6 +65,7 @@ function normalizeQuote(quote: string): string {
 export function ShareModal(props: ShareModalProps) {
   const { open, onClose } = props;
   const [template, setTemplate] = useState<ShareTemplate>("midnight");
+  const [orientation, setOrientation] = useState<ShareOrientation>("portrait");
   const [quote, setQuote] = useState("");
   const [coldTitle, setColdTitle] = useState("");
   const [coldSummary, setColdSummary] = useState("");
@@ -85,6 +88,7 @@ export function ShareModal(props: ShareModalProps) {
     if (!open) return;
     resetShareImage();
     setTemplate("midnight");
+    setOrientation("portrait");
     setTags([]);
     if (isWork) {
       setQuote(normalizeQuote(workInitialQuote) || "这部值得留一张追番打卡。");
@@ -113,12 +117,15 @@ export function ShareModal(props: ShareModalProps) {
 
   useEffect(() => {
     if (!open) return;
-    const update = () =>
-      setPreviewScale(Math.min(0.34, Math.max(0.22, (window.innerWidth - 64) / 1080)));
+    const update = () => {
+      const cardWidth = SHARE_CARD_SIZES[orientation].width;
+      const available = Math.min(window.innerWidth - 64, 390);
+      setPreviewScale(Math.min(0.34, Math.max(0.16, available / cardWidth)));
+    };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
-  }, [open]);
+  }, [open, orientation]);
 
   const toggleTag = (tag: ShareTag) => {
     setTags((prev) => {
@@ -128,7 +135,8 @@ export function ShareModal(props: ShareModalProps) {
     });
   };
 
-  const filename = isWork ? `AnimeLore-${props.workTitle}` : `AnimeLore-cold-${props.hook}`;
+  const filename = isWork ? `AnimeLore-${props.workTitle}-${orientation}` : `AnimeLore-cold-${props.hook}-${orientation}`;
+  const cardSize = SHARE_CARD_SIZES[orientation];
 
   return (
     <AnimatePresence>
@@ -172,11 +180,11 @@ export function ShareModal(props: ShareModalProps) {
             </header>
 
             <div className="mt-5 grid gap-5 md:grid-cols-[minmax(0,420px)_1fr]">
-              <div className="mx-auto overflow-hidden rounded-2xl border border-line/70 bg-black/30 p-3">
+              <div className="mx-auto self-start overflow-hidden rounded-2xl border border-line/70 bg-black/30 p-3">
                 <div
                   style={{
-                    width: 1080 * previewScale,
-                    height: 1440 * previewScale,
+                    width: cardSize.width * previewScale,
+                    height: cardSize.height * previewScale,
                     overflow: "hidden"
                   }}
                 >
@@ -186,6 +194,7 @@ export function ShareModal(props: ShareModalProps) {
                         ref={cardRef}
                         kind="work"
                         template={template}
+                        orientation={orientation}
                         workTitle={props.workTitle}
                         quote={quote}
                         coverImage={props.coverImage}
@@ -196,6 +205,7 @@ export function ShareModal(props: ShareModalProps) {
                         ref={cardRef}
                         kind="cold"
                         template={template}
+                        orientation={orientation}
                         hook={coldTitle}
                         summary={coldSummary}
                       />
@@ -223,6 +233,22 @@ export function ShareModal(props: ShareModalProps) {
                       </button>
                     ))}
                   </div>
+                </section>
+                <section>
+                  <p className="mb-2 text-sm font-medium text-body">画面比例</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {(["portrait", "landscape"] as ShareOrientation[]).map((value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setOrientation(value)}
+                        className={`min-h-11 rounded-xl border px-3 text-sm transition ${orientation === value ? "border-brand bg-brand/15 font-semibold text-brand" : "border-line bg-surface text-body hover:border-brand/40"}`}
+                      >
+                        {value === "portrait" ? "竖屏海报 3:4" : "横屏分享 16:9"}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-muted">横屏版会展开更多文字与版式组件，适合桌面、动态头图和长文配图。</p>
                 </section>
                 {props.kind === "work" ? (
                   <>
@@ -299,7 +325,7 @@ export function ShareModal(props: ShareModalProps) {
 
                 <button
                   type="button"
-                  onClick={() => void saveCard(cardRef.current, filename)}
+                  onClick={() => void saveCard(cardRef.current, filename, cardSize)}
                   disabled={saving}
                   className="w-full rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-50"
                 >

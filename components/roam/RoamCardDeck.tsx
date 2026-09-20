@@ -25,7 +25,7 @@ type RoamPrefs = {
 };
 
 const STORAGE_KEY = "animelore.roam.prefs.v1";
-const DECK_STATE_VERSION = 2;
+const DECK_STATE_VERSION = 3;
 
 const emptyPrefs: RoamPrefs = {
   likedTags: [],
@@ -276,27 +276,12 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
         <span>{progressText}</span>
       </div>
 
-      <div className="mb-3 flex items-center justify-between px-2 text-[11px] font-medium text-muted sm:hidden" aria-hidden="true">
-        <span>← 左滑略过</span>
-        <span className="text-brand">右滑深入 →</span>
+      <div className="mb-4 flex items-center justify-between gap-4 rounded-2xl border border-line/70 bg-surface/65 px-4 py-2.5 text-xs font-medium shadow-sm" aria-hidden="true">
+        <motion.span className="text-muted" animate={{ x: [0, -4, 0] }} transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 1.4 }}>← 左滑略过</motion.span>
+        <span className="h-px flex-1 bg-line/70" />
+        <motion.span className="text-brand" animate={{ x: [0, 4, 0] }} transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 1.4 }}>右滑深入 →</motion.span>
       </div>
       <div className="relative min-h-[360px] sm:min-h-[430px]">
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-0 top-1/2 z-10 hidden -translate-x-[calc(100%+1rem)] -translate-y-1/2 rounded-full border border-line/70 bg-surface/90 px-3 py-3 text-[11px] font-medium text-muted shadow-card backdrop-blur sm:block"
-          animate={{ x: [0, -4, 0], opacity: [0.55, 0.9, 0.55] }}
-          transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.2 }}
-        >
-          ← 略过
-        </motion.div>
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute right-0 top-1/2 z-10 hidden translate-x-[calc(100%+1rem)] -translate-y-1/2 rounded-full border border-brand/25 bg-surface/90 px-3 py-3 text-[11px] font-medium text-brand shadow-card backdrop-blur sm:block"
-          animate={{ x: [0, 4, 0], opacity: [0.55, 0.9, 0.55] }}
-          transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.2 }}
-        >
-          深入 →
-        </motion.div>
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={activeCard.id}

@@ -17,6 +17,9 @@ const topicLabel: Record<string, string> = {
 
 export function ColdHookTeaser({ payload }: { payload: ColdHookPayload }) {
   const router = useRouter();
+  const preview = payload.blurb
+    ? `${payload.blurb.replace(/[。！？!?]+$/, "").slice(0, 76)}…`
+    : `${payload.insight.replace(/\s+/g, " ").slice(0, 76).replace(/[，；、\s]+$/, "")}…`;
 
   const onOpenDetail = () => {
     try {
@@ -50,18 +53,16 @@ export function ColdHookTeaser({ payload }: { payload: ColdHookPayload }) {
         className="relative mt-8 w-full rounded-xl text-left focus-visible:outline-none"
       >
         <p className="archive-title text-xl leading-snug sm:text-2xl">{payload.hook}</p>
-        {payload.blurb ? (
-          <p className="mt-3 max-w-xl text-sm leading-6 text-body">
-            <span className="font-medium text-brand">反差线索：</span>{payload.blurb}
-          </p>
-        ) : null}
+        <p className="mt-3 max-w-xl text-sm leading-6 text-body">
+          <span className="font-semibold text-brand">先露一角：</span>{preview}
+        </p>
         <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand">
-          翻开完整解读
+          展开继续阅读
           <span className="transition group-hover:translate-x-1" aria-hidden="true">→</span>
         </p>
       </button>
       {payload.recommendations.length ? (
-        <div className="relative mt-5 grid gap-2 border-t border-line/70 pt-4 sm:grid-cols-2">
+        <div className={`relative mt-5 grid gap-2 border-t border-line/70 pt-4 ${payload.recommendations.length > 1 ? "sm:grid-cols-2" : "grid-cols-1"}`}>
           {payload.recommendations.slice(0, 2).map((rec) => (
             <Link
               key={`${rec.candidate_id}-${rec.anilistId}`}

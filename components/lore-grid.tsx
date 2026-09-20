@@ -201,7 +201,7 @@ function LoreArticle({
         {String(index + 1).padStart(2, "0")} {"\u00b7"} {card.en_label}
       </div>
       <h3 className="archive-title mt-3 text-xl">{card.zh_name}</h3>
-      <p className="mt-4 font-display text-lg leading-7 text-brand">{card.headline}</p>
+      <p className="mt-4 font-display text-lg font-bold leading-7 text-brand">{card.headline}</p>
       <p className="mt-4 text-sm leading-7 text-body">{card.intro}</p>
       <ul className="mt-4 space-y-2 text-sm leading-6 text-body">
         {(mobile ? card.points.slice(0, 2) : card.points).map((point) => (

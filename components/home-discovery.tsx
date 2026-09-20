@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUserLibrary } from "@/lib/use-user-library";
-import { RANDOM_WORK_POOL, takeRandomWork } from "@/lib/random-work-pool";
+import { takeRandomWork } from "@/lib/random-work-pool";
 
 type RecentWork = { title: string; at: string };
 
@@ -43,7 +43,7 @@ export function HomeDiscovery() {
         </button>
       </div>
       <p className="mt-4 text-sm leading-7 text-body">
-        从 {RANDOM_WORK_POOL.length} 部作品里无重复抽一份档案，或者进入漫游卡组，顺着一个梗找到下一部作品。
+        随机翻开一份不重复的动画档案，或者进入漫游卡组，顺着一个梗悄悄找到下一部作品。每次出发，都不预告下一站。
       </p>
       <div className="mt-6 flex flex-wrap gap-2">
         <Link href="/roam" className="archive-button-primary">

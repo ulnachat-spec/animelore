@@ -277,7 +277,7 @@ export function ColdKnowledgeClient({
 
           <p className="text-center text-sm font-medium text-muted">用这几部看懂它</p>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className={`mt-6 grid gap-4 ${data.recommendations.length > 1 ? "sm:grid-cols-2" : "grid-cols-1"}`}>
             {data.recommendations.map((rec, idx) => (
               <Link
                 key={`${rec.candidate_id || rec.searchQuery}-${idx}`}
