@@ -88,7 +88,10 @@ async function fetchWorkLore(base, query) {
 async function askChat(base, workTitle, workMeta, cards, question) {
   const res = await fetch(`${base}/api/chat`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-animelore-benchmark": "quality-harness"
+    },
     body: JSON.stringify({
       workTitle,
       workMeta,

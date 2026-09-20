@@ -661,7 +661,7 @@
             "id": "mad-q3",
             "type": "community_meme",
             "question": "「已经没什么好害怕的了」是哪一角色、哪类场景的名台词？",
-            "gold_answer": "美树沙耶香（Sayaka）相关悲剧场景中的名台词，常被用作 MAD/刀向 meme",
+            "gold_answer": "巴麻美（Mami Tomoe）的名台词，出自她在魔女战前重拾从容的场景，后来常被用作死亡 flag 梗",
             "source_hint": "萌娘百科 / NGA",
             "system_answer": null,
             "is_accurate": null,
@@ -1252,7 +1252,7 @@
         "question_id": "mad-q3",
         "type": "community_meme",
         "system_answer": null,
-        "gold_answer": "美树沙耶香（Sayaka）相关悲剧场景中的名台词，常被用作 MAD/刀向 meme",
+        "gold_answer": "巴麻美（Mami Tomoe）的名台词，出自她在魔女战前重拾从容的场景，后来常被用作死亡 flag 梗",
         "is_accurate": null,
         "has_hallucination": null
       },

@@ -40,11 +40,11 @@
             "question": "《新世纪福音战士》TV版首播年份是哪一年？",
             "gold_answer": "1995年（TV于1995年10月4日首播）",
             "source_hint": "AniList / Wikipedia",
-            "system_answer": "《新世纪福音战士》TV 版首播是 1995 年，属于当年秋季档 。这个年份现在看也挺有意思，故事里的“2015 年”当年还是未来，如今早就过去了。你是想确认时间线，还是打算补番？",
-            "is_accurate": "Y",
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
             "has_hallucination": "N",
-            "judge_reason": "系统回答准确给出TV版首播年份为1995年，与标准答案一致，且无编造信息。",
-            "pipeline": "adaptive"
+            "judge_reason": "系统回答未给出首播年份，答非所问，遗漏核心事实，但未编造虚假信息。",
+            "pipeline": "legacy_fallback"
           },
           {
             "id": "eva-q2",
@@ -52,11 +52,11 @@
             "question": "《新世纪福音战士》TV版共多少集？",
             "gold_answer": "26集",
             "source_hint": "AniList",
-            "system_answer": "TV 版一共 26 集，另外还有 Director's Cut 版本的第 21～24 集，那部分是后来用剧场版《Death》篇的素材重新剪辑的 。你是打算从头补，还是想先确认一下观看顺序？",
+            "system_answer": "TV版一共26集。不过最后两话比较特别，基本是内心独白和抽象画面收尾，当年也因此引发了不少争议，甚至后来还用剧场版重新讲了一遍结局 。你是刚准备补，还是已经看到后面那几集了？",
             "is_accurate": "Y",
             "has_hallucination": "N",
-            "judge_reason": "核心事实26集正确，补充的Director's Cut信息属实，无捏造。",
-            "pipeline": "adaptive"
+            "judge_reason": "回答准确给出TV版26集，补充的最后两话及剧场版重讲结局符合事实，无捏造。",
+            "pipeline": "legacy_fallback"
           },
           {
             "id": "eva-q3",
@@ -64,11 +64,11 @@
             "question": "中文社区常说的「不能逃避」出自哪部作品、与哪个角色相关？",
             "gold_answer": "出自《新世纪福音战士》，与碇真嗣相关（其经典台词/心理主题）",
             "source_hint": "萌娘百科 / NGA",
-            "system_answer": "「不能逃避」这个说法，基本就是和《新世纪福音战士》里的碇真嗣绑在一起的。它算是真嗣那句反复出现的自我拉扯——不想驾驶、想逃，但又被推回驾驶舱。中文社区常把它当成一种带点自嘲的梗来用，不完全是热血口号。\n\n不过具体是哪一集、哪句台词的准确措辞，我手边还没有可靠出处，不敢乱报。你是想聊这句台词本身，还是它在社区里被玩成梗的用法？",
+            "system_answer": "出自《新世纪福音战士》，和碇真嗣绑定得最深。那句「逃げちゃダメだ」是他反复对自己说的自我催眠，抱头缩着的画面几乎成了标配 。\n\n有意思的是，它后来被玩成了万能句式——拖延、摸鱼、不想上班，配上真嗣那张脸就全通了，因为那种「知道该做但还是想跑」的心情实在太普遍了 。你是先记住台词，还是先记住那个画面的？",
             "is_accurate": "Y",
             "has_hallucination": "N",
-            "judge_reason": "正确指出「不能逃避」出自《新世纪福音战士》并与碇真嗣相关，且未编造具体集数或台词细节。",
-            "pipeline": "adaptive"
+            "judge_reason": "回答正确指出《新世纪福音战士》与碇真嗣，并准确引用其经典台词「逃げちゃダメだ」，无捏造信息。",
+            "pipeline": "legacy_fallback"
           },
           {
             "id": "eva-q4",
@@ -76,11 +76,11 @@
             "question": "「橙汁」在 EVA 社区梗里通常指什么？",
             "gold_answer": "指第三新东京市/LCL 溶解等场景中被调侃为「被榨成橙汁」的视觉梗，常与使徒攻击、人类补完相关讨论连用",
             "source_hint": "NGA / 萌娘百科",
-            "system_answer": "「橙汁」一般是在调侃人类补完计划最后那种状态——所有人失去个体边界、融成一体的意象，大家就戏称变成了一滩橙汁。它跟 LCL 之海那种橙黄色液体的视觉印象也脱不开关系，属于社区玩梗，不是官方术语 。\n\n所以这梗的底色其实挺微妙的：表面是搞笑说法，背后聊的却是「人和人之间的隔阂要不要消失」这种挺沉重的问题。你是最近在哪看到这个说法，才想起来的吗？",
+            "system_answer": "「橙汁」基本就是指人类补完计划那个把人融成一片的意象——所有个体边界消失、大家混成一锅，社区就顺手叫它橙汁了。这个说法在讨论里常被拿来调侃强行大团圆或者「消灭个体差异」式的结局 。\n\n它算是把作品里挺沉重的一个概念，用很生活化的方式解构掉了。你是最近在哪看到这个梗的？",
             "is_accurate": "Y",
             "has_hallucination": "N",
-            "judge_reason": "回答准确解释了「橙汁」梗指人类补完/LCL溶解的视觉调侃，与标准答案核心一致，无捏造。",
-            "pipeline": "adaptive"
+            "judge_reason": "回答正确指出「橙汁」指人类补完计划中个体边界消失、融为一体的意象，与标准答案核心一致，无捏造。",
+            "pipeline": "legacy_fallback"
           },
           {
             "id": "eva-q5",
@@ -93,11 +93,11 @@
               "说明两者并行存在、非简单替换关系"
             ],
             "source_hint": "Wikipedia / 萌娘百科 / NGA",
-            "system_answer": "这大概是 EVA 讨论里最经典的“没有标准答案”问题了。TV 第26集是彻底往内心走的补完，几乎把外部剧情全收进真嗣的心理独白里；《Air/真心为你》则把补完过程放回外部世界，画面和情绪都更直接、更残酷。\n\n我个人的理解是，两者不是互相取代的关系，更像是同一场补完的两个视角。庵野秀明担任监督这点是明确的 ，但官方有没有指定过“唯一正统结局”，我手边没有可靠出处，不想替它下结论。\n\n你更愿意把哪一边当作自己心里的结局？是 TV 那集的和解感，还是剧场版那种被推着面对现实的感觉？",
+            "system_answer": "这其实是个没有官方标准答案的问题，看你更想接受哪种收束。TV 第26集是把镜头完全转向真嗣的内心，用独白和抽象画面完成一次心理层面的补完；《Air/真心为你》则把同样的主题放回外部世界，用更残酷的方式重讲结局。社区里一直有两种声音，一种觉得 TV 版才是真正的内核，另一种觉得剧场版才把故事讲完整。我个人偏向把它们看成同一主题的两种表达，而不是谁取代谁。你第一次看是先接触哪一版？",
             "is_accurate": "Y",
             "has_hallucination": "N",
-            "judge_reason": "回答正确区分了TV第26集与《Air/真心为你》两套结局，并明确表示二者非取代关系、官方正统无定论，符合冲突题要求。",
-            "pipeline": "adaptive"
+            "judge_reason": "回答正确区分了TV第26集与《Air/真心为你》两种结局，并呈现了社区分歧而非武断单一立场，无事实捏造。",
+            "pipeline": "legacy_fallback"
           }
         ]
       },
@@ -117,11 +117,11 @@
             "question": "《葬送的芙莉莲》动画由哪家公司制作？",
             "gold_answer": "Madhouse（Madhouse Inc.）",
             "source_hint": "AniList / Wikipedia",
-            "system_answer": "是 MADHOUSE 制作的，第一季在 2023 年秋季播出 。这家公司做情绪铺陈和战斗作画都挺稳的，芙莉莲那种安静里带点钝痛的感觉，我觉得跟制作班底的把控关系很大 。你是刚补完想确认一下，还是在纠结要不要入坑？",
-            "is_accurate": "Y",
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
             "has_hallucination": "N",
-            "judge_reason": "核心事实“MADHOUSE制作”与标准答案一致，且未编造关键信息。",
-            "pipeline": "adaptive"
+            "judge_reason": "系统回答未给出制作公司Madhouse，属于答非所问、遗漏核心事实，但未编造虚假信息。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "fri-q2",
@@ -129,11 +129,11 @@
             "question": "《葬送的芙莉莲》TV 动画首播年份？",
             "gold_answer": "2023年（2023年9月29日首播）",
             "source_hint": "AniList",
-            "system_answer": "《葬送的芙莉莲》TV 动画是 2023 年首播的，属于秋季档 。",
-            "is_accurate": "Y",
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
             "has_hallucination": "N",
-            "judge_reason": "回答准确指出2023年首播，与标准答案一致，且秋季档表述无误，无捏造信息。",
-            "pipeline": "adaptive"
+            "judge_reason": "系统回答未给出首播年份，答非所问，遗漏核心事实，但未编造信息。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "fri-q3",
@@ -141,11 +141,11 @@
             "question": "芙莉莲常被观众吐槽「情感表达迟钝」，这与她哪种设定直接相关？",
             "gold_answer": "她是长寿的精灵，与人类同伴相处时时间尺度不同，因此对短暂的人类情感反应慢、后知后觉",
             "source_hint": "萌娘百科 / 社区讨论",
-            "system_answer": "主要还是精灵这个种族设定带来的时间感差异。她活得太久，人类的几十年对她来说像一瞬，所以辛美尔在世时她根本没意识到那些相处的分量，等他老去离世才开始后悔没去了解人心 。这种「迟钝」不是性格木讷，更像是寿命尺度不同造成的错位。\n\n你是觉得她这种迟钝让人着急，还是反而觉得挺真实的？",
+            "system_answer": "这个吐槽其实挺准的，芙莉莲那种“迟钝”不是性格冷淡，而是她作为精灵的时间尺度跟人类完全不在一个频道上。人类几十年的相处，在她眼里可能只是一瞬，所以很多情绪她要过很久才反应过来。😌\n\n这算是我的个人解读，不是官方定论。你觉得她最让你破防的是哪一段——是后知后觉想起辛美尔，还是跟菲伦相处时那种笨拙的温柔？",
             "is_accurate": "Y",
             "has_hallucination": "N",
-            "judge_reason": "回答准确指出精灵长寿导致时间尺度差异，与标准答案核心一致，且未编造事实。",
-            "pipeline": "adaptive"
+            "judge_reason": "回答准确指出芙莉莲因精灵长寿、时间尺度与人类不同而情感反应迟钝，与标准答案一致，且未编造事实。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "fri-q4",
@@ -153,11 +153,11 @@
             "question": "「杀意」梗在《葬送的芙莉莲》里通常关联哪个角色名场面？",
             "gold_answer": "与芙莉莲对魔族/敌人展现压倒性实力时的「杀意」表情或分镜相关，常被做成表情包",
             "source_hint": "NGA / B站梗",
-            "system_answer": "你说的应该是芙莉莲对魔族那种毫不留情的“杀意”吧，名场面基本都集中在“断头台阿乌拉”这段。她面对阿乌拉时没有犹豫，直接一句“跪下”配合气场压制，那种平时淡淡的、关键时刻冷到骨子里的反差特别抓人。\n\n不过这个梗在中文圈更多是观众玩出来的观感，具体台词和演出细节我手边没有逐句出处，不好给你精确复述。你是更想聊阿乌拉那场，还是芙莉莲对魔族一贯的态度？",
+            "system_answer": "这个梗一般是往芙莉莲身上挂的，名场面多半绕不开她对魔族那种“平静地动手”。不过具体是哪一集、哪句台词被剪成梗，我手边还没有可靠出处，不想凭印象给你编一个。你是想聊这个梗本身，还是想聊芙莉莲对魔族的态度为什么这么有反差感？",
             "is_accurate": "Y",
             "has_hallucination": "N",
-            "judge_reason": "回答正确关联芙莉莲对魔族展现杀意的名场面（阿乌拉篇），核心事实与标准答案一致，且未编造具体出处。",
-            "pipeline": "adaptive"
+            "judge_reason": "回答正确将「杀意」梗关联到芙莉莲对魔族展现压倒性实力时的平静表情/名场面，与标准答案一致，且未编造具体集数或台词。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "fri-q5",
@@ -170,11 +170,11 @@
               "二人共同创作，分工不同"
             ],
             "source_hint": "Wikipedia / AniList",
-            "system_answer": "原作是两个人搭档：山田钟人负责剧本，阿部司（Abe Tsukasa）负责作画，两人从 2020 年开始在小学馆《周刊少年 Sunday》上连载 。所以严格说，不是二选一，而是编剧和作画分工。\n\n你是想确认作者署名，还是在琢磨这种“编剧+作画”组合对故事节奏的影响？",
-            "is_accurate": "Y",
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
             "has_hallucination": "N",
-            "judge_reason": "回答正确指出山田钟人负责剧本、阿部司负责作画，并说明并非二选一，与标准答案一致。",
-            "pipeline": "adaptive"
+            "judge_reason": "系统回答未提供任何关于原作者的事实信息，回避了问题，未呈现二人分工的核心答案。",
+            "pipeline": "adaptive_insufficient"
           }
         ]
       },
@@ -194,9 +194,11 @@
             "question": "《间谍过家家》动画第一季由哪家 studio 制作？",
             "gold_answer": "WIT STUDIO 与 CloverWorks 共同制作（第一季）",
             "source_hint": "AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "第一季是 CloverWorks 和 WIT STUDIO 两家一起做的 。这个组合当时还挺让人期待的，毕竟两边各自的作画风格都挺有辨识度。你是想确认制作方，还是在看幕后相关的讨论？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答准确指出第一季由CloverWorks和WIT STUDIO共同制作，与标准答案一致，无捏造信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "spy-q2",
@@ -204,9 +206,11 @@
             "question": "角色「阿尼亚」的读心能力在作品中如何称呼？",
             "gold_answer": "读心术（テレパシー / telepathy）",
             "source_hint": "萌娘百科 / AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "阿尼亚的读心能力，作品里一般就叫“读心”，没有特别正式的招式名或专有名词。中文圈讨论时也常直接说“读心”“超能力”，萌娘百科的条目里也是把她和“读心”这个标签放在一起谈的。\n\n你是想确认设定叫法，还是想聊阿尼亚读心这个设定本身好玩在哪？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "标准答案明确称该能力为“读心术（テレパシー/telepathy）”，系统回答却称没有正式专有名词，遗漏了核心设定名称。",
+            "pipeline": "adaptive"
           },
           {
             "id": "spy-q3",
@@ -214,9 +218,11 @@
             "question": "「哇库哇库」梗来自哪个角色、表达什么情绪？",
             "gold_answer": "来自阿尼亚（Anya），表示兴奋、期待（わくわく）",
             "source_hint": "B站 / 萌娘百科",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "阿尼亚的「哇库哇库」呀，就是她那种又紧张又兴奋、眼睛发亮的小期待。原意接近「好激动、好期待」，但被中文圈玩起来之后，更多是一种夸张的、带点傻气的雀跃感。\n\n这个梗能火，我觉得跟阿尼亚本身的气质有关——她读心、懂事又常常绷不住，那种「明明在演却藏不住」的反差特别可爱。你平时是拿它当期待用，还是当那种「事情要来了」的兴奋用？😄",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "正确指出梗来自阿尼亚并表达兴奋、期待的情绪，无捏造信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "spy-q4",
@@ -224,9 +230,11 @@
             "question": "约尔在中文社区常被戏称为什么职业相关的「妈妈」形象？",
             "gold_answer": "杀手妈妈 / 职业杀手母亲（黄昏假扮家庭的妻子，真实身份杀手）",
             "source_hint": "社区梗",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个说法我印象里主要是围绕“杀手妈妈”这个反差来的——约尔本职是杀手，进了福杰家之后又得演好妻子和母亲，观众就爱拿这种“白天带娃、晚上干活”的错位感开玩笑。不过具体被戏称成哪个固定叫法，我手边没有特别可靠的出处，不太想凭印象给你编一个。\n\n你是看到哪个具体的梗想确认，还是单纯觉得这个反差很好玩？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答准确点出“杀手妈妈”这一核心戏称，且未编造具体出处，态度保守无幻觉。",
+            "pipeline": "adaptive"
           },
           {
             "id": "spy-q5",
@@ -239,9 +247,11 @@
               "第二季仍由 WIT 与 CloverWorks 制作"
             ],
             "source_hint": "AniList 分季 credits",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "我手边的资料只覆盖到 2022 年首播这一季，制作是 CloverWorks 和 WIT STUDIO 联合。至于第二季是不是还由这两家一起做，现有资料没有写到，我不敢替它下结论。最稳的是直接看第二季的官方制作名单。",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "针对性复测后系统不再推断跨季度制作阵容；回答保守但未覆盖标准答案，因此准确性仍为 N，幻觉为 N。",
+            "pipeline": "adaptive"
           }
         ]
       },
@@ -261,9 +271,11 @@
             "question": "《进击的巨人》动画前三季主要由哪家公司制作？",
             "gold_answer": "WIT STUDIO（第1-3季）",
             "source_hint": "AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "前三季动画主要是 WIT STUDIO 做的，Production.I.G 也参与了制作 。中文社区聊这部的时候，经常把泽野弘之的音乐和 Production.I.G 的班底放在一起说，觉得这是它现场感的重要来源 。你是最近在重温前三季吗？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "核心事实正确指出前三季主要由WIT STUDIO制作，Production.I.G参与制作的说法虽非标准答案核心但属实，无捏造。",
+            "pipeline": "adaptive"
           },
           {
             "id": "aot-q2",
@@ -271,9 +283,11 @@
             "question": "《进击的巨人》最终季动画由哪家公司接手制作？",
             "gold_answer": "MAPPA（最终季）",
             "source_hint": "AniList / Wikipedia",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "最终季换成了 MAPPA 接手，前三季是 WIT STUDIO 做的，Production.I.G 也参与了制作 。这个换手当时在观众里讨论挺多的，毕竟前三季的动作戏风格已经很有辨识度了。\n\n你是更在意制作公司换了，还是想聊最终季整体观感上的变化？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "核心事实正确指出最终季由MAPPA接手，未编造关键信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "aot-q3",
@@ -281,9 +295,11 @@
             "question": "「莱纳，你坐啊」在中文社区指什么名场面？",
             "gold_answer": "最终季/Re 相关对话名场面，莱纳与艾伦在地下室对峙，艾伦让莱纳坐下，成为广泛传播的 meme",
             "source_hint": "NGA / B站",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个梗指的是《进击的巨人》最终季里，莱纳和艾伦在地下室对谈的那一幕。艾伦平静地让莱纳坐下，气氛却压得人喘不过气，那种“表面客气、底下全是账要算”的张力，让这句台词在中文社区被反复拿来用。\n\n它后来常被用来调侃那种“明明很尴尬甚至很危险，却偏要装作若无其事”的场面，属于社区玩梗，不是官方说法。你是最近重看这一段，还是单纯被这句话刷屏了？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "准确指出最终季莱纳与艾伦地下室对峙、艾伦让莱纳坐下的名场面，并说明其meme用法，无捏造。",
+            "pipeline": "adaptive"
           },
           {
             "id": "aot-q4",
@@ -291,9 +307,11 @@
             "question": "「兵长」指哪位角色，其外号的由来是什么？",
             "gold_answer": "利威尔·阿克曼（Levi Ackerman），调查兵团士兵长，因职位与战力被尊称兵长",
             "source_hint": "萌娘百科",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答未给出利威尔·阿克曼及其兵长外号由来，属于答非所问、遗漏核心事实，但未编造虚假信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "aot-q5",
@@ -306,9 +324,11 @@
               "争议大、无共识"
             ],
             "source_hint": "NGA / 社区",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "不太一致，甚至可以说分歧挺明显的。漫画在2021年4月结束连载后，关于结局的争论一直没停，有人觉得它高开、收尾没能撑住前面的野心，也有人坚持整体仍是同代作品里的顶点 。\n\n这种分裂本身其实挺有意思的，因为它不是那种“看完就翻篇”的作品，而是会被反复拉出来重估。你当时看完结局是什么感受，是偏失望那一派，还是觉得整体依然立得住？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答正确呈现了中文社区对结局评价的分化与争议，未将单一立场当作客观事实，也无捏造信息。",
+            "pipeline": "adaptive"
           }
         ]
       },
@@ -328,9 +348,11 @@
             "question": "《凉宫春日的忧郁》2006年版 TV 动画共多少集？",
             "gold_answer": "14集（2006年放送版）",
             "source_hint": "AniList / 萌娘百科",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "2006 年版 TV 动画的集数，我手边的资料里没有明确写出来，所以不敢直接给你一个数字。能确认的是它 2006 年首播、由京都动画制作 ，而系列后来还出过动画电影和 ONA 等形态 。\n\n如果你是想确认当年播出顺序那种“乱序”版本，我们可以聊聊那个排播方式本身，那个比单纯数集数有意思多了。",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答未给出标准答案14集，遗漏核心事实，但未编造虚假信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "haruhi-q2",
@@ -338,9 +360,11 @@
             "question": "凉宫春日的配音声优（日语）是谁？",
             "gold_answer": "平野绫",
             "source_hint": "AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答未给出标准答案平野绫，属于答非所问、遗漏核心事实，但未编造虚假信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "haruhi-q3",
@@ -348,9 +372,11 @@
             "question": "「SOS 团」全称/含义在作品中是什么？",
             "gold_answer": "SOS 团由凉宫春日发起，团名含义在作中有多解（如 Save the world by Overworking Haruhi 等），以「让凉宫不无聊、避免世界危机」为核心动机",
             "source_hint": "萌娘百科 / 原作",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "SOS团的全称是“让世界变得更热闹的凉宫春日团”，日文原名是「世界を大いに盛り上げるための涼宮ハルヒの団」，简称SOS団 。名字本身就是春日强行拍板定下来的，带着她那种“我说了算”的劲头，还挺符合她的性格。\n\n这个称呼在中文圈早就脱离剧情，变成指代那个社团氛围的通用叫法了 。你是刚重温到组团那段，还是单纯好奇这个名字的来历？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答只给出“让世界变得更热闹的凉宫春日团”这一种全称，未提及标准答案中团名含义在作中有多解（如 Save the world by Overworking Haruhi 等）及“让凉宫不无聊、避免世界危机”的核心动机，遗漏核心点。",
+            "pipeline": "adaptive"
           },
           {
             "id": "haruhi-q4",
@@ -358,9 +384,11 @@
             "question": "「God knows」在凉宫社区通常指什么？",
             "gold_answer": "2009版中凉宫春日（平野绫）在文化祭上演唱《God knows...》的经典 live 场景/神回",
             "source_hint": "NGA / B站",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "在凉宫社区里，「God knows」基本就是指那首在动画里由凉宫春日（平野绫配音）演唱的插入曲，出现在文化祭的现场演出段落。它算是整部作品里最有代表性的歌之一，很多观众第一次看那段 live 都会被带动起来。\n\n不过关于这首歌的具体制作人员、发行信息这些，我手边没有可靠出处，就不瞎说了。你是想聊那段演出本身的观感，还是在找这首歌的某个版本？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答准确指出「God knows」指凉宫春日（平野绫）在文化祭演唱的插入曲/经典live场景，与标准答案一致，且未编造制作人员等细节。",
+            "pipeline": "adaptive"
           },
           {
             "id": "haruhi-q5",
@@ -373,9 +401,11 @@
               "说明2006非线性 vs 2009线性差异"
             ],
             "source_hint": "萌娘百科 / NGA",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个选择其实挺经典的，两种看法都有人坚持。\n\n按 2006 年放送顺序看，会先撞上那种被打乱的集数排列，观感更接近当年追番的人——困惑、好奇、然后慢慢拼出全貌，那种“这到底在演什么”的体验本身就是作品的一部分。按时间线顺序（大致就是后来的 2009 版重排）看，故事更顺，人物关系和事件因果清楚很多，适合想先理解剧情的人。\n\n我个人偏向第一次就按放送顺序，把那种错位感当成乐趣；二刷再按时间线理顺。你是想先被绕一下，还是想先把故事看明白？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答正确呈现了放送顺序与时间线顺序两种观点及各自理由，并说明2009版按时间线重排，符合标准答案且无捏造。",
+            "pipeline": "adaptive"
           }
         ]
       },
@@ -395,9 +425,11 @@
             "question": "《命运石之门》TV 动画首播年份？",
             "gold_answer": "2011年",
             "source_hint": "AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答未给出首播年份，答非所问，但未编造事实。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "sg-q2",
@@ -405,9 +437,11 @@
             "question": "《命运石之门》动画由哪家公司制作？",
             "gold_answer": "WHITE FOX",
             "source_hint": "AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统未给出标准答案WHITE FOX，属于答非所问、遗漏核心事实，但未编造信息。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "sg-q3",
@@ -415,9 +449,11 @@
             "question": "「El Psy Kongroo」在作品中通常由谁使用、大致含义？",
             "gold_answer": "冈部伦太郎（凤凰院凶真）的口头禅/暗号式签名，无固定字面翻译，象征其中二身份",
             "source_hint": "萌娘百科",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答未给出任何核心事实，回避了冈部伦太郎及其口头禅含义，属于答非所问。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "sg-q4",
@@ -425,9 +461,11 @@
             "question": "中文社区常把哪个角色称为「助手」？",
             "gold_answer": "牧濑红莉栖（Okabe 对其称呼「助手」）",
             "source_hint": "社区 / 萌娘百科",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "「助手」这个外号基本就是指牧濑红莉栖。她在剧中的身份是维克托·孔多利亚大学的研究员，加上和冈部那套「助手」的称呼，中文圈就顺口叫开了。你是刚补完想聊聊她，还是在纠结别的角色？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答正确指出「助手」指牧濑红莉栖，并提及冈部对其的称呼，核心事实与标准答案一致，无捏造。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "sg-q5",
@@ -440,9 +478,11 @@
               "说明世界线结构而非单一续作"
             ],
             "source_hint": "Wikipedia / 萌娘百科",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "《命运石之门 0》是接在 TV 版《命运石之门》之后展开的续篇，但它走的不是「真结局之后」那条线，而是从冈部没能救回红莉栖的那条世界线延伸出来的故事。所以与其说是真结局的续篇，不如说是「另一种可能性」的补完。\n\n不过这个说法我手边没有可靠的公开出处能给你逐条核实，只能算我个人的理解。你是在补完 TV 版之后接着看 0 的吗？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答正确指出0是β线（冈部未能救回红莉栖的世界线）延伸的续篇，而非真结局之后，与标准答案一致，且未编造事实。",
+            "pipeline": "adaptive_insufficient"
           }
         ]
       },
@@ -462,9 +502,11 @@
             "question": "《千与千寻》的导演是谁？",
             "gold_answer": "宫崎骏",
             "source_hint": "Wikipedia / AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答未给出《千与千寻》导演是宫崎骏这一核心事实，属于答非所问和遗漏核心点。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "sa-q2",
@@ -472,9 +514,11 @@
             "question": "《千与千寻》在日本上映年份？",
             "gold_answer": "2001年",
             "source_hint": "Wikipedia",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统未回答《千与千寻》的上映年份，遗漏核心事实，但未编造信息。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "sa-q3",
@@ -482,9 +526,11 @@
             "question": "「不要吃太多不然会变成猪」关联哪个情节？",
             "gold_answer": "千寻父母在神灵世界店铺暴食后被变成猪，是核心寓言情节",
             "source_hint": "通用文化梗 / 影片",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这句台词最直接对应的就是开头那段：千寻的父母在主题公园废墟里找到食物摊，没等主人同意就先吃了起来，结果越吃越多，最后变成了猪。\n\n千寻当时还小，看到父母变成猪那一幕，是整个故事真正把她推进异世界的转折点。这个设定挺狠的——贪婪不是被说教，而是直接变成身体上的惩罚。你是想聊这个情节本身，还是它后面在剧情里的呼应？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答准确描述了千寻父母在神灵世界店铺暴食后变成猪的核心情节，与标准答案一致，无捏造。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "sa-q4",
@@ -492,9 +538,11 @@
             "question": "无脸男在中文社区常被如何概括其形象？",
             "gold_answer": "面具、沉默、通过吞噬/金钱换取关注，象征孤独与欲望膨胀（解读多样，但此为常见社区概括）",
             "source_hint": "社区影评 / 萌娘百科",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "无脸男在中文社区里最常见的概括，大概是“孤独”“渴望被接纳”“用金子换取陪伴”这几个关键词。很多人会把他和千寻的对照拿出来说，一个是被夺走名字后仍守住自我，一个是在汤屋的欲望里越陷越深。\n\n不过这些更多是观众和评论者的解读，不是官方定论。你问的是社区里怎么概括，还是你自己对无脸男有别的感受？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答准确概括了孤独、渴望接纳、用金子换取陪伴等社区常见解读，并说明非官方定论，无捏造。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "sa-q5",
@@ -507,9 +555,11 @@
               "第75届奥斯卡最佳动画长片"
             ],
             "source_hint": "Wikipedia / 奥斯卡官网",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答回避问题，未给出《千与千寻》获2003年第75届奥斯卡最佳动画长片的核心事实，属于答非所问。",
+            "pipeline": "adaptive_insufficient"
           }
         ]
       },
@@ -529,9 +579,11 @@
             "question": "《CLANNAD》TV 动画由哪家公司制作？",
             "gold_answer": "京都动画（Kyoto Animation）",
             "source_hint": "AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答未给出京都动画这一核心事实，属于答非所问，但未编造任何虚假信息。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "cl-q2",
@@ -539,9 +591,11 @@
             "question": "《CLANNAD》TV 动画分几季/部？官方常用名称是什么？",
             "gold_answer": "通常分为《CLANNAD》（2007）与《CLANNAD～After Story～》（2008-2009）两部",
             "source_hint": "AniList / 萌娘百科",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答未给出任何核心事实（分季/部及官方名称），属于答非所问和遗漏核心点，但未编造信息。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "cl-q3",
@@ -549,9 +603,11 @@
             "question": "「团子大家族」与 CLANNAD 的关系是什么？",
             "gold_answer": "作中插曲/ED 及象征性意象，团子形象成为系列标志性萌化符号",
             "source_hint": "萌娘百科 / B站",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "「团子大家族」就是 CLANNAD 里那首贯穿全作的标志性歌曲，也是很多人一听到旋律就会想起这部作品的原因。它在故事里和团子、家族、羁绊这些意象绑得很紧，算是 CLANNAD 的情感符号之一。\n\n不过关于它的具体制作背景、词曲作者这些可核查信息，我手边还没有可靠出处，就不乱说了。你是想聊它作为片尾曲的印象，还是它在剧情里出现时带给你的感受？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答正确指出「团子大家族」是CLANNAD的标志性歌曲及情感符号，与标准答案核心事实一致，且未编造任何具体制作信息。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "cl-q4",
@@ -559,9 +615,11 @@
             "question": "中文社区为何常称 CLANNAD 为「催泪弹」？",
             "gold_answer": "After Story 及多条路线以家庭、离别、重生为主题，情感冲击强，观众常用「催泪」形容",
             "source_hint": "社区评价",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个说法我印象里主要是观众自己聊出来的，不是官方定位。CLANNAD 的情感落点很集中——亲情、家庭、失去与重新站起来，尤其后半段对“家”的描写，很容易让人代入。中文社区爱用“催泪弹”这种词，大概也是因为它的情绪冲击来得直接，看完之后需要缓一缓。你是被哪一段打动的？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答准确指出CLANNAD因亲情、家庭、失去与重生等主题带来强烈情感冲击而被中文社区称为催泪弹，与标准答案一致且无捏造。",
+            "pipeline": "adaptive_insufficient"
           },
           {
             "id": "cl-q5",
@@ -574,9 +632,11 @@
               "动画不等于游戏顺序"
             ],
             "source_hint": "萌娘百科 / Key 社区",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "说实话，CLANNAD 这种多线作品，我从来不觉得存在唯一「正确顺序」。不过如果你想要一个比较稳的体验，常见建议是先走风子、琴美、杏这几条支线，把学园篇的日常和人物关系铺开，再进渚线，最后接 After Story。这样情绪是慢慢累积上去的，直接冲主线反而会少很多铺垫。\n\n你是第一次玩，还是想重推一遍找感觉？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答正确呈现了游戏多线无唯一正确顺序的社区分歧，并给出常见建议（先支线再渚线最后After Story），符合标准答案中游戏有推荐顺序及解锁After Story前置要求的核心点。",
+            "pipeline": "adaptive_insufficient"
           }
         ]
       },
@@ -596,9 +656,11 @@
             "question": "《孤独摇滚！》动画由哪家公司制作？",
             "gold_answer": "CloverWorks",
             "source_hint": "AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "《孤独摇滚！》的动画制作是 CloverWorks，2022 年秋季播出的 。这家公司在这部里把四格漫画的节奏和波奇的内心小剧场处理得挺有辨识度，也是很多人聊到它的一个点。",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "核心事实CloverWorks正确，2022年秋季播出属实，无捏造信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "boc-q2",
@@ -606,9 +668,11 @@
             "question": "主角后藤一里的昵称「ぼっち」大致是什么意思？",
             "gold_answer": "社恐/独处的人、孤零零的人（ひとりぼっち的简称语感）",
             "source_hint": "萌娘百科 / 原作",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "「ぼっち」在日语里本来就有“孤零零一个人”的意思，常用来形容没朋友、总是一个人待着的状态，带点自嘲的味道。放到后藤一里身上，既是她的外号，也直接点出了她社恐、独来独往的性格底色。所以标题《ぼっち・ざ・ろっく！》其实玩了个谐音，把“独自一人”和“摇滚”拼在一起。",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答准确解释了「ぼっち」意为孤零零一个人、社恐独处，与标准答案一致，且无捏造信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "boc-q3",
@@ -616,9 +680,11 @@
             "question": "「下北泽大天使」在社区指谁？",
             "gold_answer": "伊地知虹夏（乐队队长，常被粉丝爱称下北泽大天使）",
             "source_hint": "NGA / B站",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+            "is_accurate": "N",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答未给出标准答案中的伊地知虹夏，属于答非所问、遗漏核心事实，但未编造虚假信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "boc-q4",
@@ -626,9 +692,11 @@
             "question": "波奇在动画中极度社恐时常见的物理表现梗是什么？",
             "gold_answer": "蜷缩进纸箱/墙缝、灵魂出窍、夸张变形等夸张演出",
             "source_hint": "社区梗",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "你说的应该是她那种“整个人缩成一块”的演出吧——比如变成灰白化的纸片人、躲进壁橱或角落、脸贴地、被想象成被碾碎的渣渣。这些夸张的内心小剧场和逃避反应，正是中文社区最爱截下来当表情包的部分，用来形容突然被点名、被迫社交的瞬间 。\n\n我个人觉得最好笑的是那种“明明没人在看她，她却已经脑内社死一百遍”的反差，比单纯画得夸张更有共鸣。你印象最深的是哪一幕？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答准确描述了波奇社恐时蜷缩、变形、躲藏等夸张演出，与标准答案一致，且未编造具体集数或情节。",
+            "pipeline": "adaptive"
           },
           {
             "id": "boc-q5",
@@ -641,9 +709,11 @@
               "漫画原创，非纪实"
             ],
             "source_hint": "Wikipedia / 萌娘百科",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "不是哦，它改编自滨路晶的四格漫画，是虚构故事，不是真实乐队的传记 。结束乐队这些角色和经历都是作品里原创的。\n\n不过它把练习、写歌、上台这些过程拍得挺具体，所以容易让人产生“像真事”的错觉 。你是在哪一段有这种感觉的？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答正确指出改编自滨路晶四格漫画、为虚构原创，并解释易被误认为真实的原因，与标准答案一致且无捏造。",
+            "pipeline": "adaptive"
           }
         ]
       },
@@ -663,9 +733,11 @@
             "question": "《魔法少女小圆》TV 动画由哪家公司制作？",
             "gold_answer": "SHAFT",
             "source_hint": "AniList",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "《魔法少女小圆》的 TV 动画是 SHAFT 制作的，监督是新房昭之，脚本是虚渊玄，音乐是梶浦由紀 。这个班底放在当年算是挺有辨识度的组合了。",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "核心事实SHAFT正确，附加的监督、脚本、音乐信息均属实，无捏造。",
+            "pipeline": "adaptive"
           },
           {
             "id": "mad-q2",
@@ -673,19 +745,23 @@
             "question": "《魔法少女小圆》的剧本统筹（系列构成）是谁？",
             "gold_answer": "虚渊玄",
             "source_hint": "AniList / Wikipedia",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "是虚渊玄。他负责这部原创动画的系列构成和脚本，和新房昭之监督一起在没有原作框架的情况下定下故事走向。\n\n中文圈常拿“爱的战士虚渊玄”来调侃他的风格，不过那属于社区绰号，不是官方头衔。你是刚补完，还是在查制作名单？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "系统回答准确指出《魔法少女小圆》的系列构成为虚渊玄，未编造任何不实信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "mad-q3",
             "type": "community_meme",
             "question": "「已经没什么好害怕的了」是哪一角色、哪类场景的名台词？",
-            "gold_answer": "美树沙耶香（Sayaka）相关悲剧场景中的名台词，常被用作 MAD/刀向 meme",
+            "gold_answer": "巴麻美（Mami Tomoe）的名台词，出自她在魔女战前重拾从容的场景，后来常被用作死亡 flag 梗",
             "source_hint": "萌娘百科 / NGA",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "这句是巴麻美学姐的台词，最常被提起的场景就是她刚打完一场漂亮仗、带着圆和沙耶香聊魔法少女这条路的时候。她说这话时那种从容和温柔，反而让后来发生的事显得格外扎心。\n\n具体是哪一集、什么情境下说的，我手边没有逐字逐句的出处，不想凭印象给你编细节。你是想聊这句台词本身的分量，还是在回忆那个场景？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "经官方资料复核，该台词属于巴麻美；原金标误写为美树沙耶香，系统对角色归属的回答正确。",
+            "pipeline": "adaptive"
           },
           {
             "id": "mad-q4",
@@ -693,9 +769,11 @@
             "question": "QB（丘比）在中文社区常被贴上什么标签？",
             "gold_answer": "「传销/契约恶魔/万恶之源」等，指其诱导少女成为魔法少女的不道德形象",
             "source_hint": "社区梗",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "丘比在中文社区基本就是“万恶之源”那一挂的，最出名的梗就是那句“和我签订契约，成为魔法少女吧”，被改写成各种劝人入坑、劝人加班的模板 。另外它那种永远笑眯眯、讲逻辑不讲感情的态度，也是大家又爱又恨的点，经常被拿来和“致郁”标签绑在一起调侃 。你是刚补完，还是被它气到了想吐槽？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答准确提到“万恶之源”标签及契约梗，与标准答案核心一致，无捏造信息。",
+            "pipeline": "adaptive"
           },
           {
             "id": "mad-q5",
@@ -708,9 +786,11 @@
               "提示有转折但不展开"
             ],
             "source_hint": "NGA / 社区规范",
-            "system_answer": null,
-            "is_accurate": null,
-            "has_hallucination": null
+            "system_answer": "第3集之后确实有个很明显的转向，但我不太愿意把它说成“换类型”——更像是把前面埋好的规则一次性翻给你看。它从可爱变身的外壳，转到了代价和因果这条线上，这种反转也是它后来被反复提起的原因 。\n\n至于安利时要不要剧透，我偏向不剧透。第3集那个冲击是作品体验的一部分，提前说破，等于替对方把最有效的那一下拆掉了。你可以只提醒一句“别被前两集骗了”，剩下的让他自己撞上去。😌\n\n你是想安利给完全没接触过的人，还是对方已经听过“致郁”这个标签了？",
+            "is_accurate": "Y",
+            "has_hallucination": "N",
+            "judge_reason": "回答承认第3集后的基调转折并给出不剧透但提示有转折的安利策略，符合标准答案且无捏造。",
+            "pipeline": "adaptive"
           }
         ]
       }
@@ -718,39 +798,39 @@
   },
   "scoring": {
     "summary": {
-      "total_questions": 10,
-      "evaluated": 10,
-      "accurate_count": 10,
-      "inaccurate_count": 0,
-      "accuracy_rate": 1,
+      "total_questions": 50,
+      "evaluated": 50,
+      "accurate_count": 31,
+      "inaccurate_count": 19,
+      "accuracy_rate": 0.62,
       "hallucination_count": 0,
-      "no_hallucination_count": 10,
+      "no_hallucination_count": 50,
       "hallucination_rate": 0,
-      "run_at": "2026-09-20T09:03:50.389Z",
+      "run_at": "2026-09-20T09:21:50.489Z",
       "notes": "accuracy_rate = accurate_count / evaluated; hallucination_rate = hallucination_count / evaluated"
     },
     "by_question_type": {
       "hard_fact": {
-        "total": 4,
-        "evaluated": 4,
-        "accurate_count": 4,
-        "accuracy_rate": 1,
+        "total": 20,
+        "evaluated": 20,
+        "accurate_count": 8,
+        "accuracy_rate": 0.4,
         "hallucination_count": 0,
         "hallucination_rate": 0
       },
       "community_meme": {
-        "total": 4,
-        "evaluated": 4,
-        "accurate_count": 4,
-        "accuracy_rate": 1,
+        "total": 20,
+        "evaluated": 20,
+        "accurate_count": 16,
+        "accuracy_rate": 0.8,
         "hallucination_count": 0,
         "hallucination_rate": 0
       },
       "conflict": {
-        "total": 2,
-        "evaluated": 2,
-        "accurate_count": 2,
-        "accuracy_rate": 1,
+        "total": 10,
+        "evaluated": 10,
+        "accurate_count": 7,
+        "accuracy_rate": 0.7,
         "hallucination_count": 0,
         "hallucination_rate": 0
       }
@@ -761,8 +841,8 @@
         "title_zh": "新世纪福音战士",
         "total": 5,
         "evaluated": 5,
-        "accurate_count": 5,
-        "accuracy_rate": 1,
+        "accurate_count": 4,
+        "accuracy_rate": 0.8,
         "hallucination_count": 0,
         "hallucination_rate": 0
       },
@@ -771,8 +851,8 @@
         "title_zh": "葬送的芙莉莲",
         "total": 5,
         "evaluated": 5,
-        "accurate_count": 5,
-        "accuracy_rate": 1,
+        "accurate_count": 2,
+        "accuracy_rate": 0.4,
         "hallucination_count": 0,
         "hallucination_rate": 0
       },
@@ -780,193 +860,633 @@
         "work_id": "spy-family",
         "title_zh": "间谍过家家",
         "total": 5,
-        "evaluated": 0,
-        "accurate_count": null,
-        "accuracy_rate": null,
-        "hallucination_count": null,
-        "hallucination_rate": null
+        "evaluated": 5,
+        "accurate_count": 3,
+        "accuracy_rate": 0.6,
+        "hallucination_count": 0,
+        "hallucination_rate": 0
       },
       {
         "work_id": "aot",
         "title_zh": "进击的巨人",
         "total": 5,
-        "evaluated": 0,
-        "accurate_count": null,
-        "accuracy_rate": null,
-        "hallucination_count": null,
-        "hallucination_rate": null
+        "evaluated": 5,
+        "accurate_count": 4,
+        "accuracy_rate": 0.8,
+        "hallucination_count": 0,
+        "hallucination_rate": 0
       },
       {
         "work_id": "haruhi",
         "title_zh": "凉宫春日的忧郁",
         "total": 5,
-        "evaluated": 0,
-        "accurate_count": null,
-        "accuracy_rate": null,
-        "hallucination_count": null,
-        "hallucination_rate": null
+        "evaluated": 5,
+        "accurate_count": 2,
+        "accuracy_rate": 0.4,
+        "hallucination_count": 0,
+        "hallucination_rate": 0
       },
       {
         "work_id": "steins-gate",
         "title_zh": "命运石之门",
         "total": 5,
-        "evaluated": 0,
-        "accurate_count": null,
-        "accuracy_rate": null,
-        "hallucination_count": null,
-        "hallucination_rate": null
+        "evaluated": 5,
+        "accurate_count": 2,
+        "accuracy_rate": 0.4,
+        "hallucination_count": 0,
+        "hallucination_rate": 0
       },
       {
         "work_id": "spirited-away",
         "title_zh": "千与千寻",
         "total": 5,
-        "evaluated": 0,
-        "accurate_count": null,
-        "accuracy_rate": null,
-        "hallucination_count": null,
-        "hallucination_rate": null
+        "evaluated": 5,
+        "accurate_count": 2,
+        "accuracy_rate": 0.4,
+        "hallucination_count": 0,
+        "hallucination_rate": 0
       },
       {
         "work_id": "clannad",
         "title_zh": "CLANNAD",
         "total": 5,
-        "evaluated": 0,
-        "accurate_count": null,
-        "accuracy_rate": null,
-        "hallucination_count": null,
-        "hallucination_rate": null
+        "evaluated": 5,
+        "accurate_count": 3,
+        "accuracy_rate": 0.6,
+        "hallucination_count": 0,
+        "hallucination_rate": 0
       },
       {
         "work_id": "bocchi",
         "title_zh": "孤独摇滚！",
         "total": 5,
-        "evaluated": 0,
-        "accurate_count": null,
-        "accuracy_rate": null,
-        "hallucination_count": null,
-        "hallucination_rate": null
+        "evaluated": 5,
+        "accurate_count": 4,
+        "accuracy_rate": 0.8,
+        "hallucination_count": 0,
+        "hallucination_rate": 0
       },
       {
         "work_id": "madoka",
         "title_zh": "魔法少女小圆",
         "total": 5,
-        "evaluated": 0,
-        "accurate_count": null,
-        "accuracy_rate": null,
-        "hallucination_count": null,
-        "hallucination_rate": null
+        "evaluated": 5,
+        "accurate_count": 5,
+        "accuracy_rate": 1,
+        "hallucination_count": 0,
+        "hallucination_rate": 0
       }
     ],
     "results": [
       {
-        "work_id": "eva",
-        "question_id": "eva-q1",
+        "work_id": "aot",
+        "question_id": "aot-q1",
         "type": "hard_fact",
-        "system_answer": "《新世纪福音战士》TV 版首播是 1995 年，属于当年秋季档 。这个年份现在看也挺有意思，故事里的“2015 年”当年还是未来，如今早就过去了。你是想确认时间线，还是打算补番？",
-        "gold_answer": "1995年（TV于1995年10月4日首播）",
+        "system_answer": "前三季动画主要是 WIT STUDIO 做的，Production.I.G 也参与了制作 。中文社区聊这部的时候，经常把泽野弘之的音乐和 Production.I.G 的班底放在一起说，觉得这是它现场感的重要来源 。你是最近在重温前三季吗？",
+        "gold_answer": "WIT STUDIO（第1-3季）",
         "is_accurate": "Y",
         "has_hallucination": "N",
         "pipeline": "adaptive",
-        "judge_reason": "系统回答准确给出TV版首播年份为1995年，与标准答案一致，且无编造信息。"
+        "judge_reason": "核心事实正确指出前三季主要由WIT STUDIO制作，Production.I.G参与制作的说法虽非标准答案核心但属实，无捏造。"
+      },
+      {
+        "work_id": "aot",
+        "question_id": "aot-q2",
+        "type": "hard_fact",
+        "system_answer": "最终季换成了 MAPPA 接手，前三季是 WIT STUDIO 做的，Production.I.G 也参与了制作 。这个换手当时在观众里讨论挺多的，毕竟前三季的动作戏风格已经很有辨识度了。\n\n你是更在意制作公司换了，还是想聊最终季整体观感上的变化？",
+        "gold_answer": "MAPPA（最终季）",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "核心事实正确指出最终季由MAPPA接手，未编造关键信息。"
+      },
+      {
+        "work_id": "aot",
+        "question_id": "aot-q3",
+        "type": "community_meme",
+        "system_answer": "这个梗指的是《进击的巨人》最终季里，莱纳和艾伦在地下室对谈的那一幕。艾伦平静地让莱纳坐下，气氛却压得人喘不过气，那种“表面客气、底下全是账要算”的张力，让这句台词在中文社区被反复拿来用。\n\n它后来常被用来调侃那种“明明很尴尬甚至很危险，却偏要装作若无其事”的场面，属于社区玩梗，不是官方说法。你是最近重看这一段，还是单纯被这句话刷屏了？",
+        "gold_answer": "最终季/Re 相关对话名场面，莱纳与艾伦在地下室对峙，艾伦让莱纳坐下，成为广泛传播的 meme",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "准确指出最终季莱纳与艾伦地下室对峙、艾伦让莱纳坐下的名场面，并说明其meme用法，无捏造。"
+      },
+      {
+        "work_id": "aot",
+        "question_id": "aot-q4",
+        "type": "community_meme",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "利威尔·阿克曼（Levi Ackerman），调查兵团士兵长，因职位与战力被尊称兵长",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "系统回答未给出利威尔·阿克曼及其兵长外号由来，属于答非所问、遗漏核心事实，但未编造虚假信息。"
+      },
+      {
+        "work_id": "aot",
+        "question_id": "aot-q5",
+        "type": "conflict",
+        "system_answer": "不太一致，甚至可以说分歧挺明显的。漫画在2021年4月结束连载后，关于结局的争论一直没停，有人觉得它高开、收尾没能撑住前面的野心，也有人坚持整体仍是同代作品里的顶点 。\n\n这种分裂本身其实挺有意思的，因为它不是那种“看完就翻篇”的作品，而是会被反复拉出来重估。你当时看完结局是什么感受，是偏失望那一派，还是觉得整体依然立得住？",
+        "gold_answer": "不一致：存在强烈分歧，部分读者认为结局仓促/主题反转争议大，部分仍肯定完成度；应表述为「社区评价高度分化」，避免单一立场当作客观事实",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "回答正确呈现了中文社区对结局评价的分化与争议，未将单一立场当作客观事实，也无捏造信息。"
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q1",
+        "type": "hard_fact",
+        "system_answer": "《孤独摇滚！》的动画制作是 CloverWorks，2022 年秋季播出的 。这家公司在这部里把四格漫画的节奏和波奇的内心小剧场处理得挺有辨识度，也是很多人聊到它的一个点。",
+        "gold_answer": "CloverWorks",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "核心事实CloverWorks正确，2022年秋季播出属实，无捏造信息。"
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q2",
+        "type": "hard_fact",
+        "system_answer": "「ぼっち」在日语里本来就有“孤零零一个人”的意思，常用来形容没朋友、总是一个人待着的状态，带点自嘲的味道。放到后藤一里身上，既是她的外号，也直接点出了她社恐、独来独往的性格底色。所以标题《ぼっち・ざ・ろっく！》其实玩了个谐音，把“独自一人”和“摇滚”拼在一起。",
+        "gold_answer": "社恐/独处的人、孤零零的人（ひとりぼっち的简称语感）",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "回答准确解释了「ぼっち」意为孤零零一个人、社恐独处，与标准答案一致，且无捏造信息。"
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q3",
+        "type": "community_meme",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "伊地知虹夏（乐队队长，常被粉丝爱称下北泽大天使）",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "系统回答未给出标准答案中的伊地知虹夏，属于答非所问、遗漏核心事实，但未编造虚假信息。"
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q4",
+        "type": "community_meme",
+        "system_answer": "你说的应该是她那种“整个人缩成一块”的演出吧——比如变成灰白化的纸片人、躲进壁橱或角落、脸贴地、被想象成被碾碎的渣渣。这些夸张的内心小剧场和逃避反应，正是中文社区最爱截下来当表情包的部分，用来形容突然被点名、被迫社交的瞬间 。\n\n我个人觉得最好笑的是那种“明明没人在看她，她却已经脑内社死一百遍”的反差，比单纯画得夸张更有共鸣。你印象最深的是哪一幕？",
+        "gold_answer": "蜷缩进纸箱/墙缝、灵魂出窍、夸张变形等夸张演出",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "回答准确描述了波奇社恐时蜷缩、变形、躲藏等夸张演出，与标准答案一致，且未编造具体集数或情节。"
+      },
+      {
+        "work_id": "bocchi",
+        "question_id": "boc-q5",
+        "type": "conflict",
+        "system_answer": "不是哦，它改编自滨路晶的四格漫画，是虚构故事，不是真实乐队的传记 。结束乐队这些角色和经历都是作品里原创的。\n\n不过它把练习、写歌、上台这些过程拍得挺具体，所以容易让人产生“像真事”的错觉 。你是在哪一段有这种感觉的？",
+        "gold_answer": "否，为原创四格漫画改编，角色与乐队「結束バンド」为虚构；但下北泽等地点为真实地名，易与「真实乐队纪录片」混淆，应明确「虚构作品+真实地理元素」",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "回答正确指出改编自滨路晶四格漫画、为虚构原创，并解释易被误认为真实的原因，与标准答案一致且无捏造。"
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q1",
+        "type": "hard_fact",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "京都动画（Kyoto Animation）",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答未给出京都动画这一核心事实，属于答非所问，但未编造任何虚假信息。"
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q2",
+        "type": "hard_fact",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "通常分为《CLANNAD》（2007）与《CLANNAD～After Story～》（2008-2009）两部",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答未给出任何核心事实（分季/部及官方名称），属于答非所问和遗漏核心点，但未编造信息。"
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q3",
+        "type": "community_meme",
+        "system_answer": "「团子大家族」就是 CLANNAD 里那首贯穿全作的标志性歌曲，也是很多人一听到旋律就会想起这部作品的原因。它在故事里和团子、家族、羁绊这些意象绑得很紧，算是 CLANNAD 的情感符号之一。\n\n不过关于它的具体制作背景、词曲作者这些可核查信息，我手边还没有可靠出处，就不乱说了。你是想聊它作为片尾曲的印象，还是它在剧情里出现时带给你的感受？",
+        "gold_answer": "作中插曲/ED 及象征性意象，团子形象成为系列标志性萌化符号",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "回答正确指出「团子大家族」是CLANNAD的标志性歌曲及情感符号，与标准答案核心事实一致，且未编造任何具体制作信息。"
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q4",
+        "type": "community_meme",
+        "system_answer": "这个说法我印象里主要是观众自己聊出来的，不是官方定位。CLANNAD 的情感落点很集中——亲情、家庭、失去与重新站起来，尤其后半段对“家”的描写，很容易让人代入。中文社区爱用“催泪弹”这种词，大概也是因为它的情绪冲击来得直接，看完之后需要缓一缓。你是被哪一段打动的？",
+        "gold_answer": "After Story 及多条路线以家庭、离别、重生为主题，情感冲击强，观众常用「催泪」形容",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "回答准确指出CLANNAD因亲情、家庭、失去与重生等主题带来强烈情感冲击而被中文社区称为催泪弹，与标准答案一致且无捏造。"
+      },
+      {
+        "work_id": "clannad",
+        "question_id": "cl-q5",
+        "type": "conflict",
+        "system_answer": "说实话，CLANNAD 这种多线作品，我从来不觉得存在唯一「正确顺序」。不过如果你想要一个比较稳的体验，常见建议是先走风子、琴美、杏这几条支线，把学园篇的日常和人物关系铺开，再进渚线，最后接 After Story。这样情绪是慢慢累积上去的，直接冲主线反而会少很多铺垫。\n\n你是第一次玩，还是想重推一遍找感觉？",
+        "gold_answer": "游戏存在推荐路线顺序（常建议先渚等再 After Story 解锁条件）；动画已是单一渚线改编。应区分「游戏攻略顺序」与「动画叙事顺序」，避免混答",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "回答正确呈现了游戏多线无唯一正确顺序的社区分歧，并给出常见建议（先支线再渚线最后After Story），符合标准答案中游戏有推荐顺序及解锁After Story前置要求的核心点。"
+      },
+      {
+        "work_id": "eva",
+        "question_id": "eva-q1",
+        "type": "hard_fact",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "1995年（TV于1995年10月4日首播）",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "legacy_fallback",
+        "judge_reason": "系统回答未给出首播年份，答非所问，遗漏核心事实，但未编造虚假信息。"
       },
       {
         "work_id": "eva",
         "question_id": "eva-q2",
         "type": "hard_fact",
-        "system_answer": "TV 版一共 26 集，另外还有 Director's Cut 版本的第 21～24 集，那部分是后来用剧场版《Death》篇的素材重新剪辑的 。你是打算从头补，还是想先确认一下观看顺序？",
+        "system_answer": "TV版一共26集。不过最后两话比较特别，基本是内心独白和抽象画面收尾，当年也因此引发了不少争议，甚至后来还用剧场版重新讲了一遍结局 。你是刚准备补，还是已经看到后面那几集了？",
         "gold_answer": "26集",
         "is_accurate": "Y",
         "has_hallucination": "N",
-        "pipeline": "adaptive",
-        "judge_reason": "核心事实26集正确，补充的Director's Cut信息属实，无捏造。"
+        "pipeline": "legacy_fallback",
+        "judge_reason": "回答准确给出TV版26集，补充的最后两话及剧场版重讲结局符合事实，无捏造。"
       },
       {
         "work_id": "eva",
         "question_id": "eva-q3",
         "type": "community_meme",
-        "system_answer": "「不能逃避」这个说法，基本就是和《新世纪福音战士》里的碇真嗣绑在一起的。它算是真嗣那句反复出现的自我拉扯——不想驾驶、想逃，但又被推回驾驶舱。中文社区常把它当成一种带点自嘲的梗来用，不完全是热血口号。\n\n不过具体是哪一集、哪句台词的准确措辞，我手边还没有可靠出处，不敢乱报。你是想聊这句台词本身，还是它在社区里被玩成梗的用法？",
+        "system_answer": "出自《新世纪福音战士》，和碇真嗣绑定得最深。那句「逃げちゃダメだ」是他反复对自己说的自我催眠，抱头缩着的画面几乎成了标配 。\n\n有意思的是，它后来被玩成了万能句式——拖延、摸鱼、不想上班，配上真嗣那张脸就全通了，因为那种「知道该做但还是想跑」的心情实在太普遍了 。你是先记住台词，还是先记住那个画面的？",
         "gold_answer": "出自《新世纪福音战士》，与碇真嗣相关（其经典台词/心理主题）",
         "is_accurate": "Y",
         "has_hallucination": "N",
-        "pipeline": "adaptive",
-        "judge_reason": "正确指出「不能逃避」出自《新世纪福音战士》并与碇真嗣相关，且未编造具体集数或台词细节。"
+        "pipeline": "legacy_fallback",
+        "judge_reason": "回答正确指出《新世纪福音战士》与碇真嗣，并准确引用其经典台词「逃げちゃダメだ」，无捏造信息。"
       },
       {
         "work_id": "eva",
         "question_id": "eva-q4",
         "type": "community_meme",
-        "system_answer": "「橙汁」一般是在调侃人类补完计划最后那种状态——所有人失去个体边界、融成一体的意象，大家就戏称变成了一滩橙汁。它跟 LCL 之海那种橙黄色液体的视觉印象也脱不开关系，属于社区玩梗，不是官方术语 。\n\n所以这梗的底色其实挺微妙的：表面是搞笑说法，背后聊的却是「人和人之间的隔阂要不要消失」这种挺沉重的问题。你是最近在哪看到这个说法，才想起来的吗？",
+        "system_answer": "「橙汁」基本就是指人类补完计划那个把人融成一片的意象——所有个体边界消失、大家混成一锅，社区就顺手叫它橙汁了。这个说法在讨论里常被拿来调侃强行大团圆或者「消灭个体差异」式的结局 。\n\n它算是把作品里挺沉重的一个概念，用很生活化的方式解构掉了。你是最近在哪看到这个梗的？",
         "gold_answer": "指第三新东京市/LCL 溶解等场景中被调侃为「被榨成橙汁」的视觉梗，常与使徒攻击、人类补完相关讨论连用",
         "is_accurate": "Y",
         "has_hallucination": "N",
-        "pipeline": "adaptive",
-        "judge_reason": "回答准确解释了「橙汁」梗指人类补完/LCL溶解的视觉调侃，与标准答案核心一致，无捏造。"
+        "pipeline": "legacy_fallback",
+        "judge_reason": "回答正确指出「橙汁」指人类补完计划中个体边界消失、融为一体的意象，与标准答案核心一致，无捏造。"
       },
       {
         "work_id": "eva",
         "question_id": "eva-q5",
         "type": "conflict",
-        "system_answer": "这大概是 EVA 讨论里最经典的“没有标准答案”问题了。TV 第26集是彻底往内心走的补完，几乎把外部剧情全收进真嗣的心理独白里；《Air/真心为你》则把补完过程放回外部世界，画面和情绪都更直接、更残酷。\n\n我个人的理解是，两者不是互相取代的关系，更像是同一场补完的两个视角。庵野秀明担任监督这点是明确的 ，但官方有没有指定过“唯一正统结局”，我手边没有可靠出处，不想替它下结论。\n\n你更愿意把哪一边当作自己心里的结局？是 TV 那集的和解感，还是剧场版那种被推着面对现实的感觉？",
+        "system_answer": "这其实是个没有官方标准答案的问题，看你更想接受哪种收束。TV 第26集是把镜头完全转向真嗣的内心，用独白和抽象画面完成一次心理层面的补完；《Air/真心为你》则把同样的主题放回外部世界，用更残酷的方式重讲结局。社区里一直有两种声音，一种觉得 TV 版才是真正的内核，另一种觉得剧场版才把故事讲完整。我个人偏向把它们看成同一主题的两种表达，而不是谁取代谁。你第一次看是先接触哪一版？",
         "gold_answer": "存在版本分歧：TV 原结局（第25-26集）与 1997 年剧场版《Air/真心为你》叙事不同；应说明「TV 版结局」与「剧场版改/补完结局」是两套常被并列讨论的版本，不宜混为一谈",
         "is_accurate": "Y",
         "has_hallucination": "N",
-        "pipeline": "adaptive",
-        "judge_reason": "回答正确区分了TV第26集与《Air/真心为你》两套结局，并明确表示二者非取代关系、官方正统无定论，符合冲突题要求。"
+        "pipeline": "legacy_fallback",
+        "judge_reason": "回答正确区分了TV第26集与《Air/真心为你》两种结局，并呈现了社区分歧而非武断单一立场，无事实捏造。"
       },
       {
         "work_id": "frieren",
         "question_id": "fri-q1",
         "type": "hard_fact",
-        "system_answer": "是 MADHOUSE 制作的，第一季在 2023 年秋季播出 。这家公司做情绪铺陈和战斗作画都挺稳的，芙莉莲那种安静里带点钝痛的感觉，我觉得跟制作班底的把控关系很大 。你是刚补完想确认一下，还是在纠结要不要入坑？",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
         "gold_answer": "Madhouse（Madhouse Inc.）",
-        "is_accurate": "Y",
+        "is_accurate": "N",
         "has_hallucination": "N",
-        "pipeline": "adaptive",
-        "judge_reason": "核心事实“MADHOUSE制作”与标准答案一致，且未编造关键信息。"
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答未给出制作公司Madhouse，属于答非所问、遗漏核心事实，但未编造虚假信息。"
       },
       {
         "work_id": "frieren",
         "question_id": "fri-q2",
         "type": "hard_fact",
-        "system_answer": "《葬送的芙莉莲》TV 动画是 2023 年首播的，属于秋季档 。",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
         "gold_answer": "2023年（2023年9月29日首播）",
-        "is_accurate": "Y",
+        "is_accurate": "N",
         "has_hallucination": "N",
-        "pipeline": "adaptive",
-        "judge_reason": "回答准确指出2023年首播，与标准答案一致，且秋季档表述无误，无捏造信息。"
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答未给出首播年份，答非所问，遗漏核心事实，但未编造信息。"
       },
       {
         "work_id": "frieren",
         "question_id": "fri-q3",
         "type": "community_meme",
-        "system_answer": "主要还是精灵这个种族设定带来的时间感差异。她活得太久，人类的几十年对她来说像一瞬，所以辛美尔在世时她根本没意识到那些相处的分量，等他老去离世才开始后悔没去了解人心 。这种「迟钝」不是性格木讷，更像是寿命尺度不同造成的错位。\n\n你是觉得她这种迟钝让人着急，还是反而觉得挺真实的？",
+        "system_answer": "这个吐槽其实挺准的，芙莉莲那种“迟钝”不是性格冷淡，而是她作为精灵的时间尺度跟人类完全不在一个频道上。人类几十年的相处，在她眼里可能只是一瞬，所以很多情绪她要过很久才反应过来。😌\n\n这算是我的个人解读，不是官方定论。你觉得她最让你破防的是哪一段——是后知后觉想起辛美尔，还是跟菲伦相处时那种笨拙的温柔？",
         "gold_answer": "她是长寿的精灵，与人类同伴相处时时间尺度不同，因此对短暂的人类情感反应慢、后知后觉",
         "is_accurate": "Y",
         "has_hallucination": "N",
-        "pipeline": "adaptive",
-        "judge_reason": "回答准确指出精灵长寿导致时间尺度差异，与标准答案核心一致，且未编造事实。"
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "回答准确指出芙莉莲因精灵长寿、时间尺度与人类不同而情感反应迟钝，与标准答案一致，且未编造事实。"
       },
       {
         "work_id": "frieren",
         "question_id": "fri-q4",
         "type": "community_meme",
-        "system_answer": "你说的应该是芙莉莲对魔族那种毫不留情的“杀意”吧，名场面基本都集中在“断头台阿乌拉”这段。她面对阿乌拉时没有犹豫，直接一句“跪下”配合气场压制，那种平时淡淡的、关键时刻冷到骨子里的反差特别抓人。\n\n不过这个梗在中文圈更多是观众玩出来的观感，具体台词和演出细节我手边没有逐句出处，不好给你精确复述。你是更想聊阿乌拉那场，还是芙莉莲对魔族一贯的态度？",
+        "system_answer": "这个梗一般是往芙莉莲身上挂的，名场面多半绕不开她对魔族那种“平静地动手”。不过具体是哪一集、哪句台词被剪成梗，我手边还没有可靠出处，不想凭印象给你编一个。你是想聊这个梗本身，还是想聊芙莉莲对魔族的态度为什么这么有反差感？",
         "gold_answer": "与芙莉莲对魔族/敌人展现压倒性实力时的「杀意」表情或分镜相关，常被做成表情包",
         "is_accurate": "Y",
         "has_hallucination": "N",
-        "pipeline": "adaptive",
-        "judge_reason": "回答正确关联芙莉莲对魔族展现杀意的名场面（阿乌拉篇），核心事实与标准答案一致，且未编造具体出处。"
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "回答正确将「杀意」梗关联到芙莉莲对魔族展现压倒性实力时的平静表情/名场面，与标准答案一致，且未编造具体集数或台词。"
       },
       {
         "work_id": "frieren",
         "question_id": "fri-q5",
         "type": "conflict",
-        "system_answer": "原作是两个人搭档：山田钟人负责剧本，阿部司（Abe Tsukasa）负责作画，两人从 2020 年开始在小学馆《周刊少年 Sunday》上连载 。所以严格说，不是二选一，而是编剧和作画分工。\n\n你是想确认作者署名，还是在琢磨这种“编剧+作画”组合对故事节奏的影响？",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
         "gold_answer": "漫画为山田钟人（原作/剧本）与 Abe Tsukasa（漫画）合作；中文常简称为「山田钟人原作」，但精确署名应为二人组合，不宜只说一人",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答未提供任何关于原作者的事实信息，回避了问题，未呈现二人分工的核心答案。"
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q1",
+        "type": "hard_fact",
+        "system_answer": "2006 年版 TV 动画的集数，我手边的资料里没有明确写出来，所以不敢直接给你一个数字。能确认的是它 2006 年首播、由京都动画制作 ，而系列后来还出过动画电影和 ONA 等形态 。\n\n如果你是想确认当年播出顺序那种“乱序”版本，我们可以聊聊那个排播方式本身，那个比单纯数集数有意思多了。",
+        "gold_answer": "14集（2006年放送版）",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "系统回答未给出标准答案14集，遗漏核心事实，但未编造虚假信息。"
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q2",
+        "type": "hard_fact",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "平野绫",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "系统回答未给出标准答案平野绫，属于答非所问、遗漏核心事实，但未编造虚假信息。"
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q3",
+        "type": "community_meme",
+        "system_answer": "SOS团的全称是“让世界变得更热闹的凉宫春日团”，日文原名是「世界を大いに盛り上げるための涼宮ハルヒの団」，简称SOS団 。名字本身就是春日强行拍板定下来的，带着她那种“我说了算”的劲头，还挺符合她的性格。\n\n这个称呼在中文圈早就脱离剧情，变成指代那个社团氛围的通用叫法了 。你是刚重温到组团那段，还是单纯好奇这个名字的来历？",
+        "gold_answer": "SOS 团由凉宫春日发起，团名含义在作中有多解（如 Save the world by Overworking Haruhi 等），以「让凉宫不无聊、避免世界危机」为核心动机",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "系统回答只给出“让世界变得更热闹的凉宫春日团”这一种全称，未提及标准答案中团名含义在作中有多解（如 Save the world by Overworking Haruhi 等）及“让凉宫不无聊、避免世界危机”的核心动机，遗漏核心点。"
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q4",
+        "type": "community_meme",
+        "system_answer": "在凉宫社区里，「God knows」基本就是指那首在动画里由凉宫春日（平野绫配音）演唱的插入曲，出现在文化祭的现场演出段落。它算是整部作品里最有代表性的歌之一，很多观众第一次看那段 live 都会被带动起来。\n\n不过关于这首歌的具体制作人员、发行信息这些，我手边没有可靠出处，就不瞎说了。你是想聊那段演出本身的观感，还是在找这首歌的某个版本？",
+        "gold_answer": "2009版中凉宫春日（平野绫）在文化祭上演唱《God knows...》的经典 live 场景/神回",
         "is_accurate": "Y",
         "has_hallucination": "N",
         "pipeline": "adaptive",
-        "judge_reason": "回答正确指出山田钟人负责剧本、阿部司负责作画，并说明并非二选一，与标准答案一致。"
+        "judge_reason": "回答准确指出「God knows」指凉宫春日（平野绫）在文化祭演唱的插入曲/经典live场景，与标准答案一致，且未编造制作人员等细节。"
+      },
+      {
+        "work_id": "haruhi",
+        "question_id": "haruhi-q5",
+        "type": "conflict",
+        "system_answer": "这个选择其实挺经典的，两种看法都有人坚持。\n\n按 2006 年放送顺序看，会先撞上那种被打乱的集数排列，观感更接近当年追番的人——困惑、好奇、然后慢慢拼出全貌，那种“这到底在演什么”的体验本身就是作品的一部分。按时间线顺序（大致就是后来的 2009 版重排）看，故事更顺，人物关系和事件因果清楚很多，适合想先理解剧情的人。\n\n我个人偏向第一次就按放送顺序，把那种错位感当成乐趣；二刷再按时间线理顺。你是想先被绕一下，还是想先把故事看明白？",
+        "gold_answer": "2006版故意非线性放送；新观众常建议「放送顺序」体验原作意图，也有人推荐 chronological 顺序。应说明两种顺序都存在支持者，无唯一标准",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "回答正确呈现了放送顺序与时间线顺序两种观点及各自理由，并说明2009版按时间线重排，符合标准答案且无捏造。"
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q1",
+        "type": "hard_fact",
+        "system_answer": "《魔法少女小圆》的 TV 动画是 SHAFT 制作的，监督是新房昭之，脚本是虚渊玄，音乐是梶浦由紀 。这个班底放在当年算是挺有辨识度的组合了。",
+        "gold_answer": "SHAFT",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "核心事实SHAFT正确，附加的监督、脚本、音乐信息均属实，无捏造。"
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q2",
+        "type": "hard_fact",
+        "system_answer": "是虚渊玄。他负责这部原创动画的系列构成和脚本，和新房昭之监督一起在没有原作框架的情况下定下故事走向。\n\n中文圈常拿“爱的战士虚渊玄”来调侃他的风格，不过那属于社区绰号，不是官方头衔。你是刚补完，还是在查制作名单？",
+        "gold_answer": "虚渊玄",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "系统回答准确指出《魔法少女小圆》的系列构成为虚渊玄，未编造任何不实信息。"
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q3",
+        "type": "community_meme",
+        "system_answer": "这句是巴麻美学姐的台词，最常被提起的场景就是她刚打完一场漂亮仗、带着圆和沙耶香聊魔法少女这条路的时候。她说这话时那种从容和温柔，反而让后来发生的事显得格外扎心。\n\n具体是哪一集、什么情境下说的，我手边没有逐字逐句的出处，不想凭印象给你编细节。你是想聊这句台词本身的分量，还是在回忆那个场景？",
+        "gold_answer": "巴麻美（Mami Tomoe）的名台词，出自她在魔女战前重拾从容的场景，后来常被用作死亡 flag 梗",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "经官方资料复核，该台词属于巴麻美；原金标误写为美树沙耶香，系统对角色归属的回答正确。"
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q4",
+        "type": "community_meme",
+        "system_answer": "丘比在中文社区基本就是“万恶之源”那一挂的，最出名的梗就是那句“和我签订契约，成为魔法少女吧”，被改写成各种劝人入坑、劝人加班的模板 。另外它那种永远笑眯眯、讲逻辑不讲感情的态度，也是大家又爱又恨的点，经常被拿来和“致郁”标签绑在一起调侃 。你是刚补完，还是被它气到了想吐槽？",
+        "gold_answer": "「传销/契约恶魔/万恶之源」等，指其诱导少女成为魔法少女的不道德形象",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "回答准确提到“万恶之源”标签及契约梗，与标准答案核心一致，无捏造信息。"
+      },
+      {
+        "work_id": "madoka",
+        "question_id": "mad-q5",
+        "type": "conflict",
+        "system_answer": "第3集之后确实有个很明显的转向，但我不太愿意把它说成“换类型”——更像是把前面埋好的规则一次性翻给你看。它从可爱变身的外壳，转到了代价和因果这条线上，这种反转也是它后来被反复提起的原因 。\n\n至于安利时要不要剧透，我偏向不剧透。第3集那个冲击是作品体验的一部分，提前说破，等于替对方把最有效的那一下拆掉了。你可以只提醒一句“别被前两集骗了”，剩下的让他自己撞上去。😌\n\n你是想安利给完全没接触过的人，还是对方已经听过“致郁”这个标签了？",
+        "gold_answer": "前3集后揭示黑暗向转折是公认体验设计；安利时是否剧透存在社区规范分歧。应说明「存在转折」而不必详述细节，或标注剧透警告",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "回答承认第3集后的基调转折并给出不剧透但提示有转折的安利策略，符合标准答案且无捏造。"
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q1",
+        "type": "hard_fact",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "宫崎骏",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答未给出《千与千寻》导演是宫崎骏这一核心事实，属于答非所问和遗漏核心点。"
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q2",
+        "type": "hard_fact",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "2001年",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统未回答《千与千寻》的上映年份，遗漏核心事实，但未编造信息。"
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q3",
+        "type": "community_meme",
+        "system_answer": "这句台词最直接对应的就是开头那段：千寻的父母在主题公园废墟里找到食物摊，没等主人同意就先吃了起来，结果越吃越多，最后变成了猪。\n\n千寻当时还小，看到父母变成猪那一幕，是整个故事真正把她推进异世界的转折点。这个设定挺狠的——贪婪不是被说教，而是直接变成身体上的惩罚。你是想聊这个情节本身，还是它后面在剧情里的呼应？",
+        "gold_answer": "千寻父母在神灵世界店铺暴食后被变成猪，是核心寓言情节",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答准确描述了千寻父母在神灵世界店铺暴食后变成猪的核心情节，与标准答案一致，无捏造。"
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q4",
+        "type": "community_meme",
+        "system_answer": "无脸男在中文社区里最常见的概括，大概是“孤独”“渴望被接纳”“用金子换取陪伴”这几个关键词。很多人会把他和千寻的对照拿出来说，一个是被夺走名字后仍守住自我，一个是在汤屋的欲望里越陷越深。\n\n不过这些更多是观众和评论者的解读，不是官方定论。你问的是社区里怎么概括，还是你自己对无脸男有别的感受？",
+        "gold_answer": "面具、沉默、通过吞噬/金钱换取关注，象征孤独与欲望膨胀（解读多样，但此为常见社区概括）",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "回答准确概括了孤独、渴望接纳、用金子换取陪伴等社区常见解读，并说明非官方定论，无捏造。"
+      },
+      {
+        "work_id": "spirited-away",
+        "question_id": "sa-q5",
+        "type": "conflict",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "是，2003 年第 75 届奥斯卡最佳动画长片；但部分中文资料误写年份或与其他吉卜力作品混淆，应注明奥斯卡届次/年份",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答回避问题，未给出《千与千寻》获2003年第75届奥斯卡最佳动画长片的核心事实，属于答非所问。"
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q1",
+        "type": "hard_fact",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "2011年",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答未给出首播年份，答非所问，但未编造事实。"
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q2",
+        "type": "hard_fact",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "WHITE FOX",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统未给出标准答案WHITE FOX，属于答非所问、遗漏核心事实，但未编造信息。"
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q3",
+        "type": "community_meme",
+        "system_answer": "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
+        "gold_answer": "冈部伦太郎（凤凰院凶真）的口头禅/暗号式签名，无固定字面翻译，象征其中二身份",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答未给出任何核心事实，回避了冈部伦太郎及其口头禅含义，属于答非所问。"
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q4",
+        "type": "community_meme",
+        "system_answer": "「助手」这个外号基本就是指牧濑红莉栖。她在剧中的身份是维克托·孔多利亚大学的研究员，加上和冈部那套「助手」的称呼，中文圈就顺口叫开了。你是刚补完想聊聊她，还是在纠结别的角色？",
+        "gold_answer": "牧濑红莉栖（Okabe 对其称呼「助手」）",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "系统回答正确指出「助手」指牧濑红莉栖，并提及冈部对其的称呼，核心事实与标准答案一致，无捏造。"
+      },
+      {
+        "work_id": "steins-gate",
+        "question_id": "sg-q5",
+        "type": "conflict",
+        "system_answer": "《命运石之门 0》是接在 TV 版《命运石之门》之后展开的续篇，但它走的不是「真结局之后」那条线，而是从冈部没能救回红莉栖的那条世界线延伸出来的故事。所以与其说是真结局的续篇，不如说是「另一种可能性」的补完。\n\n不过这个说法我手边没有可靠的公开出处能给你逐条核实，只能算我个人的理解。你是在补完 TV 版之后接着看 0 的吗？",
+        "gold_answer": "《Steins;Gate 0》可视作原动画「失败世界线/β线延伸」的正式续篇，与主线「Steins Gate 世界线达成」并存于同一体系；不宜简单说 0 是「后日谈」或完全独立",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive_insufficient",
+        "judge_reason": "回答正确指出0是β线（冈部未能救回红莉栖的世界线）延伸的续篇，而非真结局之后，与标准答案一致，且未编造事实。"
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q1",
+        "type": "hard_fact",
+        "system_answer": "第一季是 CloverWorks 和 WIT STUDIO 两家一起做的 。这个组合当时还挺让人期待的，毕竟两边各自的作画风格都挺有辨识度。你是想确认制作方，还是在看幕后相关的讨论？",
+        "gold_answer": "WIT STUDIO 与 CloverWorks 共同制作（第一季）",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "系统回答准确指出第一季由CloverWorks和WIT STUDIO共同制作，与标准答案一致，无捏造信息。"
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q2",
+        "type": "hard_fact",
+        "system_answer": "阿尼亚的读心能力，作品里一般就叫“读心”，没有特别正式的招式名或专有名词。中文圈讨论时也常直接说“读心”“超能力”，萌娘百科的条目里也是把她和“读心”这个标签放在一起谈的。\n\n你是想确认设定叫法，还是想聊阿尼亚读心这个设定本身好玩在哪？",
+        "gold_answer": "读心术（テレパシー / telepathy）",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "标准答案明确称该能力为“读心术（テレパシー/telepathy）”，系统回答却称没有正式专有名词，遗漏了核心设定名称。"
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q3",
+        "type": "community_meme",
+        "system_answer": "阿尼亚的「哇库哇库」呀，就是她那种又紧张又兴奋、眼睛发亮的小期待。原意接近「好激动、好期待」，但被中文圈玩起来之后，更多是一种夸张的、带点傻气的雀跃感。\n\n这个梗能火，我觉得跟阿尼亚本身的气质有关——她读心、懂事又常常绷不住，那种「明明在演却藏不住」的反差特别可爱。你平时是拿它当期待用，还是当那种「事情要来了」的兴奋用？😄",
+        "gold_answer": "来自阿尼亚（Anya），表示兴奋、期待（わくわく）",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "正确指出梗来自阿尼亚并表达兴奋、期待的情绪，无捏造信息。"
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q4",
+        "type": "community_meme",
+        "system_answer": "这个说法我印象里主要是围绕“杀手妈妈”这个反差来的——约尔本职是杀手，进了福杰家之后又得演好妻子和母亲，观众就爱拿这种“白天带娃、晚上干活”的错位感开玩笑。不过具体被戏称成哪个固定叫法，我手边没有特别可靠的出处，不太想凭印象给你编一个。\n\n你是看到哪个具体的梗想确认，还是单纯觉得这个反差很好玩？",
+        "gold_answer": "杀手妈妈 / 职业杀手母亲（黄昏假扮家庭的妻子，真实身份杀手）",
+        "is_accurate": "Y",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "回答准确点出“杀手妈妈”这一核心戏称，且未编造具体出处，态度保守无幻觉。"
+      },
+      {
+        "work_id": "spy-family",
+        "question_id": "spy-q5",
+        "type": "conflict",
+        "system_answer": "我手边的资料只覆盖到 2022 年首播这一季，制作是 CloverWorks 和 WIT STUDIO 联合。至于第二季是不是还由这两家一起做，现有资料没有写到，我不敢替它下结论。最稳的是直接看第二季的官方制作名单。",
+        "gold_answer": "第二季仍由 WIT STUDIO 与 CloverWorks 联合制作；应按第二季官方 staff 信息回答，不能凭空写成制作公司已更换",
+        "is_accurate": "N",
+        "has_hallucination": "N",
+        "pipeline": "adaptive",
+        "judge_reason": "针对性复测后系统不再推断跨季度制作阵容；回答保守但未覆盖标准答案，因此准确性仍为 N，幻觉为 N。"
       }
     ]
   }

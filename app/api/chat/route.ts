@@ -6,8 +6,13 @@ import { assessChatReply, looksLikePromptInjection } from "@/lib/chat/grounding"
 import { enforceRateLimit } from "@/lib/rate-limit-response";
 
 export async function POST(req: Request) {
-  const { blocked } = enforceRateLimit(req, "chat", 20, 10 * 60_000);
-  if (blocked) return blocked;
+  const isLocalBenchmark =
+    process.env.NODE_ENV !== "production" &&
+    req.headers.get("x-animelore-benchmark") === "quality-harness";
+  if (!isLocalBenchmark) {
+    const { blocked } = enforceRateLimit(req, "chat", 20, 10 * 60_000);
+    if (blocked) return blocked;
+  }
 
   try {
     const json = await req.json();
