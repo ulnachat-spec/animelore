@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { AniListPoster } from "@/components/anilist-poster";
 import type { RoamCard as RoamCardData } from "@/lib/roam/roam-types";
 
 const tagTone: Record<RoamCardData["tag"], string> = {
@@ -15,6 +17,7 @@ export function RoamCard({ card }: { card: RoamCardData }) {
   const sourceCount = card.source_urls.length;
   const confidencePercent = Math.round(card.confidence * 100);
   const verifiedLabel = card.verification_status === "fallback" ? "安全兜底" : "已校验";
+  const recommendations = card.cold_payload?.recommendations ?? [];
 
   return (
     <article className="archive-card relative min-h-[360px] overflow-hidden p-5 sm:min-h-[430px] sm:p-8">
@@ -40,10 +43,31 @@ export function RoamCard({ card }: { card: RoamCardData }) {
         <details className="archive-disclosure mt-5 rounded-2xl border border-line/70 bg-canvas/55 p-2 sm:mt-8" name="roam-context">
           <summary>看看这条线索会通向哪里</summary>
           <div className="px-2 pb-2">
-            <p className="mt-1 text-sm font-medium text-ink">{card.target.title}</p>
+            <Link href={card.target.href} className="mt-1 inline-flex text-sm font-semibold text-brand hover:underline">
+              {card.target.title} →
+            </Link>
             <p className="mt-2 text-xs text-muted">
               {card.next_seeds.slice(0, 3).join(" / ") || card.topic_key}
             </p>
+            {recommendations.length ? (
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                {recommendations.slice(0, 2).map((rec) => (
+                  <Link
+                    key={`${rec.candidate_id}-${rec.anilistId}`}
+                    href={`/work/${encodeURIComponent(rec.searchQuery)}`}
+                    className="flex items-center gap-3 rounded-xl border border-line/70 bg-surface/80 p-2 transition hover:border-brand/40"
+                  >
+                    <span className="relative h-14 w-10 shrink-0 overflow-hidden rounded-md bg-soft">
+                      <AniListPoster title={rec.searchQuery} initialSrc={rec.coverImage} sizes="40px" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[10px] text-muted">沿线作品</span>
+                      <span className="block truncate text-xs font-semibold text-ink">{rec.displayTitle}</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            ) : null}
           </div>
         </details>
 

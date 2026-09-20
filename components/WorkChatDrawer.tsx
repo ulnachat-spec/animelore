@@ -234,6 +234,12 @@ export function WorkChatDrawer({
     setError(null);
   }
 
+  const starterPrompts = [
+    { label: "聊聊我的感受", value: `我看完《${workTitle}》后，有些感受想和你聊聊。` },
+    { label: "问一个梗或幕后", value: `我想了解《${workTitle}》里一个有趣的梗或幕后故事。` },
+    { label: "整理分享文案", value: `我想把对《${workTitle}》的感想整理成一段适合分享的话。` }
+  ];
+
   return (
     <>
       <button
@@ -323,7 +329,7 @@ export function WorkChatDrawer({
                 className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4 md:px-5"
               >
                 {messages.length === 0 ? (
-                  <div className="mx-auto max-w-xs rounded-2xl border border-line bg-soft/60 p-5 text-center">
+                  <div className="mx-auto max-w-sm rounded-2xl border border-line bg-soft/60 p-5 text-center">
                     <Image
                       src="/brand/mei-avatar-v1.png"
                       alt=""
@@ -331,12 +337,30 @@ export function WorkChatDrawer({
                       height={64}
                       className="mx-auto size-16 rounded-full border-2 border-elevated object-cover shadow-card"
                     />
-                    <p className="mt-3 text-sm leading-relaxed text-body">
-                    嗨～我是{CHAT_ASSISTANT_NAME}。关于《{workTitle}》的梗、幕后或观感，都可以问我。
+                    <p className="mt-3 text-sm font-medium text-ink">想从哪里聊起？</p>
+                    <p className="mt-1 text-xs leading-6 text-body">
+                    可以说说你的感受，也可以问作品里的梗与幕后；能核到来源时我会补充，找不到也会直说。聊出一句喜欢的话后，我还能帮你做成分享卡片。
                     {!ready ? (
                       <span className="mt-2 block text-amber-400/90">{readyHint}</span>
                     ) : null}
                     </p>
+                    {ready ? (
+                      <div className="mt-4 flex flex-wrap justify-center gap-2">
+                        {starterPrompts.map((prompt) => (
+                          <button
+                            key={prompt.label}
+                            type="button"
+                            onClick={() => {
+                              setInput(prompt.value);
+                              window.setTimeout(() => inputRef.current?.focus(), 0);
+                            }}
+                            className="min-h-9 rounded-full border border-line bg-surface px-3 text-xs font-medium text-body transition hover:border-brand/50 hover:text-brand"
+                          >
+                            {prompt.label}
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                 ) : null}
                 {messages.map((m, i) => (
@@ -359,7 +383,7 @@ export function WorkChatDrawer({
                         </span>
                       ) : null}
                       <p className="whitespace-pre-wrap break-words">{m.content}</p>
-                      {m.role === "assistant" && m.grounding ? (
+                      {m.role === "assistant" && (m.grounding === "source_backed" || m.grounding === "insufficient") ? (
                         <GroundingNote grounding={m.grounding} citations={m.citations ?? []} />
                       ) : null}
                     </motion.div>
@@ -460,10 +484,10 @@ function GroundingNote({
   citations: NonNullable<RememberedChatMessage["citations"]>;
 }) {
   const labels: Record<ChatGrounding, string> = {
-    source_backed: "有来源支撑",
-    archive_context: "依据站内档案",
-    opinion: "观感交流",
-    insufficient: "资料不足"
+    source_backed: citations.length ? `参考来源 ${citations.length} 个` : "有来源可查",
+    archive_context: "",
+    opinion: "",
+    insufficient: "这个细节暂时没有可靠出处"
   };
   const tone =
     grounding === "source_backed"
@@ -473,7 +497,7 @@ function GroundingNote({
         : "text-muted";
 
   return (
-    <div className={`mt-2 border-t border-line/70 pt-2 text-[10px] ${tone}`}>
+    <div className={`mt-2 border-t border-line/50 pt-2 text-[10px] ${tone}`}>
       <span>{labels[grounding]}</span>
       {citations.map((citation) => {
         const href = citation.urls[0];
@@ -485,11 +509,11 @@ function GroundingNote({
             rel="noopener noreferrer"
             className="ml-2 underline decoration-line underline-offset-2 hover:text-ink"
           >
-            卡{citation.card} · {citation.label}
+            {citation.label}
           </a>
         ) : (
           <span key={citation.card} className="ml-2">
-            卡{citation.card} · {citation.label}
+            {citation.label}
           </span>
         );
       })}

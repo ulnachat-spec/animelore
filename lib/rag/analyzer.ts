@@ -9,6 +9,8 @@ const KNOWN_ALIAS_EXPANSIONS: Record<string, string[]> = {
   巨人: ["进击的巨人", "Attack on Titan", "Shingeki no Kyojin"],
   进击的巨人: ["Attack on Titan", "Shingeki no Kyojin"],
   钢炼: ["钢之炼金术师 FULLMETAL ALCHEMIST", "Fullmetal Alchemist: Brotherhood"],
+  钢之炼金术师fullmetalalchemist: ["Fullmetal Alchemist: Brotherhood", "鋼の錬金術師 FULLMETAL ALCHEMIST"],
+  钢之炼金术师fa: ["Fullmetal Alchemist: Brotherhood", "鋼の錬金術師 FULLMETAL ALCHEMIST"],
   芙莉莲: ["葬送的芙莉莲", "Frieren: Beyond Journey's End"],
   孤独摇滚: ["孤独摇滚！", "Bocchi the Rock!"],
   石头门: ["命运石之门", "Steins;Gate"],

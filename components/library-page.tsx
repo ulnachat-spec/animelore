@@ -42,7 +42,7 @@ export function LibraryPage() {
           <p className="archive-kicker text-brand">Local bookshelf · 只保存在本机</p>
           <h1 className="archive-title mt-3 text-3xl sm:text-4xl">我的书架</h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-body">
-            把想重看的作品、冷知识和档案卡放在一起。无需登录，也不会上传浏览记录。
+            收藏以整部作品档案为主，也可以保留喜欢的冷知识。无需登录，也不会上传浏览记录。
           </p>
         </div>
         <div className="hidden text-right sm:block">
@@ -68,7 +68,7 @@ export function LibraryPage() {
       </div>
 
       <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-1" aria-label="内容筛选">
-        {(["all", "work", "cold", "card"] as const).map((value) => (
+        {(["all", "work", "cold"] as const).map((value) => (
           <button
             key={value}
             type="button"

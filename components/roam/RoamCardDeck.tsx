@@ -267,6 +267,22 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
       </div>
 
       <div className="relative min-h-[360px] sm:min-h-[430px]">
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-line/70 bg-surface/80 px-2 py-3 text-[10px] font-medium text-muted shadow-card backdrop-blur"
+          animate={{ x: [0, -4, 0], opacity: [0.55, 0.9, 0.55] }}
+          transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.2 }}
+        >
+          ← 略过
+        </motion.div>
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-brand/25 bg-surface/80 px-2 py-3 text-[10px] font-medium text-brand shadow-card backdrop-blur"
+          animate={{ x: [0, 4, 0], opacity: [0.55, 0.9, 0.55] }}
+          transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.2 }}
+        >
+          深入 →
+        </motion.div>
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={activeCard.id}

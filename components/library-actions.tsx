@@ -15,6 +15,18 @@ export function LibraryActions({
   const [notice, setNotice] = useState("");
   const favorite = library.favorites.some((entry) => entry.id === item.id);
   const later = library.readLater.some((entry) => entry.id === item.id);
+  const favoriteLabel =
+    item.kind === "work"
+      ? favorite
+        ? "已收藏作品"
+        : "收藏作品"
+      : item.kind === "cold"
+        ? favorite
+          ? "已收藏冷知识"
+          : "收藏冷知识"
+        : favorite
+          ? "已收藏"
+          : "收藏";
 
   const announce = (message: string) => {
     setNotice(message);
@@ -31,7 +43,7 @@ export function LibraryActions({
         className={favorite ? "archive-button-primary" : "archive-button"}
       >
         <span aria-hidden="true">{favorite ? "★" : "☆"}</span>
-        {compact ? "收藏" : favorite ? "已收藏" : "收藏"}
+        {favoriteLabel}
       </button>
       <button
         type="button"

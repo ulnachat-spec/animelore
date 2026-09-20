@@ -437,7 +437,10 @@ export async function retrieveWorkEvidenceRound(
     duration_ms: sourceTimings.find((t) => t.source === "anilist_meta")?.duration_ms
   });
 
-  if (sourceEnabled(enabledSources, "anilist")) {
+  const hasResolvedAniListMeta = Boolean(
+    meta.anilistId || meta.coverImage || meta.nativeTitle || meta.seasonYear || meta.studios?.length
+  );
+  if (sourceEnabled(enabledSources, "anilist") && hasResolvedAniListMeta) {
     evidence.push({
       id: nextId("anilist"),
       source: "anilist",

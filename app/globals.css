@@ -16,6 +16,8 @@
   --c-brand: 166 75 55;
   --c-brand-strong: 132 55 39;
   --c-sage: 102 114 91;
+  --c-gold: 183 132 58;
+  --c-plum: 125 83 105;
   --c-shadow: 56 43 31;
   --font-display: "Noto Serif SC", "Songti SC", "STSong", Georgia, serif;
   --font-sans: Inter, "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
@@ -38,6 +40,8 @@
   --c-brand: 215 131 95;
   --c-brand-strong: 231 154 117;
   --c-sage: 148 160 131;
+  --c-gold: 211 168 98;
+  --c-plum: 190 139 167;
   --c-shadow: 0 0 0;
 }
 
@@ -67,6 +71,7 @@ body {
 @layer components {
   .archive-card {
     @apply rounded-[1.35rem] border border-line bg-surface shadow-card;
+    background-image: linear-gradient(145deg, rgb(var(--c-elevated) / 0.42), transparent 42%);
   }
 
   .archive-kicker {

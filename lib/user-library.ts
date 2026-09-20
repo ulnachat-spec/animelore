@@ -88,10 +88,16 @@ export function parseUserLibrary(raw: string | null): UserLibrary {
   try {
     const value = JSON.parse(raw) as Partial<UserLibrary>;
     const favorites = Array.isArray(value.favorites)
-      ? value.favorites.map(parseItem).filter((item): item is LibraryItem => Boolean(item)).slice(0, 500)
+      ? value.favorites
+          .map(parseItem)
+          .filter((item): item is LibraryItem => Boolean(item) && item?.kind !== "card")
+          .slice(0, 500)
       : [];
     const readLater = Array.isArray(value.readLater)
-      ? value.readLater.map(parseItem).filter((item): item is LibraryItem => Boolean(item)).slice(0, 500)
+      ? value.readLater
+          .map(parseItem)
+          .filter((item): item is LibraryItem => Boolean(item) && item?.kind !== "card")
+          .slice(0, 500)
       : [];
     const history = Array.isArray(value.history)
       ? value.history

@@ -31,7 +31,8 @@ export default async function RoamPage() {
           <p className="archive-kicker text-brand">AnimeLore Roam</p>
           <h1 className="archive-title mt-2 text-4xl sm:text-5xl">知识漫游</h1>
           <p className="mt-3 max-w-xl text-sm leading-7 text-body">
-            左滑略过，右滑深入。芽衣会根据你的选择，悄悄调整下一叠档案。
+            每张卡都藏着一个反常识入口：梗为什么会流传、幕后选择改变了什么、作品又和谁共享一条谱系。
+            左滑略过，右滑深入；芽衣会根据你的选择，悄悄调整下一叠档案。
           </p>
         </div>
       </section>

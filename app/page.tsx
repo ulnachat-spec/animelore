@@ -47,6 +47,22 @@ export default async function HomePage({
           <div className="mt-8 max-w-2xl">
             <SearchBox showSuggestions />
           </div>
+          <div className="mt-4 flex flex-wrap gap-2" aria-label="产品能力">
+            {["四种档案视角", "来源可追溯", "芽衣陪你聊"].map((label, index) => (
+              <span
+                key={label}
+                className={`rounded-full border px-3 py-1.5 text-xs font-medium ${
+                  index === 0
+                    ? "border-brand/25 bg-brand/10 text-brand"
+                    : index === 1
+                      ? "border-sage/25 bg-sage/10 text-sage"
+                      : "border-gold/30 bg-gold/10 text-ink"
+                }`}
+              >
+                {label}
+              </span>
+            ))}
+          </div>
         </div>
 
         <aside className="relative mx-auto w-full max-w-[420px] lg:max-w-none" aria-label="芽衣档案员">

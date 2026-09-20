@@ -1,5 +1,6 @@
 import { COLD_PROMPT_VERSION } from "@/lib/cold-prompt-version";
 import { isUsableColdHookRecord, readColdHookStore } from "@/lib/cold-hook-store";
+import { enrichColdRecommendations } from "@/lib/hook-enrich";
 import type { ColdHookRecord } from "@/lib/cold-types";
 import type { RoamCard, RoamCardTag, RoamCardType } from "@/lib/roam/roam-types";
 import type { ColdHookPayload, ColdRecommendationEnriched, ColdSubtype } from "@/lib/types";
@@ -71,23 +72,14 @@ function nextSeedsFromRecord(record: ColdHookRecord): string[] {
   return [...new Set(seeds.map((s) => s.trim()))].slice(0, 5);
 }
 
-function lightweightPayloadFromRecord(
+async function payloadFromRecord(
   record: ColdHookRecord,
   type: ColdSubtype
-): ColdHookPayload {
-  const recommendations: ColdRecommendationEnriched[] = record.recommendations
-    .slice(0, 2)
-    .map((r, i) => {
-      const title = r.anime_title || r.candidate_id || `推荐 ${i + 1}`;
-      return {
-        candidate_id: r.candidate_id || `seed_${i}`,
-        anilistId: r.anilistId,
-        anime_title: r.anime_title,
-        reason: r.reason,
-        searchQuery: title,
-        displayTitle: title
-      };
-    });
+): Promise<ColdHookPayload> {
+  const recommendations: ColdRecommendationEnriched[] = await enrichColdRecommendations(
+    record.recommendations,
+    { resolveMissingIds: false }
+  );
   return {
     topic_type: record.topic_type,
     cold_subtype: type,
@@ -108,7 +100,7 @@ function lightweightPayloadFromRecord(
 
 export async function coldRecordToRoamCard(record: ColdHookRecord): Promise<RoamCard> {
   const type = record.cold_subtype ?? fallbackSubtypeFromRecord(record);
-  const coldPayload = lightweightPayloadFromRecord(record, type);
+  const coldPayload = await payloadFromRecord(record, type);
   return {
     id: `cold-${record.id}`,
     type,

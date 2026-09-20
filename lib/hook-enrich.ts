@@ -1,4 +1,5 @@
 import { fetchAniListMediaBrief, fetchAniListMeta } from "@/lib/data-sources";
+import { findConceptRecByAniListId } from "@/lib/cold-concept-rec-pool";
 import type {
   ColdQuiz,
   ColdHookPayload,
@@ -51,34 +52,49 @@ export async function coldPayloadFromRaw(raw: {
  * 仅通过 anilistId 丰富推荐；默认只保留日本 TV 动画（countryOfOrigin === JP）。
  */
 export async function enrichColdRecommendations(
-  items: ColdRecommendationRaw[]
+  items: ColdRecommendationRaw[],
+  options: { resolveMissingIds?: boolean } = {}
 ): Promise<ColdRecommendationEnriched[]> {
   const out: ColdRecommendationEnriched[] = [];
 
   for (const item of items.slice(0, 2)) {
     let anilistId = item.anilistId;
-    if ((!anilistId || anilistId <= 0) && item.anime_title) {
+    if (
+      options.resolveMissingIds !== false &&
+      (!anilistId || anilistId <= 0) &&
+      item.anime_title
+    ) {
       const meta = await fetchAniListMeta(item.anime_title);
       anilistId = meta?.anilistId;
     }
-    if (!anilistId || anilistId <= 0) continue;
+    if (!anilistId || anilistId <= 0) {
+      if (!item.anime_title) continue;
+      out.push({
+        ...item,
+        searchQuery: item.anime_title,
+        displayTitle: item.anime_title
+      });
+      continue;
+    }
 
     const brief = await fetchAniListMediaBrief(anilistId);
-    if (!brief) continue;
-    if (!isJapaneseAnime(brief.countryOfOrigin, item.allowNonJapanese)) continue;
+    if (brief && !isJapaneseAnime(brief.countryOfOrigin, item.allowNonJapanese)) continue;
 
-    const displayTitle = brief.title;
-    const searchQuery = brief.title;
+    // AniList 偶发限流时仍保留可跳转的推荐；海报交给客户端稍后补取。
+    const poolFallback = findConceptRecByAniListId(anilistId);
+    const displayTitle = brief?.title || item.anime_title || poolFallback?.title;
+    if (!displayTitle) continue;
+    const searchQuery = displayTitle;
 
     out.push({
       candidate_id: item.candidate_id,
-      anilistId: brief.anilistId,
+      anilistId: brief?.anilistId ?? anilistId,
       anime_title: displayTitle,
       reason: item.reason,
       searchQuery,
       displayTitle,
-      coverImage: brief.coverImage,
-      nativeTitle: brief.nativeTitle
+      coverImage: brief?.coverImage,
+      nativeTitle: brief?.nativeTitle
     });
   }
 

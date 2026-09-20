@@ -7,7 +7,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { LoreCard } from "@/lib/types";
-import { LibraryActions } from "@/components/library-actions";
 
 function validHttpUrls(urls: string[] | undefined): string[] {
   return (urls ?? [])
@@ -184,13 +183,19 @@ function LoreArticle({
   isRegenEnter?: boolean;
   mobile?: boolean;
 }) {
+  const tone: Record<LoreCard["id"], string> = {
+    legacy: "before:bg-brand",
+    meme: "before:bg-gold",
+    behind: "before:bg-sage",
+    lineage: "before:bg-plum"
+  };
   return (
     <motion.article
       initial={mobile ? { opacity: 0, x: 28 } : isRegenEnter ? { opacity: 0 } : { opacity: 0, y: 24 }}
       animate={{ opacity: 1, x: 0, y: 0 }}
       exit={mobile ? { opacity: 0, x: -22 } : undefined}
       transition={mobile ? { duration: 0.22 } : { duration: 0.3, delay: index * 0.08 }}
-      className="archive-card p-5 sm:p-6"
+      className={`archive-card relative overflow-hidden p-5 before:absolute before:inset-x-0 before:top-0 before:h-1 sm:p-6 ${tone[card.id]}`}
     >
       <div className="archive-kicker">
         {String(index + 1).padStart(2, "0")} {"\u00b7"} {card.en_label}
@@ -220,19 +225,6 @@ function LoreArticle({
         </details>
       ) : null}
       <CardSourceLine source={card.source} sourceUrls={card.source_urls ?? []} />
-      <div className="mt-4 border-t border-line/70 pt-3">
-        <LibraryActions
-          compact
-          item={{
-            id: `card:${card.id}:${card.headline}`,
-            kind: "card",
-            title: card.headline,
-            subtitle: card.zh_name,
-            href: typeof window === "undefined" ? "/" : window.location.pathname,
-            tags: [card.zh_name, card.en_label]
-          }}
-        />
-      </div>
     </motion.article>
   );
 }

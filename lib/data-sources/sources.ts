@@ -13,6 +13,7 @@ interface AniListResponse {
   data?: {
     Page?: {
       media?: Array<{
+        id?: number;
         title?: { romaji?: string; english?: string; native?: string };
         seasonYear?: number;
         season?: string;
@@ -33,9 +34,13 @@ export async function fetchAniListMeta(query: string): Promise<WorkMeta | null> 
       }
       if (meta && meta.title !== query) return meta;
     }
-    return { title: query };
-  } catch {
-    return { title: query };
+    return null;
+  } catch (error) {
+    console.info("[AniList] metadata lookup failed", {
+      query,
+      message: error instanceof Error ? error.message : String(error)
+    });
+    return null;
   }
 }
 
@@ -77,7 +82,13 @@ async function fetchAniListMetaOnce(search: string, originalQuery: string): Prom
     cache: "no-store"
   });
 
-  if (!resp.ok) return null;
+  if (!resp.ok) {
+    console.info("[AniList] metadata response unavailable", {
+      search,
+      status: resp.status
+    });
+    return null;
+  }
   const data = (await resp.json()) as AniListResponse;
   if (data.errors?.length) return null;
   const mediaList = data.data?.Page?.media || [];

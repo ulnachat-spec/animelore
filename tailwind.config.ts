@@ -16,7 +16,9 @@ const config: Config = {
         line: "rgb(var(--c-line) / <alpha-value>)",
         brand: "rgb(var(--c-brand) / <alpha-value>)",
         "brand-strong": "rgb(var(--c-brand-strong) / <alpha-value>)",
-        sage: "rgb(var(--c-sage) / <alpha-value>)"
+        sage: "rgb(var(--c-sage) / <alpha-value>)",
+        gold: "rgb(var(--c-gold) / <alpha-value>)",
+        plum: "rgb(var(--c-plum) / <alpha-value>)"
       },
       fontFamily: {
         display: ["var(--font-display)"],
@@ -29,7 +31,7 @@ const config: Config = {
       },
       backgroundImage: {
         "archive-glow":
-          "radial-gradient(circle at 15% 0%, rgb(var(--c-brand) / 0.10), transparent 36%), radial-gradient(circle at 92% 12%, rgb(var(--c-sage) / 0.10), transparent 32%)"
+          "radial-gradient(circle at 15% 0%, rgb(var(--c-brand) / 0.11), transparent 34%), radial-gradient(circle at 92% 12%, rgb(var(--c-sage) / 0.11), transparent 30%), radial-gradient(circle at 70% 72%, rgb(var(--c-gold) / 0.08), transparent 26%)"
       }
     }
   },

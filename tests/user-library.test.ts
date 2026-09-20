@@ -45,4 +45,13 @@ describe("user library", () => {
     expect(importLibrary(exportLibrary(library)).history[0].id).toBe(work.id);
     expect(parseUserLibrary('{"favorites":[null,{"id":1}]}').favorites).toEqual([]);
   });
+
+  it("migrates away legacy card-level saves so favorites represent whole works", () => {
+    const parsed = parseUserLibrary(JSON.stringify({
+      favorites: [{ id: "card:legacy", kind: "card", title: "旧卡片", href: "/work/A" }, work],
+      readLater: [{ id: "card:meme", kind: "card", title: "旧卡片", href: "/work/A" }]
+    }));
+    expect(parsed.favorites.map((item) => item.kind)).toEqual(["work"]);
+    expect(parsed.readLater).toEqual([]);
+  });
 });

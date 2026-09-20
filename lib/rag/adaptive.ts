@@ -3,6 +3,7 @@ import { verifyLoreWithGemini } from "@/lib/gemini-verifier";
 import { buildLorePromptFromAdaptive } from "@/lib/prompt";
 import { generateLore } from "@/lib/llm";
 import { sanitizeLoreAgainstEvidence } from "@/lib/lore-claim-safety";
+import { dedupeLoreAcrossCards } from "@/lib/lore-cross-card-dedupe";
 import { analyzeWorkQuery } from "@/lib/rag/analyzer";
 import { evaluateEvidence } from "@/lib/rag/evaluator";
 import { insufficientEvidenceLore } from "@/lib/rag/insufficient";
@@ -276,6 +277,11 @@ export async function runAdaptiveWorkLore(
         pushTrace("claim_safety", {
           removed_claims: claimSafety.removedClaims,
           downgraded_fields: claimSafety.downgradedFields
+        });
+        const crossCardDedupe = dedupeLoreAcrossCards(finalLore);
+        finalLore = crossCardDedupe.value;
+        pushTrace("cross_card_dedupe", {
+          removed_fields: crossCardDedupe.removedCount
         });
       }
 

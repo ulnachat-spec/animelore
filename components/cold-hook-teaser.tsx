@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { AniListPoster } from "@/components/anilist-poster";
 import {
   buildColdSessionEnvelope,
   COLD_SESSION_STORAGE_KEY
@@ -48,11 +50,35 @@ export function ColdHookTeaser({ payload }: { payload: ColdHookPayload }) {
         className="relative mt-8 w-full rounded-xl text-left focus-visible:outline-none"
       >
         <p className="archive-title text-xl leading-snug sm:text-2xl">{payload.hook}</p>
+        {payload.blurb ? (
+          <p className="mt-3 max-w-xl text-sm leading-6 text-body">
+            <span className="font-medium text-brand">反差线索：</span>{payload.blurb}
+          </p>
+        ) : null}
         <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand">
           翻开完整解读
           <span className="transition group-hover:translate-x-1" aria-hidden="true">→</span>
         </p>
       </button>
+      {payload.recommendations.length ? (
+        <div className="relative mt-5 grid gap-2 border-t border-line/70 pt-4 sm:grid-cols-2">
+          {payload.recommendations.slice(0, 2).map((rec) => (
+            <Link
+              key={`${rec.candidate_id}-${rec.anilistId}`}
+              href={`/work/${encodeURIComponent(rec.searchQuery)}`}
+              className="flex items-center gap-3 rounded-xl bg-canvas-tint/70 p-2 transition hover:bg-soft"
+            >
+              <span className="relative h-12 w-9 shrink-0 overflow-hidden rounded-md bg-soft">
+                <AniListPoster title={rec.searchQuery} initialSrc={rec.coverImage} sizes="36px" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[10px] font-medium text-muted">相关作品</span>
+                <span className="block truncate text-sm font-semibold text-ink">{rec.displayTitle}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }

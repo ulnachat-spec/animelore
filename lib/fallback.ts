@@ -63,8 +63,8 @@ export function fallbackLore(meta: WorkMeta): LorePayload {
       }
     ],
     bottom_hook: {
-      work: "Fullmetal Alchemist: Brotherhood",
-      hook: "这部作品里最残酷的一课，其实第一集就偷偷埋下了。"
+      work: title,
+      hook: `如果想继续读《${title}》，可以换一个官方标题再检索一次。`
     }
   };
 }

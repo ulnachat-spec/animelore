@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ShareModal } from "@/components/share/ShareModal";
 import { MeiState } from "@/components/mei-state";
 import { LibraryActions } from "@/components/library-actions";
+import { AniListPoster } from "@/components/anilist-poster";
 import { formatColdInsightForDisplay } from "@/lib/cold-insight-display";
 import {
   coldSessionStaleMessage,
@@ -285,19 +285,7 @@ export function ColdKnowledgeClient({
                 className="archive-card flex gap-4 p-4 transition hover:-translate-y-0.5 hover:border-brand/50"
               >
                 <div className="relative h-[120px] w-[85px] shrink-0 overflow-hidden rounded-lg bg-soft">
-                  {rec.coverImage ? (
-                    <Image
-                      src={rec.coverImage}
-                      alt={rec.displayTitle}
-                      fill
-                      className="object-cover"
-                      sizes="85px"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-xs text-muted">
-                      暂无封面
-                    </div>
-                  )}
+                  <AniListPoster title={rec.searchQuery} initialSrc={rec.coverImage} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <h2 className="font-semibold text-ink">{rec.displayTitle}</h2>

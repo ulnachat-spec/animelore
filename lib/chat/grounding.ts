@@ -55,10 +55,7 @@ export function assessChatReply(
 
   const citedNumbers = [...rawMessage.matchAll(/\[卡(\d+)\]/g)].map((match) => Number(match[1]));
   const validNumbers = [...new Set(citedNumbers.filter((number) => number >= 1 && number <= cards.length))];
-  const message = rawMessage.replace(/\[卡(\d+)\]/g, (token, rawNumber: string) => {
-    const number = Number(rawNumber);
-    return number >= 1 && number <= cards.length ? token : "";
-  }).trim();
+  const message = rawMessage.replace(/\[卡\d+\]/g, "").replace(/ {2,}/g, " ").trim();
   const citations = validNumbers.map((number) => ({
     card: number,
     label: cards[number - 1].zh_name,
@@ -68,7 +65,7 @@ export function assessChatReply(
 
   if ((mode === "fact" || mode === "mixed") && citations.length === 0) {
     return {
-      message: "现有四张档案没有给出足够依据来确认这件事，我不想凭印象补答案。你可以换成作品主题或观感问题，或者先查看卡片下方的来源。",
+      message: "这个细节我手边还没有可靠出处，先不替你下定论。要不换个角度——你更想追它的出处，还是聊聊它为什么会让人印象这么深？",
       grounding: "insufficient",
       citations: []
     };
