@@ -3,6 +3,7 @@ import {
   fetchBilibiliColumnContext,
   fetchNgaCommunityContext
 } from "@/lib/data-sources/community-sources";
+import { fetchBangumiSubjectOutcome, type BangumiSubject } from "@/lib/data-sources/bangumi";
 import {
   communityFetchFailure,
   communityOutcomeToDebug,
@@ -105,6 +106,29 @@ function timeoutFetchOutcome(source: CommunitySourceId, query: string): Communit
     phase: "network",
     message: "fetch_timeout"
   });
+}
+
+/**
+ * 实时社区搜索在云端可能被风控；Bangumi 是稳定的中文同好社区入口。
+ * 它不是“文章考据”的替代品，因此仅在没有任何合格文章时兜底展示，并在 UI 中保留来源标识。
+ */
+export function bangumiCommunityFallbackCandidate(subject: BangumiSubject): CommunityArticleCandidate {
+  const title = subject.name_cn || subject.name;
+  const tagText = subject.tags
+    .slice(0, 5)
+    .map((tag) => tag.name)
+    .filter(Boolean)
+    .join("、");
+  const snippet = subject.summary.trim() || (tagText ? `Bangumi 社区常见标签：${tagText}` : "进入 Bangumi 查看中文同好讨论与条目评论。");
+
+  return {
+    id: `bangumi_subject_${subject.id}`,
+    source: "bangumi",
+    title: `${title}｜Bangumi 中文社区条目`,
+    url: subject.url,
+    snippet: snippet.slice(0, 500),
+    reason: "当实时社区文章暂不可用时，可先从 Bangumi 的中文条目、标签与用户讨论继续延伸。"
+  };
 }
 
 async function fetchLiveSourceMulti(
@@ -216,6 +240,17 @@ export async function fetchCommunityArticleCandidates(input: {
         rawCandidates.push(...r.candidates);
         allFetches.push(...r.fetches);
       }
+    }
+  }
+
+  // 无 Cookie 的云端请求常被 B 站/NGA 等实时源限流。至少保留一个稳定且明确标识的中文社区入口，
+  // 不能让整块「中文社区考据与创作」因第三方风控而静默消失。
+  if (rawCandidates.length === 0 && deadlineRemaining(deadlineMs) > 900) {
+    const bangumiQuery = input.meta.nativeTitle || input.meta.title || input.query;
+    const remaining = Math.min(5000, Math.max(800, deadlineRemaining(deadlineMs) - 250));
+    const outcome = await withTimeout(fetchBangumiSubjectOutcome(bangumiQuery), remaining, "bangumi_fallback");
+    if (outcome?.ok) {
+      rawCandidates.push(bangumiCommunityFallbackCandidate(outcome.data));
     }
   }
 

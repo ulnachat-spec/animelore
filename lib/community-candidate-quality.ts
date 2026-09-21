@@ -112,6 +112,7 @@ function isAllowedUrl(url: string, source: CommunityArticleSource): boolean {
     if (source === "bilibili") return host.includes("bilibili.com");
     if (source === "nga") return host.includes("nga") || host.includes("178.com");
     if (source === "aweidao") return host.includes("aweidao");
+    if (source === "bangumi") return host === "bgm.tv" || host.endsWith(".bgm.tv");
     return host.includes("bilibili.com") || host.includes("nga") || host.includes("aweidao");
   } catch {
     return false;
