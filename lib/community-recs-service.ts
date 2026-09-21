@@ -118,6 +118,25 @@ async function buildCommunityRecsInner(
   debugBase.candidates = fetched.candidates;
   debugBase.fetches = communityFetchesToDebug(fetched.fetches);
 
+  // 生产环境诊断：仅输出白名单化的状态码、阶段与「是否读取到 Cookie」标记，
+  // 绝不记录 Cookie 值、请求头或完整第三方响应。这样才能区分变量未注入、会话失效、风控与无结果。
+  ragLog("community_recs.sources", {
+    fetches: debugBase.fetches.map((item) => ({
+      source: item.source,
+      ok: item.ok,
+      status: item.status,
+      phase: item.phase,
+      used_env_cookie: item.used_env_cookie,
+      fetched_bootstrap_cookie: item.fetched_bootstrap_cookie,
+      bilibili_api_code: item.bilibili_api_code,
+      bilibili_api_message: item.bilibili_api_message
+    })),
+    candidates_by_source: fetched.candidates.reduce<Record<string, number>>((counts, candidate) => {
+      counts[candidate.source] = (counts[candidate.source] ?? 0) + 1;
+      return counts;
+    }, {})
+  });
+
   if (!shouldGenerate) {
     return { recs: [], debug: shouldCollect ? debugBase : undefined };
   }
