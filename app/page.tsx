@@ -32,10 +32,10 @@ export default async function HomePage({
       resolvedSearchParams.refreshHook[0] === "1");
 
   return (
-    <main>
+    <main className="page-enter">
       <section className="mx-auto grid max-w-6xl gap-7 px-4 pb-9 pt-7 sm:px-6 sm:pt-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.7fr)] lg:items-center lg:gap-16 lg:pb-16">
         <div>
-          <p className="archive-kicker text-brand">Anime work archive · 公开检索中</p>
+          <p className="archive-kicker hero-signal text-brand">Anime work archive · 公开检索中</p>
           <h1 className="archive-title mt-5 max-w-3xl text-[clamp(2.55rem,8vw,5.4rem)] leading-[0.98]">
             每部动画，
             <span className="mt-2 block text-brand">都有第二份档案。</span>
@@ -44,7 +44,7 @@ export default async function HomePage({
             和芽衣一起翻开作品背后的梗、争议、幕后与创作谱系。
             这里不是百科目录，而是一场有来源的同好深聊。
           </p>
-          <div className="mt-8 max-w-2xl">
+          <div className="mt-8 max-w-2xl search-stage">
             <SearchBox showSuggestions />
           </div>
           <div className="mt-4 flex flex-wrap gap-2" aria-label="产品能力">

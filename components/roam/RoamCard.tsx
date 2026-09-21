@@ -15,7 +15,7 @@ const tagTone: Record<RoamCardData["tag"], string> = {
   社区: "border-brand/35 bg-brand/10 text-brand"
 };
 
-export function RoamCard({ card }: { card: RoamCardData }) {
+export function RoamCard({ card, preferenceReason }: { card: RoamCardData; preferenceReason?: string }) {
   const [quizChoice, setQuizChoice] = useState<boolean | null>(null);
   const sourceCount = card.source_urls.length;
   const confidencePercent = Math.round(card.confidence * 100);
@@ -45,6 +45,12 @@ export function RoamCard({ card }: { card: RoamCardData }) {
           {card.hook}
         </h1>
         <p className="mt-5 text-base leading-8 text-body">{card.blurb}</p>
+
+        {preferenceReason ? (
+          <p className="mt-4 inline-flex rounded-full border border-sage/25 bg-sage/10 px-3 py-1.5 text-xs text-sage">
+            ✦ {preferenceReason}
+          </p>
+        ) : null}
 
         {quiz ? (
           <section className="mt-6 rounded-2xl border border-brand/20 bg-brand/[0.045] p-4 sm:p-5">

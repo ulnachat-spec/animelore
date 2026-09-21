@@ -5,6 +5,7 @@ import {
   findAnimeTitleEntry,
   normalizeAnimeTitle
 } from "@/lib/anime-title-registry";
+import { fetchBangumiSubjectOutcome } from "@/lib/data-sources/bangumi";
 import type { WorkMeta, WorkRelatedRec } from "@/lib/types";
 
 const ANILIST_ENDPOINT = "https://graphql.anilist.co";
@@ -39,8 +40,13 @@ export async function fetchAniListMeta(query: string): Promise<WorkMeta | null> 
       const exact = await fetchAniListMetaById(registered.anilistId, registered.zh);
       if (exact) return exact;
     }
+    // 绝大多数英文、日文和罗马字标题可由 AniList 直接命中；只有失败才启动多源桥接，
+    // 避免每一次正常检索都额外访问维基、萌百和 Bangumi。
+    const direct = await fetchAniListMetaOnce(query, query, false);
+    if (direct) return direct;
     const candidates = await buildTitleCandidates(query);
     for (const candidate of candidates) {
+      if (normalizeAnimeTitle(candidate) === normalizeAnimeTitle(query)) continue;
       const meta = await fetchAniListMetaOnce(candidate, query, candidate !== query);
       if (meta?.coverImage || meta?.seasonYear || (meta?.studios && meta.studios.length > 0)) {
         return meta;
@@ -177,14 +183,39 @@ async function buildTitleCandidates(query: string): Promise<string[]> {
   const set = new Set<string>();
   set.add(query);
   for (const alias of animeTitleAliases(query)) set.add(alias);
-  const [wikiEn, wikiZh, wikiZhToEn, moegirl] = await Promise.all([
+  const [wikiEn, wikiZh, wikiZhToEn, moegirl, bangumi] = await Promise.all([
     fetchWikipediaTitleCandidates(query),
     fetchWikipediaZhTitleCandidates(query),
     fetchWikipediaZhToEnTitle(query),
-    fetchMoegirlTitleCandidates(query)
+    fetchMoegirlTitleCandidates(query),
+    fetchBangumiTitleCandidates(query)
   ]);
-  for (const t of [...wikiEn, ...wikiZh, ...wikiZhToEn, ...moegirl]) set.add(t);
-  return Array.from(set).filter(Boolean).slice(0, 6);
+  for (const t of [...bangumi, ...wikiEn, ...wikiZh, ...wikiZhToEn, ...moegirl]) set.add(t);
+  return Array.from(set).filter(Boolean).slice(0, 8);
+}
+
+/**
+ * 中文名到 AniList 的主桥接：Bangumi 能以中文译名命中，并返回日文/罗马字原名；
+ * AniList 则更擅长用后者检索。只在输入含 CJK 时请求，避免英文检索平白多一次上游调用。
+ */
+async function fetchBangumiTitleCandidates(query: string): Promise<string[]> {
+  if (!/[\u3400-\u9fff]/.test(query)) return [];
+  try {
+    const outcome = await fetchBangumiSubjectOutcome(query);
+    if (!outcome.ok) return [];
+    const subject = outcome.data;
+    const normalizedQuery = normalizeAnimeTitle(query);
+    const normalizedChineseTitle = normalizeAnimeTitle(subject.name_cn || "");
+    // Bangumi 的模糊搜索不应成为“强行匹配”的来源。名称至少应精确或互为包含。
+    const likelyMatch =
+      normalizedChineseTitle === normalizedQuery ||
+      (Math.min(normalizedChineseTitle.length, normalizedQuery.length) >= 4 &&
+        (normalizedChineseTitle.includes(normalizedQuery) || normalizedQuery.includes(normalizedChineseTitle)));
+    if (!likelyMatch) return [];
+    return [subject.name, subject.name_cn].filter((title): title is string => Boolean(title?.trim()));
+  } catch {
+    return [];
+  }
 }
 
 /** 供 RAG retriever 第二轮扩展 Wikipedia 标题 */

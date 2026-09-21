@@ -13,6 +13,7 @@
     "cold:clear": "node scripts/clear-cold-hooks.mjs",
     "cold:seed": "node scripts/seed-cold-hooks.mjs",
     "cold:stats": "node scripts/cold-stats.mjs",
+    "quality:content": "node scripts/quality-report.mjs",
     "benchmark:run": "node scripts/run-benchmark.mjs",
     "benchmark:cold": "node scripts/run-cold-quality-harness.mjs"
   },

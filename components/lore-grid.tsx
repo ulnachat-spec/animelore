@@ -7,6 +7,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { LoreCard } from "@/lib/types";
+import { CardEvidencePanel } from "@/components/card-evidence-panel";
 
 function validHttpUrls(urls: string[] | undefined): string[] {
   return (urls ?? [])
@@ -225,6 +226,7 @@ function LoreArticle({
         </details>
       ) : null}
       <CardSourceLine source={card.source} sourceUrls={card.source_urls ?? []} />
+      <CardEvidencePanel card={card} />
     </motion.article>
   );
 }

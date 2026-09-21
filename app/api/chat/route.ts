@@ -3,14 +3,14 @@ import { buildWorkChatSystemPrompt } from "@/lib/chat/build-system-prompt";
 import { prepareChatTurn } from "@/lib/chat/run-chat-turn";
 import { chatRequestBodySchema } from "@/lib/chat/schemas";
 import { assessChatReply, looksLikePromptInjection } from "@/lib/chat/grounding";
-import { enforceRateLimit } from "@/lib/rate-limit-response";
+import { enforceRateLimitShared } from "@/lib/rate-limit-response";
 
 export async function POST(req: Request) {
   const isLocalBenchmark =
     process.env.NODE_ENV !== "production" &&
     req.headers.get("x-animelore-benchmark") === "quality-harness";
   if (!isLocalBenchmark) {
-    const { blocked } = enforceRateLimit(req, "chat", 20, 10 * 60_000);
+    const { blocked } = await enforceRateLimitShared(req, "chat", 20, 10 * 60_000);
     if (blocked) return blocked;
   }
 

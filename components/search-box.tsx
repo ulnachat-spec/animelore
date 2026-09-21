@@ -61,6 +61,7 @@ export function SearchBox({
           enterKeyHint="search"
           value={q}
           onChange={(event) => setQ(event.target.value)}
+          maxLength={120}
           placeholder="输入作品名，例如 EVA、芙莉莲…"
           className="min-w-0 flex-1 bg-transparent px-3 py-3 text-base text-ink outline-none placeholder:text-muted sm:text-lg"
           aria-label="搜索动画作品"

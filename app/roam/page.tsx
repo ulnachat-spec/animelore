@@ -9,7 +9,7 @@ export default async function RoamPage() {
   const { cards } = await getRoamCards({ count: 8 });
 
   return (
-    <main className="mx-auto min-h-screen max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+    <main className="page-enter mx-auto min-h-screen max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
       <header className="flex items-center justify-between gap-4">
         <Link href="/" className="text-sm text-muted transition hover:text-ink">
           ← 返回首页

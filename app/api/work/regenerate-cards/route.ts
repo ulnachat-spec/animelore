@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { normalizeSeenContentByCard } from "@/lib/regenerate-dedupe";
 import { regenerateLoreCardsFromEvidence } from "@/lib/regenerate-work-lore";
-import { enforceRateLimit } from "@/lib/rate-limit-response";
+import { enforceRateLimitShared } from "@/lib/rate-limit-response";
 
 const evidenceSourceSchema = z.enum([
   "anilist",
@@ -19,24 +19,24 @@ const evidenceSourceSchema = z.enum([
 ]);
 
 const evidenceSchema = z.object({
-  id: z.string(),
+  id: z.string().max(120),
   source: evidenceSourceSchema,
-  title: z.string(),
+  title: z.string().max(240),
   url: z.string().nullable(),
-  snippet: z.string(),
+  snippet: z.string().max(12_000),
   structured: z.record(z.string(), z.any()).optional(),
-  retrieval_query: z.string(),
+  retrieval_query: z.string().max(240),
   round: z.number().int(),
-  retrieved_at: z.string()
+  retrieved_at: z.string().max(80)
 });
 
 const metaSchema = z.object({
-  title: z.string(),
-  nativeTitle: z.string().optional(),
+  title: z.string().min(1).max(120),
+  nativeTitle: z.string().max(160).optional(),
   seasonYear: z.number().optional(),
   season: z.string().optional(),
-  studios: z.array(z.string()).optional(),
-  coverImage: z.string().optional(),
+  studios: z.array(z.string().max(120)).max(20).optional(),
+  coverImage: z.string().url().max(2_000).optional(),
   anilistId: z.number().optional()
 });
 
@@ -65,7 +65,7 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const { blocked } = enforceRateLimit(req, "regenerate-cards", 10, 10 * 60_000);
+  const { blocked } = await enforceRateLimitShared(req, "regenerate-cards", 10, 10 * 60_000);
   if (blocked) return blocked;
 
   try {
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
   } catch (e) {
     console.error("[regenerate-cards]", e);
     return NextResponse.json(
-      { error: "regenerate_failed", detail: (e as Error).message },
+      { error: "regenerate_failed", detail: "换一批暂时不可用，请稍后再试。" },
       { status: 500 }
     );
   }

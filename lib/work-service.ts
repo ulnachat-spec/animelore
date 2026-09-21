@@ -18,7 +18,11 @@ import {
   workLoreCacheEnabled,
   workLoreCacheTtlMs
 } from "@/lib/work-cache";
+import { getSharedWorkLore, setSharedWorkLore } from "@/lib/shared-work-cache";
 import type { LorePayload, WorkMeta } from "@/lib/types";
+
+/** Keep public queries bounded before they reach external sources or an LLM. */
+export const MAX_WORK_QUERY_LENGTH = 120;
 
 export function adaptiveWorkEnabled(): boolean {
   return process.env.ADAPTIVE_RAG_WORK !== "false";
@@ -121,6 +125,12 @@ export async function getWorkLore(query: string): Promise<WorkLoreOutcome> {
   if (!trimmed) {
     return { ok: false, failure: { code: "pipeline_error", message: "empty query" } };
   }
+  if (trimmed.length > MAX_WORK_QUERY_LENGTH) {
+    return {
+      ok: false,
+      failure: { code: "pipeline_error", message: "query_too_long" }
+    };
+  }
 
   const cacheMode = adaptiveWorkEnabled() ? "adaptive" : "legacy";
   const cacheKey = buildWorkLoreCacheKey(trimmed, cacheMode);
@@ -136,6 +146,12 @@ export async function getWorkLore(query: string): Promise<WorkLoreOutcome> {
       });
       return { ok: true, data: annotateWorkLoreCacheHit(cached, cacheKey) };
     }
+    const sharedCached = await getSharedWorkLore(cacheKey);
+    if (sharedCached) {
+      setCachedWorkLore(cacheKey, sharedCached);
+      ragLog("work_cache.shared_hit", { cache_hit: true, cache_key: cacheKey, query: trimmed });
+      return { ok: true, data: annotateWorkLoreCacheHit(sharedCached, cacheKey) };
+    }
     ragLog("work_cache.miss", { cache_hit: false, cache_key: cacheKey, query: trimmed });
   }
 
@@ -144,6 +160,7 @@ export async function getWorkLore(query: string): Promise<WorkLoreOutcome> {
 
     if (outcome.ok && workLoreCacheEnabled() && shouldCacheWorkLore(outcome.data)) {
       setCachedWorkLore(cacheKey, outcome.data);
+      await setSharedWorkLore(cacheKey, outcome.data, workLoreCacheTtlMs());
       ragLog("work_cache.set", {
         cache_key: cacheKey,
         query: trimmed,

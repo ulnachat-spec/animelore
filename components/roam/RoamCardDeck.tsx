@@ -16,6 +16,7 @@ import {
 import type { RoamCard as RoamCardData, RoamCardTag } from "@/lib/roam/roam-types";
 import type { ColdHookPayload, ColdTopicType } from "@/lib/types";
 import { readLibrary, recordLibraryHistory, writeLibrary } from "@/lib/user-library-client";
+import { trackProductEvent } from "@/lib/client-product-events";
 
 type RoamPrefs = {
   likedTags: RoamCardTag[];
@@ -168,6 +169,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
   const [direction, setDirection] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [prefs, setPrefs] = useState<RoamPrefs>(emptyPrefs);
   const activeCard = cards[index];
   const remaining = Math.max(0, cards.length - index - 1);
 
@@ -179,6 +181,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
   const updatePrefs = useCallback((updater: (prefs: RoamPrefs) => RoamPrefs) => {
     const next = updater(loadPrefs());
     savePrefs(next);
+    setPrefs(next);
     return next;
   }, []);
 
@@ -207,6 +210,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
     const restored = loadDeckState(initialCards);
     setCards(restored.cards);
     setIndex(restored.index);
+    setPrefs(loadPrefs());
     setDeckHydrated(true);
   }, [initialCards]);
 
@@ -227,6 +231,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
       skippedTags: uniqLimit([...prefs.skippedTags, activeCard.tag], 8),
       recentTopicKeys: uniqLimit([...prefs.recentTopicKeys, activeCard.topic_key], 10)
     }));
+    trackProductEvent("roam_skipped");
     setIndex((current) => Math.min(current + 1, cards.length - 1));
   }, [activeCard, cards.length, updatePrefs]);
 
@@ -238,6 +243,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
       likedSeeds: uniqLimit([...prefs.likedSeeds, ...activeCard.next_seeds], 12),
       recentTopicKeys: uniqLimit([...prefs.recentTopicKeys, activeCard.topic_key], 10)
     }));
+    trackProductEvent("roam_opened");
     startTransition(() => {
       recordLibraryHistory({
         id: `${activeCard.target.kind}:${activeCard.topic_key}`,
@@ -260,6 +266,14 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
       router.push(activeCard.target.href);
     });
   }, [activeCard, router, updatePrefs]);
+
+  const preferenceReason = useMemo(() => {
+    if (!activeCard) return undefined;
+    if (prefs.likedTags.includes(activeCard.tag)) return `你此前对「${activeCard.tag}」线索停留得更久`;
+    if (prefs.skippedTags.includes(activeCard.tag)) return `换一个角度：这张会用不同入口聊「${activeCard.tag}」`;
+    if (prefs.likedSeeds.some((seed) => activeCard.next_seeds.includes(seed))) return "它接在你之前点开的线索之后";
+    return "芽衣先为你保留了一条可继续追下去的线索";
+  }, [activeCard, prefs]);
 
   if (!activeCard) {
     return (
@@ -298,7 +312,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
             }}
             className="relative cursor-grab active:cursor-grabbing"
           >
-            <RoamCard card={activeCard} />
+            <RoamCard card={activeCard} preferenceReason={preferenceReason} />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -309,14 +323,14 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
           onClick={goNext}
           className="rounded-2xl border border-line bg-surface px-4 py-3 text-sm font-medium text-ink transition hover:border-brand/40 hover:bg-soft"
         >
-          下一条
+          略过这条
         </button>
         <button
           type="button"
           onClick={goDeep}
           className="rounded-2xl bg-brand px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand/90"
         >
-          深入了解
+          沿线深入
         </button>
       </div>
 
