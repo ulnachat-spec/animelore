@@ -4,6 +4,7 @@
 import { buildStableCommunityHint } from "@/lib/community-hint";
 import { generateLore } from "@/lib/llm";
 import { buildLorePromptFromAdaptive } from "@/lib/prompt";
+import { dedupeLoreAcrossCards } from "@/lib/lore-cross-card-dedupe";
 import {
   normalizeSeenContentByCard,
   sanitizeLoreAgainstSeen,
@@ -36,13 +37,17 @@ export async function regenerateLoreCardsFromEvidence(
     });
     const raw = await generateLore(prompt);
     const result = sanitizeLoreAgainstSeen(raw, seen);
+    const crossCard = dedupeLoreAcrossCards(result.lore);
 
     if (!best || result.duplicateCount < best.duplicateCount) {
-      best = { lore: result.lore, duplicateCount: result.duplicateCount };
+      best = {
+        lore: crossCard.value,
+        duplicateCount: result.duplicateCount + crossCard.removedCount
+      };
     }
 
-    if (result.allCardsValid) {
-      return { lore: result.lore, exhausted: false };
+    if (result.allCardsValid && crossCard.removedCount === 0) {
+      return { lore: crossCard.value, exhausted: false };
     }
   }
 
@@ -50,7 +55,7 @@ export async function regenerateLoreCardsFromEvidence(
     const raw = await generateLore(
       buildLorePromptFromAdaptive(meta, evidenceItems, communityHint)
     );
-    return { lore: raw, exhausted: true };
+    return { lore: dedupeLoreAcrossCards(raw).value, exhausted: true };
   }
 
   return { lore: best.lore, exhausted: true };

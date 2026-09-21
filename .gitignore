@@ -1,10 +1,46 @@
 .next
+artifacts/
 node_modules
 .env
 .env.local
+.env.*.local
 dist
 coverage
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Local runtime and browser artifacts
+.edge-profile/
+.tmp-*
+*.tsbuildinfo
+__pycache__/
+
+# Local tools and unrelated reference projects
+.agents/
+.stitch-skills/
+resume-tools/
+outputs/
+
+# Thesis/research artifacts kept beside the app but not part of AnimeLore
+bpnn_review_output/
+chapter5_media/
+chapter5_rendered/
+original_ch5_images_precise/
+original_chapter5_images/
+thesis_extra_figures/
+thesis_supplement_review/
+*.docx
+debug-*.json
+work-out*.html
+analyze_*.py
+make_*.py
+train_*.py
+build_chapter5_docx.py
+fix_chapter5_figures.py
+available_dataset_1.csv
+chapter5_*.txt
+original_chapter5_ooxml_entries.json
+thesis_extra_figures_existing_images_overview.jpg
+第五章*

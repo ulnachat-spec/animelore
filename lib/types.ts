@@ -80,6 +80,8 @@ export type ColdHookVerificationStatus =
   | "fallback";
 
 export interface ColdHookPayload {
+  /** Stable library record id used by shareable /cold/[id] routes. */
+  record_id?: string;
   topic_type: ColdTopicType;
   cold_subtype?: ColdSubtype;
   topic_key?: string;

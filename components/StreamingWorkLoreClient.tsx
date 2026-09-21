@@ -369,7 +369,7 @@ export function StreamingWorkLoreClient({
           <div className="mt-1 break-all text-amber-100/80">GET {streamUrl}</div>
         </div>
       ) : null}
-      <p className="mb-4 text-center text-sm text-zinc-500" role="status" aria-live="polite">
+      <p className="mb-4 text-center text-sm text-muted" role="status" aria-live="polite">
         {fallbackLoading
           ? statusMessage || "流式生成失败，正在切换普通生成…"
           : statusMessage}
@@ -385,6 +385,7 @@ export function StreamingWorkLoreClient({
     </section>
     <WorkChatDrawer
       workTitle={meta?.title ?? query.trim()}
+      workMeta={meta ?? undefined}
       cards={[]}
       ready={false}
       readyHint="四卡还在生成中，稍后再聊哦～"

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getHomeHookLibraryStats } from "@/lib/cold-hook-service";
 import { getRoamCards, normalizeRoamCount } from "@/lib/roam/roam-service";
+import { enforceRateLimit } from "@/lib/rate-limit-response";
+import { recordOperationsEvent } from "@/lib/operations-metrics";
 
 function parseList(value: string | null): string[] {
   if (!value) return [];
@@ -12,9 +14,12 @@ function parseList(value: string | null): string[] {
 }
 
 export async function GET(req: Request) {
+  recordOperationsEvent("roam_requested");
+  const { blocked } = enforceRateLimit(req, "roam", 30, 5 * 60_000);
+  if (blocked) return blocked;
   const url = new URL(req.url);
   const count = normalizeRoamCount(Number(url.searchParams.get("count") ?? undefined));
-  const debugMode = url.searchParams.get("debug") === "1";
+  const debugMode = process.env.NODE_ENV === "development" && url.searchParams.get("debug") === "1";
 
   try {
     const result = await getRoamCards({
@@ -25,6 +30,7 @@ export async function GET(req: Request) {
       recentTopicKeys: parseList(url.searchParams.get("recentTopicKeys"))
     });
 
+    recordOperationsEvent("roam_succeeded");
     return NextResponse.json({
       cards: result.cards,
       ...(debugMode ? { debug: { ...result.debug, library: getHomeHookLibraryStats() } } : {})
@@ -32,6 +38,7 @@ export async function GET(req: Request) {
   } catch (e) {
     console.warn("[roam] fallback response:", (e as Error).message);
     const result = await getRoamCards({ count });
+    recordOperationsEvent("roam_succeeded");
     return NextResponse.json({
       cards: result.cards,
       ...(debugMode

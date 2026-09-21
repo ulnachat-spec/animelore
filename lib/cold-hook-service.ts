@@ -356,7 +356,11 @@ async function payloadFromLibrary(
     }))
   };
   const payload = await rawToPayload(raw, rec.verification_status);
-  return { payload, id: rec.id, pick_note: pick.note };
+  return {
+    payload: { ...payload, record_id: rec.id },
+    id: rec.id,
+    pick_note: pick.note
+  };
 }
 
 function shouldSkipStableCache(refresh: boolean): boolean {

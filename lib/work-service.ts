@@ -14,10 +14,15 @@ import {
   buildWorkLoreCacheKey,
   getCachedWorkLore,
   setCachedWorkLore,
+  shouldCacheWorkLore,
   workLoreCacheEnabled,
   workLoreCacheTtlMs
 } from "@/lib/work-cache";
+import { getSharedWorkLore, setSharedWorkLore } from "@/lib/shared-work-cache";
 import type { LorePayload, WorkMeta } from "@/lib/types";
+
+/** Keep public queries bounded before they reach external sources or an LLM. */
+export const MAX_WORK_QUERY_LENGTH = 120;
 
 export function adaptiveWorkEnabled(): boolean {
   return process.env.ADAPTIVE_RAG_WORK !== "false";
@@ -83,34 +88,18 @@ async function buildWorkLoreUncached(query: string): Promise<WorkLoreOutcome> {
     ragLog("work_service.insufficient_fallback", {
       reason: outcome.rag.insufficient_reason
     });
-
-    try {
-      const { meta, lore } = await runLegacyWorkPipeline(query);
-      return {
-        ok: true,
-        data: {
-          meta,
-          lore,
-          rag: outcome.rag,
-          pipeline: "legacy_fallback",
-          fallback_reason:
-            outcome.rag.insufficient_reason || "adaptive_insufficient_evidence"
-        }
-      };
-    } catch (legacyErr) {
-      ragLog("work_service.legacy_after_insufficient_failed", {
-        message: (legacyErr as Error).message
-      });
-      return {
-        ok: true,
-        data: {
-          meta: outcome.meta,
-          lore: outcome.lore,
-          rag: outcome.rag,
-          pipeline: "adaptive_insufficient"
-        }
-      };
-    }
+    // 检索已经明确不足时，不再用无证据的通用文案伪装成真实档案。
+    return {
+      ok: true,
+      data: {
+        meta: outcome.meta,
+        lore: outcome.lore,
+        rag: outcome.rag,
+        pipeline: "adaptive_insufficient",
+        fallback_reason:
+          outcome.rag.insufficient_reason || "adaptive_insufficient_evidence"
+      }
+    };
   } catch (err) {
     ragLog("work_service.adaptive_error", {
       message: (err as Error).message,
@@ -136,6 +125,12 @@ export async function getWorkLore(query: string): Promise<WorkLoreOutcome> {
   if (!trimmed) {
     return { ok: false, failure: { code: "pipeline_error", message: "empty query" } };
   }
+  if (trimmed.length > MAX_WORK_QUERY_LENGTH) {
+    return {
+      ok: false,
+      failure: { code: "pipeline_error", message: "query_too_long" }
+    };
+  }
 
   const cacheMode = adaptiveWorkEnabled() ? "adaptive" : "legacy";
   const cacheKey = buildWorkLoreCacheKey(trimmed, cacheMode);
@@ -151,19 +146,32 @@ export async function getWorkLore(query: string): Promise<WorkLoreOutcome> {
       });
       return { ok: true, data: annotateWorkLoreCacheHit(cached, cacheKey) };
     }
+    const sharedCached = await getSharedWorkLore(cacheKey);
+    if (sharedCached) {
+      setCachedWorkLore(cacheKey, sharedCached);
+      ragLog("work_cache.shared_hit", { cache_hit: true, cache_key: cacheKey, query: trimmed });
+      return { ok: true, data: annotateWorkLoreCacheHit(sharedCached, cacheKey) };
+    }
     ragLog("work_cache.miss", { cache_hit: false, cache_key: cacheKey, query: trimmed });
   }
 
   try {
     const outcome = await buildWorkLoreUncached(trimmed);
 
-    if (outcome.ok && workLoreCacheEnabled()) {
+    if (outcome.ok && workLoreCacheEnabled() && shouldCacheWorkLore(outcome.data)) {
       setCachedWorkLore(cacheKey, outcome.data);
+      await setSharedWorkLore(cacheKey, outcome.data, workLoreCacheTtlMs());
       ragLog("work_cache.set", {
         cache_key: cacheKey,
         query: trimmed,
         pipeline: outcome.data.pipeline,
         ttl_ms: workLoreCacheTtlMs()
+      });
+    } else if (outcome.ok && workLoreCacheEnabled()) {
+      ragLog("work_cache.skip_degraded", {
+        cache_key: cacheKey,
+        query: trimmed,
+        pipeline: outcome.data.pipeline
       });
     }
 

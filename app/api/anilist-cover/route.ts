@@ -1,58 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
+import { fetchAniListMeta } from "@/lib/data-sources";
+import { enforceRateLimit } from "@/lib/rate-limit-response";
 
-const ANILIST_ENDPOINT = "https://graphql.anilist.co";
+const coverCache = new Map<string, { coverUrl: string; expiresAt: number }>();
+const COVER_TTL_MS = 24 * 60 * 60 * 1000;
 
 export async function GET(req: NextRequest) {
+  const { blocked } = enforceRateLimit(req, "anilist-cover", 60, 5 * 60_000);
+  if (blocked) return blocked;
   const title = req.nextUrl.searchParams.get("title")?.trim();
   if (!title) {
     return NextResponse.json({ error: "missing title" }, { status: 400 });
   }
-
-  const graphql = `
-    query ($search: String) {
-      Page(page: 1, perPage: 5) {
-        media(search: $search, type: ANIME, sort: SEARCH_MATCH) {
-          coverImage {
-            large
-          }
-        }
-      }
-    }
-  `;
+  if (title.length > 120) {
+    return NextResponse.json({ error: "title_too_long" }, { status: 400 });
+  }
+  const cacheKey = title.normalize("NFKC").toLowerCase();
+  const cached = coverCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    return NextResponse.json({ coverUrl: cached.coverUrl, cache: "hit" });
+  }
 
   try {
-    const resp = await fetch(ANILIST_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "User-Agent": "AnimeLore/0.1"
-      },
-      body: JSON.stringify({ query: graphql, variables: { search: title } }),
-      cache: "no-store"
-    });
-
-    if (!resp.ok) {
-      return NextResponse.json({ coverUrl: "" });
-    }
-
-    type AnilistCoverJson = {
-      errors?: unknown[];
-      data?: {
-        Page?: {
-          media?: Array<{ coverImage?: { large?: string | null } }>;
-        };
-      };
-    };
-    const json = (await resp.json()) as AnilistCoverJson;
-
-    if (json.errors?.length) {
-      return NextResponse.json({ coverUrl: "" });
-    }
-
-    const list = json.data?.Page?.media || [];
-    const large = list.find((m) => m.coverImage?.large)?.coverImage?.large;
-    const coverUrl = typeof large === "string" ? large : "";
+    // 与作品页共享同一标题解析链，避免“正文找到了、补图却空白”的割裂体验。
+    const coverUrl = (await fetchAniListMeta(title))?.coverImage || "";
+    coverCache.set(cacheKey, { coverUrl, expiresAt: Date.now() + COVER_TTL_MS });
     return NextResponse.json({ coverUrl });
   } catch {
     return NextResponse.json({ coverUrl: "" });

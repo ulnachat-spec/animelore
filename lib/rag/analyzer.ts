@@ -1,44 +1,65 @@
-import type { AnalyzerInput, AnalyzerResult } from "@/lib/rag/types";
 import { ragLog } from "@/lib/rag/logger";
+import type { AnalyzerInput, AnalyzerResult } from "@/lib/rag/types";
 
 const KNOWN_ALIAS_EXPANSIONS: Record<string, string[]> = {
-  魔法少女小圆: ["Puella Magi Madoka Magica", "Mahou Shoujo Madoka★Magica"],
-  小圆: ["Puella Magi Madoka Magica"],
+  eva: ["Neon Genesis Evangelion", "新世纪福音战士"],
+  新世纪福音战士: ["Neon Genesis Evangelion"],
+  小圆: ["魔法少女小圆", "Puella Magi Madoka Magica"],
+  魔法少女小圆: ["Puella Magi Madoka Magica"],
+  巨人: ["进击的巨人", "Attack on Titan", "Shingeki no Kyojin"],
   进击的巨人: ["Attack on Titan", "Shingeki no Kyojin"],
-  钢之炼金术师: ["Fullmetal Alchemist: Brotherhood"],
-  EVA: ["Neon Genesis Evangelion"],
-  eva: ["Neon Genesis Evangelion"]
+  钢炼: ["钢之炼金术师 FULLMETAL ALCHEMIST", "Fullmetal Alchemist: Brotherhood"],
+  钢之炼金术师fullmetalalchemist: ["Fullmetal Alchemist: Brotherhood", "鋼の錬金術師 FULLMETAL ALCHEMIST"],
+  钢之炼金术师fa: ["Fullmetal Alchemist: Brotherhood", "鋼の錬金術師 FULLMETAL ALCHEMIST"],
+  芙莉莲: ["葬送的芙莉莲", "Frieren: Beyond Journey's End"],
+  孤独摇滚: ["孤独摇滚！", "Bocchi the Rock!"],
+  石头门: ["命运石之门", "Steins;Gate"],
+  攻壳sac: ["攻壳机动队 STAND ALONE COMPLEX", "Ghost in the Shell: Stand Alone Complex"]
 };
 
+export function normalizeWorkQuery(value: string): string {
+  return value
+    .normalize("NFKC")
+    .trim()
+    .replace(/^[《「『【"']+|[》」』】"']+$/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function aliasKey(value: string): string {
+  return value.toLocaleLowerCase("zh-CN").replace(/[\s·・!！:：_-]+/g, "");
+}
+
 /**
- * MVP：规则为主。/api/work 入口固定视为作品图鉴检索意图。
+ * 作品检索意图分析：先清理书名号与全角字符，再追加常见中英别名。
+ * 不把规则推断伪装成高置信度语义理解。
  */
 export function analyzeWorkQuery(input: AnalyzerInput): AnalyzerResult {
   const raw = input.raw_query.trim();
+  const normalized = normalizeWorkQuery(raw);
   const normalized_queries: string[] = [];
+  if (normalized) normalized_queries.push(normalized);
 
-  if (raw.length > 0) normalized_queries.push(raw);
-
-  const aliases = KNOWN_ALIAS_EXPANSIONS[raw] || [];
-  for (const a of aliases) {
-    if (!normalized_queries.includes(a)) normalized_queries.push(a);
+  const aliases = KNOWN_ALIAS_EXPANSIONS[aliasKey(normalized)] ?? [];
+  for (const alias of aliases) {
+    if (!normalized_queries.includes(alias)) normalized_queries.push(alias);
   }
-
-  if (normalized_queries.length === 0) normalized_queries.push(raw);
+  if (raw && raw !== normalized && !normalized_queries.includes(raw)) {
+    normalized_queries.push(raw);
+  }
 
   const result: AnalyzerResult = {
     task_type: "work_lore",
-    confidence: 0.95,
-    normalized_queries,
-    notes: "rule_based_analyzer_v1",
+    confidence: aliases.length ? 0.9 : 0.78,
+    normalized_queries: normalized_queries.length ? normalized_queries : [raw],
+    notes: aliases.length ? "rule_based_analyzer_v2_alias" : "rule_based_analyzer_v2_normalized",
     requires_multi_hop: aliases.length > 0
   };
 
   ragLog("analyzer", {
     raw_query: raw,
-    task_type: result.task_type,
+    confidence: result.confidence,
     normalized_queries: result.normalized_queries
   });
-
   return result;
 }

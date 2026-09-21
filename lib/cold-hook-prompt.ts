@@ -156,6 +156,7 @@ cold_subtype 只能填：concept_origin / term_origin / meme_origin / work_fact 
 
 【hook 标题】
 - 40 字内，紧扣「${plan.seed_keyword}」，有好奇点但不牺牲准确性
+- 标题必须同时包含「用户原本以为的常识」与「真正有趣的偏差」中的至少一层，让人产生“等等，原来是这样？”的停顿；只陈述普通结论则重写
 - 不要写成「X是什么？」「关于X的三件事」这种泛标题
 - 禁止过度依赖「不是……」「不只是……」「不一定……」结构；除非这个否定本身就是事实点，否则不要用
 - 同一批内容里「不是……」标题不得超过 15%；不要为了反直觉强行否定
@@ -201,6 +202,7 @@ cold_subtype 只能填：concept_origin / term_origin / meme_origin / work_fact 
 【blurb：给知识漫游短卡用】
 - 35～70 个中文字符
 - 像朋友先抛一个 teaser，有钩子但不要讲完
+- 补足标题没有说出的那半层反差，并暗示继续读会得到哪种新理解；避免“后面还有有趣细节”之类空话
 - 不要直接截取 insight 第一句；换一种说法
 - 不要出现 Bangumi、Wikipedia、AniList、萌娘百科等来源名
 

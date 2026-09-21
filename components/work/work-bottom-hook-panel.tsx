@@ -42,7 +42,7 @@ function HookWithLink({ hookRaw, hookWork }: { hookRaw: string; hookWork: string
 
   return (
     <div className="mt-3 flex items-start gap-3">
-      <div className="h-[68px] w-[48px] shrink-0 overflow-hidden rounded-[4px] bg-zinc-800/60">
+      <div className="h-[68px] w-[48px] shrink-0 overflow-hidden rounded-[4px] bg-soft/60">
         {coverUrl ? (
           <Image
             src={coverUrl}
@@ -54,7 +54,7 @@ function HookWithLink({ hookRaw, hookWork }: { hookRaw: string; hookWork: string
         ) : null}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-2">
-        {hookRaw ? <p className="text-sm leading-relaxed text-zinc-50">{hookRaw}</p> : null}
+        {hookRaw ? <p className="text-sm leading-relaxed text-ink">{hookRaw}</p> : null}
         <Link
           href={`/work/${encodeURIComponent(hookWork)}`}
           className="text-lg font-bold text-brand hover:underline"
@@ -86,12 +86,12 @@ export function WorkBottomHookPanel({
   const hookRaw = bottomHook.hook?.trim() ?? "";
 
   return (
-    <section className="mt-10 rounded-2xl border border-zinc-700 bg-zinc-900/60 p-5">
-      <p className="text-sm text-zinc-400">看完这部，你知道吗……</p>
+    <section className="mt-10 rounded-2xl border border-line bg-surface/85 p-5">
+      <p className="text-sm text-muted">看完这部，你知道吗……</p>
       {showLlmLink && hookWork ? (
         <HookWithLink hookRaw={hookRaw} hookWork={hookWork} />
       ) : hookRaw ? (
-        <p className="mt-3 text-sm leading-relaxed text-zinc-50">{hookRaw}</p>
+        <p className="mt-3 text-sm leading-relaxed text-ink">{hookRaw}</p>
       ) : null}
     </section>
   );

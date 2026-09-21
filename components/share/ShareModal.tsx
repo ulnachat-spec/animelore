@@ -1,18 +1,21 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ShareCardCanvas,
+  SHARE_CARD_SIZES,
+  type ShareOrientation,
   type ShareTag,
   type ShareTemplate
 } from "@/components/share/ShareCardCanvas";
 import { useShareCard } from "@/components/share/useShareCard";
+import { useDialogFocus } from "@/lib/use-dialog-focus";
 
 const templateOptions: Array<{ id: ShareTemplate; label: string }> = [
-  { id: "midnight", label: "深夜追番" },
-  { id: "legend", label: "封神之作" },
-  { id: "bittersweet", label: "意难平" }
+  { id: "midnight", label: "星夜书签" },
+  { id: "legend", label: "典藏红章" },
+  { id: "bittersweet", label: "芽衣手帐" }
 ];
 
 const tagOptions: ShareTag[] = ["已完结", "二刷", "神作", "意难平", "安利必看", "还在追"];
@@ -36,7 +39,18 @@ export type ShareModalProps =
 
 function summarizeInsight(insight: string): string {
   const clean = insight.replace(/\s+/g, " ").trim();
-  return clean.length > 60 ? `${clean.slice(0, 60)}…` : clean;
+  const sentences = clean.match(/[^。！？!?]+[。！？!?]?/g) ?? [];
+  let summary = "";
+  for (const sentence of sentences) {
+    const candidate = `${summary}${sentence.trim()}`;
+    if (candidate.length > 110) break;
+    summary = candidate;
+  }
+  if (summary) return summary;
+
+  const clipped = clean.slice(0, 106);
+  const clauseEnd = Math.max(clipped.lastIndexOf("，"), clipped.lastIndexOf("；"), clipped.lastIndexOf("、"));
+  return `${(clauseEnd >= 36 ? clipped.slice(0, clauseEnd) : clipped).replace(/[，；、\s]+$/, "")}。`;
 }
 
 function normalizeQuote(quote: string): string {
@@ -49,40 +63,49 @@ function normalizeQuote(quote: string): string {
 }
 
 export function ShareModal(props: ShareModalProps) {
+  const { open, onClose } = props;
   const [template, setTemplate] = useState<ShareTemplate>("midnight");
+  const [orientation, setOrientation] = useState<ShareOrientation>("portrait");
   const [quote, setQuote] = useState("");
+  const [coldTitle, setColdTitle] = useState("");
+  const [coldSummary, setColdSummary] = useState("");
   const [tags, setTags] = useState<ShareTag[]>([]);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [previewScale, setPreviewScale] = useState(0.28);
   const cardRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const { saving, error, dataUrl, saveCard, resetShareImage } = useShareCard();
 
   const isWork = props.kind === "work";
   const title = isWork ? props.workTitle : props.hook;
   const workInitialQuote = props.kind === "work" ? props.initialQuote : "";
+  const coldInitialTitle = props.kind === "cold" ? props.hook : "";
+  const coldInitialSummary = props.kind === "cold" ? summarizeInsight(props.insight) : "";
+
+  useDialogFocus({ open, onClose, dialogRef });
 
   useEffect(() => {
-    if (!props.open) return;
+    if (!open) return;
     resetShareImage();
     setTemplate("midnight");
+    setOrientation("portrait");
     setTags([]);
     if (isWork) {
       setQuote(normalizeQuote(workInitialQuote) || "这部值得留一张追番打卡。");
+    } else {
+      setColdTitle(coldInitialTitle.slice(0, 48));
+      setColdSummary(coldInitialSummary);
     }
-  }, [props.open, isWork, workInitialQuote, resetShareImage]);
+  }, [coldInitialSummary, coldInitialTitle, isWork, open, resetShareImage, workInitialQuote]);
 
   useEffect(() => {
-    if (!props.open) return;
+    if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") props.onClose();
-    };
-    window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
     };
-  }, [props.open, props.onClose]);
+  }, [open]);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -92,10 +115,17 @@ export function ShareModal(props: ShareModalProps) {
     return () => mq.removeEventListener("change", update);
   }, []);
 
-  const previewScale = useMemo(() => {
-    if (typeof window === "undefined") return 0.28;
-    return Math.min(0.34, Math.max(0.22, (window.innerWidth - 64) / 1080));
-  }, [props.open]);
+  useEffect(() => {
+    if (!open) return;
+    const update = () => {
+      const cardWidth = SHARE_CARD_SIZES[orientation].width;
+      const available = Math.min(window.innerWidth - 64, 390);
+      setPreviewScale(Math.min(0.34, Math.max(0.16, available / cardWidth)));
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [open, orientation]);
 
   const toggleTag = (tag: ShareTag) => {
     setTags((prev) => {
@@ -105,11 +135,12 @@ export function ShareModal(props: ShareModalProps) {
     });
   };
 
-  const filename = isWork ? `AnimeLore-${props.workTitle}` : `AnimeLore-cold-${props.hook}`;
+  const filename = isWork ? `AnimeLore-${props.workTitle}-${orientation}` : `AnimeLore-cold-${props.hook}-${orientation}`;
+  const cardSize = SHARE_CARD_SIZES[orientation];
 
   return (
     <AnimatePresence>
-      {props.open ? (
+      {open ? (
         <>
           <motion.button
             type="button"
@@ -118,13 +149,15 @@ export function ShareModal(props: ShareModalProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={props.onClose}
+            onClick={onClose}
           />
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="share-card-title"
-            className="fixed inset-x-0 bottom-0 z-[71] max-h-[92vh] overflow-y-auto rounded-t-3xl border-t border-zinc-700 bg-zinc-950 p-4 shadow-2xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[90vh] md:w-[min(960px,92vw)] md:rounded-3xl md:border"
+            tabIndex={-1}
+            className="fixed inset-x-0 bottom-0 z-[71] max-h-[92vh] overflow-y-auto rounded-t-3xl border-t border-line bg-canvas p-4 shadow-2xl md:bottom-auto md:left-1/2 md:right-auto md:top-1/2 md:max-h-[90vh] md:w-[min(960px,92vw)] md:rounded-3xl md:border"
             initial={isDesktop ? { y: "calc(-50% + 60px)", x: "-50%", opacity: 0 } : { y: 60, opacity: 0 }}
             animate={isDesktop ? { y: "-50%", x: "-50%", opacity: 1 } : { y: 0, opacity: 1 }}
             exit={isDesktop ? { y: "calc(-50% + 60px)", x: "-50%", opacity: 0 } : { y: 60, opacity: 0 }}
@@ -133,25 +166,25 @@ export function ShareModal(props: ShareModalProps) {
             <header className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.22em] text-brand">AnimeLore Share</p>
-                <h2 id="share-card-title" className="mt-1 text-xl font-semibold text-paper">
+                <h2 id="share-card-title" className="mt-1 text-xl font-semibold text-ink">
                   {isWork ? "生成追番分享卡片" : "分享这条冷知识"}
                 </h2>
               </div>
               <button
                 type="button"
                 onClick={props.onClose}
-                className="rounded-lg px-3 py-1.5 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-paper"
+                className="rounded-lg px-3 py-1.5 text-sm text-muted transition hover:bg-soft hover:text-ink"
               >
                 关闭
               </button>
             </header>
 
             <div className="mt-5 grid gap-5 md:grid-cols-[minmax(0,420px)_1fr]">
-              <div className="mx-auto overflow-hidden rounded-2xl border border-zinc-800 bg-black/30 p-3">
+              <div className="mx-auto self-start overflow-hidden rounded-2xl border border-line/70 bg-black/30 p-3">
                 <div
                   style={{
-                    width: 1080 * previewScale,
-                    height: 1440 * previewScale,
+                    width: cardSize.width * previewScale,
+                    height: cardSize.height * previewScale,
                     overflow: "hidden"
                   }}
                 >
@@ -161,6 +194,7 @@ export function ShareModal(props: ShareModalProps) {
                         ref={cardRef}
                         kind="work"
                         template={template}
+                        orientation={orientation}
                         workTitle={props.workTitle}
                         quote={quote}
                         coverImage={props.coverImage}
@@ -170,8 +204,10 @@ export function ShareModal(props: ShareModalProps) {
                       <ShareCardCanvas
                         ref={cardRef}
                         kind="cold"
-                        hook={props.hook}
-                        summary={summarizeInsight(props.insight)}
+                        template={template}
+                        orientation={orientation}
+                        hook={coldTitle}
+                        summary={coldSummary}
                       />
                     )}
                   </div>
@@ -179,30 +215,45 @@ export function ShareModal(props: ShareModalProps) {
               </div>
 
               <div className="space-y-5">
+                <section>
+                  <p className="mb-2 text-sm font-medium text-body">卡片样式</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {templateOptions.map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setTemplate(opt.id)}
+                        className={`min-h-12 rounded-xl border px-2 py-2 text-xs font-medium transition ${
+                          template === opt.id
+                            ? "border-brand bg-brand/15 text-brand"
+                            : "border-line bg-surface text-body hover:border-brand/40"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </section>
+                <section>
+                  <p className="mb-2 text-sm font-medium text-body">画面比例</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {(["portrait", "landscape"] as ShareOrientation[]).map((value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setOrientation(value)}
+                        className={`min-h-11 rounded-xl border px-3 text-sm transition ${orientation === value ? "border-brand bg-brand/15 font-semibold text-brand" : "border-line bg-surface text-body hover:border-brand/40"}`}
+                      >
+                        {value === "portrait" ? "竖屏海报 3:4" : "横屏分享 16:9"}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-xs leading-5 text-muted">横屏版会展开更多文字与版式组件，适合桌面、动态头图和长文配图。</p>
+                </section>
                 {props.kind === "work" ? (
                   <>
                     <section>
-                      <p className="mb-2 text-sm font-medium text-zinc-300">模板</p>
-                      <div className="grid grid-cols-3 gap-2">
-                        {templateOptions.map((opt) => (
-                          <button
-                            key={opt.id}
-                            type="button"
-                            onClick={() => setTemplate(opt.id)}
-                            className={`rounded-xl border px-3 py-2 text-sm transition ${
-                              template === opt.id
-                                ? "border-brand bg-brand/15 text-brand"
-                                : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-500"
-                            }`}
-                          >
-                            {opt.label}
-                          </button>
-                        ))}
-                      </div>
-                    </section>
-
-                    <section>
-                      <label htmlFor="share-quote" className="text-sm font-medium text-zinc-300">
+                      <label htmlFor="share-quote" className="text-sm font-medium text-body">
                         感想引语
                       </label>
                       <textarea
@@ -210,13 +261,13 @@ export function ShareModal(props: ShareModalProps) {
                         value={quote}
                         onChange={(e) => setQuote(e.target.value)}
                         rows={4}
-                        className="mt-2 w-full resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm leading-relaxed text-paper placeholder:text-zinc-600 focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
+                        className="mt-2 w-full resize-none rounded-xl border border-line bg-surface px-3 py-2 text-sm leading-relaxed text-ink placeholder:text-muted focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
                         placeholder="写一句你想分享的追番感想"
                       />
                     </section>
 
                     <section>
-                      <p className="mb-2 text-sm font-medium text-zinc-300">标签（最多 2 个）</p>
+                      <p className="mb-2 text-sm font-medium text-body">标签（最多 2 个）</p>
                       <div className="flex flex-wrap gap-2">
                         {tagOptions.map((tag) => (
                           <button
@@ -227,7 +278,7 @@ export function ShareModal(props: ShareModalProps) {
                             className={`rounded-full border px-3 py-1.5 text-xs transition ${
                               tags.includes(tag)
                                 ? "border-brand bg-brand/15 text-brand"
-                                : "border-zinc-700 bg-zinc-900 text-zinc-300 hover:border-zinc-500 disabled:cursor-not-allowed disabled:opacity-40"
+                                : "border-line bg-surface text-body hover:border-brand/40 disabled:cursor-not-allowed disabled:opacity-40"
                             }`}
                           >
                             {tag}
@@ -237,9 +288,33 @@ export function ShareModal(props: ShareModalProps) {
                     </section>
                   </>
                 ) : (
-                  <p className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-4 text-sm leading-7 text-zinc-300">
-                    冷知识分享卡会使用「深夜追番」模板，自动截取 hook 和正文摘要。
-                  </p>
+                  <>
+                    <section>
+                      <label htmlFor="cold-share-title" className="text-sm font-medium text-body">
+                        分享标题 <span className="font-normal text-muted">{coldTitle.length}/48</span>
+                      </label>
+                      <textarea
+                        id="cold-share-title"
+                        value={coldTitle}
+                        onChange={(event) => setColdTitle(event.target.value.slice(0, 48))}
+                        rows={2}
+                        className="mt-2 w-full resize-none rounded-xl border border-line bg-surface px-3 py-2 text-sm leading-relaxed text-ink focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
+                      />
+                    </section>
+                    <section>
+                      <label htmlFor="cold-share-summary" className="text-sm font-medium text-body">
+                        分享正文 <span className="font-normal text-muted">{coldSummary.length}/120</span>
+                      </label>
+                      <textarea
+                        id="cold-share-summary"
+                        value={coldSummary}
+                        onChange={(event) => setColdSummary(event.target.value.slice(0, 120))}
+                        rows={5}
+                        className="mt-2 w-full resize-none rounded-xl border border-line bg-surface px-3 py-2 text-sm leading-relaxed text-ink focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40"
+                      />
+                      <p className="mt-2 text-xs leading-5 text-muted">图片中只是推荐初稿，你可以改成真正想分享的内容。</p>
+                    </section>
+                  </>
                 )}
 
                 {error ? (
@@ -250,7 +325,7 @@ export function ShareModal(props: ShareModalProps) {
 
                 <button
                   type="button"
-                  onClick={() => void saveCard(cardRef.current, filename)}
+                  onClick={() => void saveCard(cardRef.current, filename, cardSize)}
                   disabled={saving}
                   className="w-full rounded-xl bg-brand px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-50"
                 >
@@ -258,16 +333,16 @@ export function ShareModal(props: ShareModalProps) {
                 </button>
 
                 {dataUrl ? (
-                  <div className="rounded-xl border border-zinc-800 bg-zinc-900/70 p-3 text-xs leading-6 text-zinc-400">
+                  <div className="rounded-xl border border-line/70 bg-surface/90 p-3 text-xs leading-6 text-muted">
                     如果浏览器没有自动下载，可以长按下方图片保存。
                     <img
                       src={dataUrl}
                       alt={`${title} 分享卡片`}
-                      className="mt-3 max-h-64 w-auto rounded-lg border border-zinc-800"
+                      className="mt-3 max-h-64 w-auto rounded-lg border border-line/70"
                     />
                   </div>
                 ) : (
-                  <p className="text-xs leading-6 text-zinc-500">
+                  <p className="text-xs leading-6 text-muted">
                     iOS Safari 可能无法直接下载，会显示图片供你长按保存。
                   </p>
                 )}

@@ -1,18 +1,31 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { ShareModal } from "@/components/share/ShareModal";
 import { CHAT_ASSISTANT_NAME } from "@/lib/chat/persona";
-import type { LoreCard } from "@/lib/types";
+import {
+  CHAT_CLIENT_TIMEOUT_MS,
+  CHAT_MAX_HISTORY_MESSAGES
+} from "@/lib/chat/constants";
+import type { ChatGrounding } from "@/lib/chat/grounding";
+import {
+  clearRememberedConversation,
+  readChatMemoryEnabled,
+  readRememberedConversation,
+  type RememberedChatMessage,
+  writeChatMemoryEnabled,
+  writeRememberedConversation
+} from "@/lib/chat/memory";
+import { useDialogFocus } from "@/lib/use-dialog-focus";
+import type { LoreCard, WorkMeta } from "@/lib/types";
 
-export type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
+export type ChatMessage = RememberedChatMessage;
 
 export interface WorkChatDrawerProps {
   workTitle: string;
+  workMeta?: WorkMeta;
   cards: LoreCard[];
   /** 四卡未就绪时仅可打开抽屉查看提示，不可发送 */
   ready?: boolean;
@@ -22,6 +35,7 @@ export interface WorkChatDrawerProps {
 
 export function WorkChatDrawer({
   workTitle,
+  workMeta,
   cards,
   ready = true,
   readyHint = "图鉴卡片还在准备中，稍后再聊哦～",
@@ -34,11 +48,19 @@ export function WorkChatDrawer({
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [memoryEnabled, setMemoryEnabled] = useState(true);
+  const [memoryReady, setMemoryReady] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const dialogRef = useRef<HTMLElement>(null);
+  const skipMemoryWriteRef = useRef(false);
+  const requestControllerRef = useRef<AbortController | null>(null);
   const [isMobileSheet, setIsMobileSheet] = useState(false);
 
   const canSend = ready && cards.length > 0 && !loading;
+  const closeDialog = useCallback(() => setOpen(false), []);
+
+  useDialogFocus({ open, onClose: closeDialog, dialogRef });
 
   function pickSubstantiveQuote(text: string): string {
     const parts = text
@@ -61,6 +83,30 @@ export function WorkChatDrawer({
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
+
+  useEffect(() => {
+    skipMemoryWriteRef.current = true;
+    const enabled = readChatMemoryEnabled();
+    setMemoryEnabled(enabled);
+    setMessages(enabled ? readRememberedConversation(workTitle) : []);
+    setMemoryReady(true);
+  }, [workTitle]);
+
+  useEffect(() => {
+    if (!memoryReady || !memoryEnabled) return;
+    if (skipMemoryWriteRef.current) {
+      skipMemoryWriteRef.current = false;
+      return;
+    }
+    writeRememberedConversation(workTitle, messages);
+  }, [memoryEnabled, memoryReady, messages, workTitle]);
+
+  useEffect(
+    () => () => {
+      requestControllerRef.current?.abort();
+    },
+    []
+  );
 
   const scrollToBottom = useCallback(() => {
     const el = listRef.current;
@@ -85,15 +131,6 @@ export function WorkChatDrawer({
     };
   }, [open]);
 
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: globalThis.KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
-
   async function handleSend() {
     const text = input.trim();
     if (!text || !canSend) return;
@@ -105,39 +142,69 @@ export function WorkChatDrawer({
     setMessages(nextMessages);
     setInput("");
     setLoading(true);
+    const controller = new AbortController();
+    requestControllerRef.current = controller;
+    const timeout = window.setTimeout(() => controller.abort(), CHAT_CLIENT_TIMEOUT_MS);
 
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           workTitle,
+          workMeta,
           cards,
-          messages: nextMessages
+          messages: nextMessages.slice(-CHAT_MAX_HISTORY_MESSAGES)
         })
       });
       const data = (await res.json()) as {
         message?: string;
+        grounding?: ChatGrounding;
+        citations?: RememberedChatMessage["citations"];
         error?: string;
         detail?: string;
       };
       if (!res.ok) {
         throw new Error(
-          typeof data.detail === "string"
-            ? data.detail
-            : data.error || `请求失败（${res.status}）`
+          res.status === 429
+            ? "聊得有点快啦，稍等一会儿再问芽衣。"
+            : typeof data.detail === "string"
+              ? data.detail
+              : data.error || `请求失败（${res.status}）`
         );
       }
       if (!data.message?.trim()) {
-        throw new Error("空回复");
+        throw new Error("芽衣没有返回有效内容，请重新试一次。");
       }
-      setMessages((prev) => [...prev, { role: "assistant", content: data.message! }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.message!,
+          grounding: data.grounding,
+          citations: data.citations
+        }
+      ]);
       if (candidateQuote) {
         setShareQuote(candidateQuote);
       }
-    } catch (e) {
-      setError((e as Error).message);
+    } catch (caught) {
+      setMessages((current) => {
+        const last = current.at(-1);
+        return last?.role === "user" && last.content === text ? current.slice(0, -1) : current;
+      });
+      setInput(text);
+      setError(
+        caught instanceof DOMException && caught.name === "AbortError"
+          ? "芽衣思考得太久了，这次请求已停止。你的问题还在，可以直接重试。"
+          : (caught as Error).message
+      );
     } finally {
+      window.clearTimeout(timeout);
+      if (requestControllerRef.current === controller) {
+        requestControllerRef.current = null;
+      }
       setLoading(false);
     }
   }
@@ -149,17 +216,50 @@ export function WorkChatDrawer({
     }
   }
 
+  function toggleMemory() {
+    if (memoryEnabled) {
+      const confirmed = window.confirm("关闭本机对话记忆，并清除这部作品当前保存的对话吗？");
+      if (!confirmed) return;
+      clearRememberedConversation(workTitle);
+      setMessages([]);
+      setShareQuote("");
+    }
+    const next = !memoryEnabled;
+    writeChatMemoryEnabled(next);
+    setMemoryEnabled(next);
+  }
+
+  function clearConversation() {
+    if (messages.length && !window.confirm("清空这部作品的本机对话记录？")) return;
+    clearRememberedConversation(workTitle);
+    setMessages([]);
+    setShareQuote("");
+    setError(null);
+  }
+
+  const starterPrompts = [
+    { label: "聊聊我的感受", value: `我看完《${workTitle}》后，有些感受想和你聊聊。` },
+    { label: "问一个梗或幕后", value: `我想了解《${workTitle}》里一个有趣的梗或幕后故事。` },
+    { label: "整理分享文案", value: `我想把对《${workTitle}》的感想整理成一段适合分享的话。` }
+  ];
+
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full border border-brand/60 bg-zinc-900 px-5 py-3 text-sm font-semibold text-paper shadow-lg shadow-black/40 transition hover:border-brand hover:bg-zinc-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        className="fixed bottom-[calc(5.25rem+var(--safe-bottom))] right-4 z-30 flex min-h-12 items-center gap-2 rounded-full border border-brand/40 bg-elevated py-1.5 pl-1.5 pr-4 text-sm font-semibold text-ink shadow-float transition hover:-translate-y-0.5 hover:border-brand md:bottom-6 md:right-6 md:z-40"
         aria-haspopup="dialog"
         aria-expanded={open}
       >
-        <span aria-hidden>💬</span>
-        聊一聊
+        <Image
+          src="/brand/mei-avatar-v1.png"
+          alt=""
+          width={40}
+          height={40}
+          className="size-9 rounded-full border border-brand/20 object-cover"
+        />
+        问问芽衣
       </button>
 
       <AnimatePresence>
@@ -168,38 +268,58 @@ export function WorkChatDrawer({
             <motion.button
               type="button"
               aria-label="关闭聊天"
-              className="fixed inset-0 z-50 bg-black/55 backdrop-blur-[2px]"
+              className="fixed inset-0 z-50 bg-ink/20 backdrop-blur-[2px]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
             />
             <motion.aside
+              ref={dialogRef}
               role="dialog"
               aria-modal="true"
               aria-labelledby="work-chat-title"
-              className="fixed z-50 flex w-full flex-col border-zinc-700 bg-zinc-900 shadow-2xl inset-x-0 bottom-0 top-auto max-h-[min(88vh,720px)] rounded-t-2xl border-t md:inset-y-0 md:left-auto md:right-0 md:top-0 md:max-h-none md:w-full md:max-w-md md:rounded-none md:rounded-l-2xl md:border-l md:border-t-0"
+              tabIndex={-1}
+              className="fixed z-50 flex w-full flex-col border-line bg-surface shadow-2xl inset-x-0 bottom-0 top-auto max-h-[min(88vh,720px)] rounded-t-2xl border-t md:inset-y-0 md:left-auto md:right-0 md:top-0 md:max-h-none md:w-full md:max-w-md md:rounded-none md:rounded-l-2xl md:border-l md:border-t-0"
               initial={isMobileSheet ? { y: "100%", x: 0 } : { x: "100%", y: 0 }}
               animate={{ y: 0, x: 0 }}
               exit={isMobileSheet ? { y: "100%", x: 0 } : { x: "100%", y: 0 }}
               transition={{ type: "spring", damping: 28, stiffness: 320 }}
             >
-              <header className="flex shrink-0 items-center justify-between gap-3 border-b border-zinc-800 px-4 py-4 md:px-5">
+              <header className="flex shrink-0 items-center justify-between gap-3 border-b border-line/70 px-4 py-4 md:px-5">
                 <motion.div
-                  className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-zinc-700 md:hidden"
+                  className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-line md:hidden"
                   aria-hidden
                 />
+                <Image
+                  src="/brand/mei-avatar-v1.png"
+                  alt="芽衣"
+                  width={44}
+                  height={44}
+                  className="mt-2 size-10 shrink-0 rounded-full border border-brand/20 object-cover md:mt-0"
+                />
                 <div className="min-w-0 pt-2 md:pt-0">
-                  <h2 id="work-chat-title" className="text-base font-semibold text-paper">
+                  <h2 id="work-chat-title" className="text-base font-semibold text-ink">
                     和{CHAT_ASSISTANT_NAME}聊聊这部作品
                   </h2>
-                  <p className="mt-0.5 truncate text-xs text-zinc-500">{workTitle}</p>
+                  <p className="mt-0.5 truncate text-xs text-muted">{workTitle}</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <button
                     type="button"
+                    onClick={toggleMemory}
+                    aria-pressed={memoryEnabled}
+                    className={`min-h-9 rounded-lg px-2 text-xs transition ${
+                      memoryEnabled ? "bg-sage/10 text-sage" : "text-muted hover:bg-soft"
+                    }`}
+                    title="对话只保存在当前浏览器，最多保留 30 天"
+                  >
+                    {memoryEnabled ? "记忆已开" : "记忆已关"}
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-2 py-1 text-sm text-zinc-400 transition hover:bg-zinc-800 hover:text-paper"
+                    className="rounded-lg px-2 py-1 text-sm text-muted transition hover:bg-soft hover:text-ink"
                     aria-label="关闭"
                   >
                     ✕
@@ -212,12 +332,39 @@ export function WorkChatDrawer({
                 className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4 md:px-5"
               >
                 {messages.length === 0 ? (
-                  <p className="text-center text-sm leading-relaxed text-zinc-500">
-                    嗨～我是{CHAT_ASSISTANT_NAME}！关于《{workTitle}》的梗、幕后或观感，都可以问我哦 (๑•̀ㅂ•́)و
+                  <div className="mx-auto max-w-sm rounded-2xl border border-line bg-soft/60 p-5 text-center">
+                    <Image
+                      src="/brand/mei-avatar-v1.png"
+                      alt=""
+                      width={64}
+                      height={64}
+                      className="mx-auto size-16 rounded-full border-2 border-elevated object-cover shadow-card"
+                    />
+                    <p className="mt-3 text-sm font-medium text-ink">想从哪里聊起？</p>
+                    <p className="mt-1 text-xs leading-6 text-body">
+                    可以说说你的感受，也可以问作品里的梗与幕后；能核到来源时我会补充，找不到也会直说。聊出一句喜欢的话后，我还能帮你做成分享卡片。
                     {!ready ? (
                       <span className="mt-2 block text-amber-400/90">{readyHint}</span>
                     ) : null}
-                  </p>
+                    </p>
+                    {ready ? (
+                      <div className="mt-4 flex flex-wrap justify-center gap-2">
+                        {starterPrompts.map((prompt) => (
+                          <button
+                            key={prompt.label}
+                            type="button"
+                            onClick={() => {
+                              setInput(prompt.value);
+                              window.setTimeout(() => inputRef.current?.focus(), 0);
+                            }}
+                            className="min-h-9 rounded-full border border-line bg-surface px-3 text-xs font-medium text-body transition hover:border-brand/50 hover:text-brand"
+                          >
+                            {prompt.label}
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
                 ) : null}
                 {messages.map((m, i) => (
                   <motion.div
@@ -230,7 +377,7 @@ export function WorkChatDrawer({
                       className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                         m.role === "user"
                           ? "rounded-br-md bg-brand/90 text-white"
-                          : "rounded-bl-md border border-zinc-700/80 bg-zinc-800/90 text-zinc-100"
+                          : "rounded-bl-md border border-line/80 bg-soft/90 text-ink"
                       }`}
                     >
                       {m.role === "assistant" ? (
@@ -239,17 +386,33 @@ export function WorkChatDrawer({
                         </span>
                       ) : null}
                       <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                      {m.role === "assistant" && (m.grounding === "source_backed" || m.grounding === "insufficient") ? (
+                        <GroundingNote grounding={m.grounding} citations={m.citations ?? []} />
+                      ) : null}
                     </motion.div>
                   </motion.div>
                 ))}
                 {loading ? (
-                  <p className="text-center text-xs text-zinc-500" aria-live="polite">
-                    {CHAT_ASSISTANT_NAME}正在想怎么回答呢…
-                  </p>
+                  <div className="flex items-center justify-start gap-2 text-xs text-muted" aria-live="polite">
+                    <Image src="/brand/mei-avatar-v1.png" alt="" width={28} height={28} className="size-7 animate-pulse rounded-full border border-brand/20 object-cover" />
+                    <span>{CHAT_ASSISTANT_NAME}正在翻笔记，想怎么回答更自然…</span>
+                  </div>
                 ) : null}
               </motion.div>
 
-              <footer className="shrink-0 border-t border-zinc-800 px-4 py-3 md:px-5">
+              <footer className="shrink-0 border-t border-line/70 px-4 py-3 md:px-5">
+                <div className="mb-2 flex items-center justify-between gap-3 text-[11px] text-muted">
+                  <span>{memoryEnabled ? "仅在本机记住本作品对话 · 30 天" : "本机记忆已关闭"}</span>
+                  {messages.length ? (
+                    <button
+                      type="button"
+                      onClick={clearConversation}
+                      className="min-h-8 shrink-0 rounded-lg px-2 hover:bg-soft hover:text-ink"
+                    >
+                      清空对话
+                    </button>
+                  ) : null}
+                </div>
                 {!ready ? (
                   <p className="mb-2 text-center text-xs text-amber-400/90" role="status">
                     {readyHint}
@@ -289,7 +452,7 @@ export function WorkChatDrawer({
                     placeholder={
                       canSend ? "输入问题，Enter 发送" : "暂时还不能发送哦"
                     }
-                    className="min-h-[44px] flex-1 resize-none rounded-xl border border-zinc-700 bg-zinc-950/80 px-3 py-2 text-sm text-paper placeholder:text-zinc-600 focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="min-h-[44px] flex-1 resize-none rounded-xl border border-line bg-canvas/80 px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-brand/70 focus:outline-none focus:ring-1 focus:ring-brand/40 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   <button
                     type="button"
@@ -314,5 +477,50 @@ export function WorkChatDrawer({
         coverImage={coverImage}
       />
     </>
+  );
+}
+
+function GroundingNote({
+  grounding,
+  citations
+}: {
+  grounding: ChatGrounding;
+  citations: NonNullable<RememberedChatMessage["citations"]>;
+}) {
+  const labels: Record<ChatGrounding, string> = {
+    source_backed: citations.length ? `参考来源 ${citations.length} 个` : "有来源可查",
+    archive_context: "",
+    opinion: "",
+    insufficient: "这个细节暂时没有可靠出处"
+  };
+  const tone =
+    grounding === "source_backed"
+      ? "text-sage"
+      : grounding === "insufficient"
+        ? "text-brand"
+        : "text-muted";
+
+  return (
+    <div className={`mt-2 border-t border-line/50 pt-2 text-[10px] ${tone}`}>
+      <span>{labels[grounding]}</span>
+      {citations.map((citation) => {
+        const href = citation.urls[0];
+        return href ? (
+          <a
+            key={citation.card}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-2 underline decoration-line underline-offset-2 hover:text-ink"
+          >
+            {citation.label}
+          </a>
+        ) : (
+          <span key={citation.card} className="ml-2">
+            {citation.label}
+          </span>
+        );
+      })}
+    </div>
   );
 }

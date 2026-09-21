@@ -1,4 +1,11 @@
 import { buildStableCommunityHint } from "@/lib/community-hint";
+import {
+  animeTitleAliases,
+  chineseAnimeTitle,
+  findAnimeTitleEntry,
+  normalizeAnimeTitle
+} from "@/lib/anime-title-registry";
+import { fetchBangumiSubjectOutcome } from "@/lib/data-sources/bangumi";
 import type { WorkMeta, WorkRelatedRec } from "@/lib/types";
 
 const ANILIST_ENDPOINT = "https://graphql.anilist.co";
@@ -8,38 +15,70 @@ const WIKIPEDIA_API = "https://en.wikipedia.org/w/api.php";
 const WIKIPEDIA_ZH_API = "https://zh.wikipedia.org/w/api.php";
 const MOEGIRL_API = "https://zh.moegirl.org.cn/api.php";
 
+type AniListMetaMedia = {
+  id?: number;
+  title?: { romaji?: string; english?: string; native?: string };
+  seasonYear?: number;
+  season?: string;
+  coverImage?: { extraLarge?: string };
+  studios?: { nodes?: Array<{ name?: string; isAnimationStudio?: boolean }> };
+};
+
 interface AniListResponse {
   errors?: Array<{ message?: string }>;
   data?: {
     Page?: {
-      media?: Array<{
-        title?: { romaji?: string; english?: string; native?: string };
-        seasonYear?: number;
-        season?: string;
-        coverImage?: { extraLarge?: string };
-        studios?: { nodes?: Array<{ name?: string; isAnimationStudio?: boolean }> };
-      }>;
+      media?: AniListMetaMedia[];
     };
   };
 }
 
 export async function fetchAniListMeta(query: string): Promise<WorkMeta | null> {
   try {
+    const registered = findAnimeTitleEntry(query);
+    if (registered) {
+      const exact = await fetchAniListMetaById(registered.anilistId, registered.zh);
+      if (exact) return exact;
+    }
+    // 绝大多数英文、日文和罗马字标题可由 AniList 直接命中；只有失败才启动多源桥接，
+    // 避免每一次正常检索都额外访问维基、萌百和 Bangumi。
+    const direct = await fetchAniListMetaOnce(query, query, false);
+    if (direct) return direct;
     const candidates = await buildTitleCandidates(query);
     for (const candidate of candidates) {
-      const meta = await fetchAniListMetaOnce(candidate, query);
+      if (normalizeAnimeTitle(candidate) === normalizeAnimeTitle(query)) continue;
+      const meta = await fetchAniListMetaOnce(candidate, query, candidate !== query);
       if (meta?.coverImage || meta?.seasonYear || (meta?.studios && meta.studios.length > 0)) {
         return meta;
       }
       if (meta && meta.title !== query) return meta;
     }
-    return { title: query };
-  } catch {
-    return { title: query };
+    return null;
+  } catch (error) {
+    console.info("[AniList] metadata lookup failed", {
+      query,
+      message: error instanceof Error ? error.message : String(error)
+    });
+    return null;
   }
 }
 
-async function fetchAniListMetaOnce(search: string, originalQuery: string): Promise<WorkMeta | null> {
+async function fetchAniListMetaById(id: number, displayTitle: string): Promise<WorkMeta | null> {
+  const graphql = `query ($id: Int!) { Media(id: $id, type: ANIME) { id title { romaji english native } seasonYear season coverImage { extraLarge } studios { nodes { name isAnimationStudio } } } }`;
+  const resp = await fetch(ANILIST_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json", "User-Agent": "AnimeLore/0.1" },
+    body: JSON.stringify({ query: graphql, variables: { id } }),
+    cache: "no-store"
+  });
+  if (!resp.ok) return null;
+  const data = (await resp.json()) as { errors?: unknown[]; data?: { Media?: AniListMetaMedia } };
+  const media = data.data?.Media;
+  if (data.errors?.length || !media?.id) return null;
+  return mediaToWorkMeta(media, displayTitle);
+}
+
+async function fetchAniListMetaOnce(search: string, originalQuery: string, bridged: boolean): Promise<WorkMeta | null> {
   const graphql = `
     query ($search: String) {
       Page(page: 1, perPage: 5) {
@@ -77,15 +116,26 @@ async function fetchAniListMetaOnce(search: string, originalQuery: string): Prom
     cache: "no-store"
   });
 
-  if (!resp.ok) return null;
+  if (!resp.ok) {
+    console.info("[AniList] metadata response unavailable", {
+      search,
+      status: resp.status
+    });
+    return null;
+  }
   const data = (await resp.json()) as AniListResponse;
   if (data.errors?.length) return null;
   const mediaList = data.data?.Page?.media || [];
   if (mediaList.length === 0) return null;
-  const media = pickBestMedia(mediaList, originalQuery, search);
+  const picked = pickBestMediaWithScore(mediaList, originalQuery, search);
+  if (!picked || picked.score < (bridged ? 6 : 7)) return null;
+  return mediaToWorkMeta(picked.item, /[\u3400-\u9fff]/.test(originalQuery) ? originalQuery : undefined);
+}
 
+function mediaToWorkMeta(media: AniListMetaMedia, displayTitle?: string): WorkMeta {
+  const canonical = media.title?.english || media.title?.romaji || media.title?.native || displayTitle || "Unknown";
   return {
-    title: media.title?.english || media.title?.romaji || media.title?.native || originalQuery,
+    title: chineseAnimeTitle(media.id, displayTitle || canonical),
     anilistId: typeof media.id === "number" ? media.id : undefined,
     nativeTitle: media.title?.native,
     seasonYear: media.seasonYear,
@@ -98,7 +148,7 @@ async function fetchAniListMetaOnce(search: string, originalQuery: string): Prom
   };
 }
 
-function pickBestMedia(
+export function pickBestMediaWithScore(
   list: Array<{
     id?: number;
     title?: { romaji?: string; english?: string; native?: string };
@@ -110,52 +160,62 @@ function pickBestMedia(
   query: string,
   candidate: string
 ) {
-  const needleA = normalize(query);
-  const needleB = normalize(candidate);
+  const needleA = normalizeAnimeTitle(query);
+  const needleB = normalizeAnimeTitle(candidate);
   const scored = list.map((item) => {
     const titles = [item.title?.english, item.title?.romaji, item.title?.native]
       .filter(Boolean)
-      .map((t) => normalize(t || ""));
+      .map((t) => normalizeAnimeTitle(t || ""));
     let score = 0;
     for (const t of titles) {
-      if (t === needleA || t === needleB) score += 4;
-      if (t.includes(needleA) || t.includes(needleB)) score += 2;
+      if (t === needleA || t === needleB) score += 8;
+      else if ((needleA.length >= 4 && (t.includes(needleA) || needleA.includes(t))) || (needleB.length >= 4 && (t.includes(needleB) || needleB.includes(t)))) score += 3;
     }
     if (item.coverImage?.extraLarge) score += 1;
     if (item.seasonYear) score += 1;
     return { item, score };
   });
   scored.sort((a, b) => b.score - a.score);
-  return scored[0].item;
-}
-
-function normalize(input: string): string {
-  return input.toLowerCase().replace(/\s+/g, "");
+  return scored[0];
 }
 
 async function buildTitleCandidates(query: string): Promise<string[]> {
   const set = new Set<string>();
   set.add(query);
-  for (const alias of getKnownAliases(query)) set.add(alias);
-  const [wikiEn, wikiZh, wikiZhToEn, moegirl] = await Promise.all([
+  for (const alias of animeTitleAliases(query)) set.add(alias);
+  const [wikiEn, wikiZh, wikiZhToEn, moegirl, bangumi] = await Promise.all([
     fetchWikipediaTitleCandidates(query),
     fetchWikipediaZhTitleCandidates(query),
     fetchWikipediaZhToEnTitle(query),
-    fetchMoegirlTitleCandidates(query)
+    fetchMoegirlTitleCandidates(query),
+    fetchBangumiTitleCandidates(query)
   ]);
-  for (const t of [...wikiEn, ...wikiZh, ...wikiZhToEn, ...moegirl]) set.add(t);
-  return Array.from(set).filter(Boolean).slice(0, 6);
+  for (const t of [...bangumi, ...wikiEn, ...wikiZh, ...wikiZhToEn, ...moegirl]) set.add(t);
+  return Array.from(set).filter(Boolean).slice(0, 8);
 }
 
-function getKnownAliases(query: string): string[] {
-  const map: Record<string, string[]> = {
-    魔法少女小圆: ["Puella Magi Madoka Magica", "Mahou Shoujo Madoka★Magica"],
-    小圆: ["Puella Magi Madoka Magica"],
-    进击的巨人: ["Attack on Titan", "Shingeki no Kyojin"],
-    钢之炼金术师: ["Fullmetal Alchemist: Brotherhood", "Hagane no Renkinjutsushi"],
-    EVA: ["Neon Genesis Evangelion", "Shinseiki Evangelion"]
-  };
-  return map[query] || [];
+/**
+ * 中文名到 AniList 的主桥接：Bangumi 能以中文译名命中，并返回日文/罗马字原名；
+ * AniList 则更擅长用后者检索。只在输入含 CJK 时请求，避免英文检索平白多一次上游调用。
+ */
+async function fetchBangumiTitleCandidates(query: string): Promise<string[]> {
+  if (!/[\u3400-\u9fff]/.test(query)) return [];
+  try {
+    const outcome = await fetchBangumiSubjectOutcome(query);
+    if (!outcome.ok) return [];
+    const subject = outcome.data;
+    const normalizedQuery = normalizeAnimeTitle(query);
+    const normalizedChineseTitle = normalizeAnimeTitle(subject.name_cn || "");
+    // Bangumi 的模糊搜索不应成为“强行匹配”的来源。名称至少应精确或互为包含。
+    const likelyMatch =
+      normalizedChineseTitle === normalizedQuery ||
+      (Math.min(normalizedChineseTitle.length, normalizedQuery.length) >= 4 &&
+        (normalizedChineseTitle.includes(normalizedQuery) || normalizedQuery.includes(normalizedChineseTitle)));
+    if (!likelyMatch) return [];
+    return [subject.name, subject.name_cn].filter((title): title is string => Boolean(title?.trim()));
+  } catch {
+    return [];
+  }
 }
 
 /** 供 RAG retriever 第二轮扩展 Wikipedia 标题 */
@@ -353,7 +413,7 @@ type AniMediaNode = {
   format?: string | null;
   seasonYear?: number | null;
   genres?: string[] | null;
-  tags?: { nodes?: Array<{ name?: string | null } | null> | null } | null;
+  tags?: Array<{ name?: string | null } | null> | null;
   title?: { romaji?: string | null; english?: string | null; native?: string | null };
   coverImage?: { extraLarge?: string | null } | null;
   /** AniList：`isMain` 在 edge 上，不在 `Studio` 节点上 */
@@ -376,7 +436,8 @@ function mainAnimationStudioNames(media: AniMediaNode | undefined): Set<string> 
 }
 
 function displayTitleOf(m: AniMediaNode): string {
-  return m.title?.english || m.title?.romaji || m.title?.native || "Unknown";
+  const fallback = m.title?.english || m.title?.romaji || m.title?.native || "Unknown";
+  return chineseAnimeTitle(m.id, fallback);
 }
 
 function searchQueryOf(m: AniMediaNode): string {
@@ -419,11 +480,7 @@ const WORK_RELATED_MEDIA_FIELDS = `
           coverImage {
             extraLarge
           }
-          tags(sort: RANK_DESC, perPage: 12) {
-            nodes {
-              name
-            }
-          }
+          tags(sort: RANK_DESC) { name }
           studios {
             edges {
               isMain
@@ -451,11 +508,7 @@ const WORK_RELATED_MEDIA_FIELDS = `
                   coverImage {
                     extraLarge
                   }
-                  tags(sort: RANK_DESC, perPage: 8) {
-                    nodes {
-                      name
-                    }
-                  }
+                  tags(sort: RANK_DESC) { name }
                   studios {
                     edges {
                       isMain
@@ -487,11 +540,7 @@ const WORK_RELATED_MEDIA_FIELDS = `
                   coverImage {
                     extraLarge
                   }
-                  tags(sort: RANK_DESC, perPage: 8) {
-                    nodes {
-                      name
-                    }
-                  }
+                  tags(sort: RANK_DESC) { name }
                   studios {
                     edges {
                       isMain
@@ -537,7 +586,7 @@ function buildRelatedWorkRecs(
 
   const baseGenres = new Set((base.genres || []).filter(Boolean));
   const baseTagNames = new Set(
-    (base.tags?.nodes || [])
+    (base.tags || [])
       .map((t) => t?.name)
       .filter((x): x is string => !!x && x.length > 0)
   );
@@ -594,7 +643,7 @@ function buildRelatedWorkRecs(
     if (!m?.id || m.id === baseId) continue;
     if (byId.has(m.id)) continue;
     const g = (m.genres || []).filter((x) => baseGenres.has(x));
-    const tagNames = (m.tags?.nodes || [])
+    const tagNames = (m.tags || [])
       .map((t) => t?.name)
       .filter((x): x is string => !!x);
     const sharedTags = tagNames.filter((t) => baseTagNames.has(t));
@@ -714,11 +763,16 @@ export async function fetchAniListRelatedRecommendations(
       return [];
     }
 
-    const base = pickBestMedia(
-      list as Parameters<typeof pickBestMedia>[0],
+    const picked = pickBestMediaWithScore(
+      list as Parameters<typeof pickBestMediaWithScore>[0],
       receivedQuery,
       receivedQuery
-    ) as RelatedWorkBase;
+    );
+    if (!picked || picked.score < 7) {
+      logRelated({ phase: "rejected_weak_title_match", resolvedVia: "search", score: picked?.score ?? 0 });
+      return [];
+    }
+    const base = picked.item as RelatedWorkBase;
 
     return buildRelatedWorkRecs(base, receivedQuery, logRelated, "search");
   } catch (err) {

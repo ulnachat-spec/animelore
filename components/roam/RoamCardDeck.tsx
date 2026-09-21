@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { RoamCard } from "@/components/roam/RoamCard";
@@ -14,6 +15,8 @@ import {
 } from "@/lib/roam/roam-session";
 import type { RoamCard as RoamCardData, RoamCardTag } from "@/lib/roam/roam-types";
 import type { ColdHookPayload, ColdTopicType } from "@/lib/types";
+import { readLibrary, recordLibraryHistory, writeLibrary } from "@/lib/user-library-client";
+import { trackProductEvent } from "@/lib/client-product-events";
 
 type RoamPrefs = {
   likedTags: RoamCardTag[];
@@ -23,7 +26,7 @@ type RoamPrefs = {
 };
 
 const STORAGE_KEY = "animelore.roam.prefs.v1";
-const DECK_STATE_VERSION = 2;
+const DECK_STATE_VERSION = 3;
 
 const emptyPrefs: RoamPrefs = {
   likedTags: [],
@@ -38,7 +41,7 @@ function uniqLimit<T>(items: T[], limit: number): T[] {
 
 function loadPrefs(): RoamPrefs {
   try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) ?? sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return emptyPrefs;
     const parsed = JSON.parse(raw) as Partial<RoamPrefs>;
     return {
@@ -54,7 +57,18 @@ function loadPrefs(): RoamPrefs {
 
 function savePrefs(prefs: RoamPrefs): void {
   try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+    const library = readLibrary();
+    writeLibrary({
+      ...library,
+      preferences: {
+        ...library.preferences,
+        likedTags: prefs.likedTags,
+        skippedTags: prefs.skippedTags,
+        likedSeeds: prefs.likedSeeds
+      }
+    });
   } catch {
     /* ignore private mode / quota */
   }
@@ -149,11 +163,13 @@ function coldPayloadFromRoamCard(card: RoamCardData): ColdHookPayload {
 export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] }) {
   const router = useRouter();
   const [, startTransition] = useTransition();
-  const [cards, setCards] = useState<RoamCardData[]>(() => loadDeckState(initialCards).cards);
-  const [index, setIndex] = useState(() => loadDeckState(initialCards).index);
+  const [cards, setCards] = useState<RoamCardData[]>(initialCards);
+  const [index, setIndex] = useState(0);
+  const [deckHydrated, setDeckHydrated] = useState(false);
   const [direction, setDirection] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [prefs, setPrefs] = useState<RoamPrefs>(emptyPrefs);
   const activeCard = cards[index];
   const remaining = Math.max(0, cards.length - index - 1);
 
@@ -165,6 +181,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
   const updatePrefs = useCallback((updater: (prefs: RoamPrefs) => RoamPrefs) => {
     const next = updater(loadPrefs());
     savePrefs(next);
+    setPrefs(next);
     return next;
   }, []);
 
@@ -190,12 +207,21 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
   }, [loadingMore]);
 
   useEffect(() => {
+    const restored = loadDeckState(initialCards);
+    setCards(restored.cards);
+    setIndex(restored.index);
+    setPrefs(loadPrefs());
+    setDeckHydrated(true);
+  }, [initialCards]);
+
+  useEffect(() => {
     if (remaining <= 2) void fetchMore();
   }, [fetchMore, remaining]);
 
   useEffect(() => {
+    if (!deckHydrated) return;
     saveDeckState(cards, index);
-  }, [cards, index]);
+  }, [cards, deckHydrated, index]);
 
   const goNext = useCallback(() => {
     if (!activeCard) return;
@@ -205,6 +231,7 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
       skippedTags: uniqLimit([...prefs.skippedTags, activeCard.tag], 8),
       recentTopicKeys: uniqLimit([...prefs.recentTopicKeys, activeCard.topic_key], 10)
     }));
+    trackProductEvent("roam_skipped");
     setIndex((current) => Math.min(current + 1, cards.length - 1));
   }, [activeCard, cards.length, updatePrefs]);
 
@@ -216,7 +243,15 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
       likedSeeds: uniqLimit([...prefs.likedSeeds, ...activeCard.next_seeds], 12),
       recentTopicKeys: uniqLimit([...prefs.recentTopicKeys, activeCard.topic_key], 10)
     }));
+    trackProductEvent("roam_opened");
     startTransition(() => {
+      recordLibraryHistory({
+        id: `${activeCard.target.kind}:${activeCard.topic_key}`,
+        kind: activeCard.target.kind === "work" ? "work" : "cold",
+        title: activeCard.target.title || activeCard.hook,
+        subtitle: activeCard.hook,
+        href: activeCard.target.href
+      });
       if (activeCard.target.kind === "cold") {
         try {
           sessionStorage.setItem(ROAM_RETURN_STORAGE_KEY, "/roam");
@@ -232,22 +267,35 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
     });
   }, [activeCard, router, updatePrefs]);
 
+  const preferenceReason = useMemo(() => {
+    if (!activeCard) return undefined;
+    if (prefs.likedTags.includes(activeCard.tag)) return `你此前对「${activeCard.tag}」线索停留得更久`;
+    if (prefs.skippedTags.includes(activeCard.tag)) return `换一个角度：这张会用不同入口聊「${activeCard.tag}」`;
+    if (prefs.likedSeeds.some((seed) => activeCard.next_seeds.includes(seed))) return "它接在你之前点开的线索之后";
+    return "芽衣先为你保留了一条可继续追下去的线索";
+  }, [activeCard, prefs]);
+
   if (!activeCard) {
     return (
-      <section className="mt-10 rounded-3xl border border-zinc-700 bg-zinc-900 p-6 text-center">
-        <p className="text-zinc-300">暂时没有可漫游的卡片，稍后再来刷一条。</p>
+      <section className="mt-10 rounded-3xl border border-line bg-surface p-6 text-center">
+        <p className="text-body">暂时没有可漫游的卡片，稍后再来刷一条。</p>
       </section>
     );
   }
 
   return (
     <section className="mt-8">
-      <div className="mb-4 flex items-center justify-between text-xs text-zinc-500">
+      <div className="mb-4 flex items-center justify-between text-xs text-muted">
         <span>知识漫游</span>
         <span>{progressText}</span>
       </div>
 
-      <div className="relative min-h-[430px]">
+      <div className="mb-4 flex items-center justify-between gap-4 rounded-2xl border border-line/70 bg-surface/65 px-4 py-2.5 text-xs font-medium shadow-sm" aria-hidden="true">
+        <motion.span className="text-muted" animate={{ x: [0, -4, 0] }} transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 1.4 }}>← 左滑略过</motion.span>
+        <span className="h-px flex-1 bg-line/70" />
+        <motion.span className="text-brand" animate={{ x: [0, 4, 0] }} transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 1.4 }}>右滑深入 →</motion.span>
+      </div>
+      <div className="relative min-h-[360px] sm:min-h-[430px]">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={activeCard.id}
@@ -262,33 +310,38 @@ export function RoamCardDeck({ initialCards }: { initialCards: RoamCardData[] })
               if (info.offset.x < -90 || info.velocity.x < -500) goNext();
               if (info.offset.x > 90 || info.velocity.x > 500) goDeep();
             }}
-            className="absolute inset-x-0 top-0 cursor-grab active:cursor-grabbing"
+            className="relative cursor-grab active:cursor-grabbing"
           >
-            <RoamCard card={activeCard} />
+            <RoamCard card={activeCard} preferenceReason={preferenceReason} />
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-3">
+      <div className="sticky bottom-[calc(5rem+var(--safe-bottom))] z-10 mt-4 grid grid-cols-2 gap-3 rounded-2xl bg-canvas/90 p-2 backdrop-blur-lg md:static md:mt-6 md:bg-transparent md:p-0">
         <button
           type="button"
           onClick={goNext}
-          className="rounded-2xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm font-medium text-zinc-200 transition hover:border-zinc-500 hover:bg-zinc-800"
+          className="rounded-2xl border border-line bg-surface px-4 py-3 text-sm font-medium text-ink transition hover:border-brand/40 hover:bg-soft"
         >
-          下一条
+          略过这条
         </button>
         <button
           type="button"
           onClick={goDeep}
           className="rounded-2xl bg-brand px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand/90"
         >
-          深入了解
+          沿线深入
         </button>
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-xs text-zinc-600">
+      <div className="mt-4 flex items-center justify-between text-xs text-muted">
         <span>左滑下一条，右滑深入了解</span>
-        <span>{loadingMore ? "补充卡片中..." : `余 ${remaining} 条`}</span>
+        {loadingMore ? (
+          <span className="inline-flex items-center gap-1.5">
+            <Image src="/brand/mei-avatar-v1.png" alt="" width={20} height={20} className="size-5 animate-pulse rounded-full object-cover" />
+            芽衣正在补充卡片…
+          </span>
+        ) : <span>余 {remaining} 条</span>}
       </div>
       {error ? <p className="mt-3 text-center text-xs text-red-400">{error}</p> : null}
     </section>

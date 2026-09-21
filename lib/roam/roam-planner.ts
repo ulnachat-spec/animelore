@@ -6,7 +6,7 @@ function hashString(s: string): number {
   return Math.abs(h);
 }
 
-function cardScore(card: RoamCard, prefs: RoamRequestPrefs, index: number): number {
+function cardScore(card: RoamCard, prefs: RoamRequestPrefs, index: number, batchSalt: string): number {
   let score = 50 + card.confidence * 25;
   if (prefs.likedTags.includes(card.tag)) score += 18;
   if (prefs.skippedTags.includes(card.tag)) score -= 8;
@@ -19,14 +19,15 @@ function cardScore(card: RoamCard, prefs: RoamRequestPrefs, index: number): numb
       score += 20;
     }
   }
-  score += hashString(`${card.topic_key}:${index}:${prefs.seed ?? ""}`) % 13;
+  score += hashString(`${card.topic_key}:${index}:${prefs.seed ?? ""}:${batchSalt}`) % 17;
   return score;
 }
 
 export function planRoamBatch(
   cards: RoamCard[],
   prefs: RoamRequestPrefs,
-  count: number
+  count: number,
+  batchSalt = `${Date.now()}:${Math.random()}`
 ): { cards: RoamCard[]; blocked_recent_count: number } {
   const recent = new Set(prefs.recentTopicKeys.slice(-10).map((k) => k.toLowerCase()));
   const blocked: RoamCard[] = [];
@@ -39,7 +40,7 @@ export function planRoamBatch(
 
   const scored = available.map((card, index) => ({
     card,
-    score: cardScore(card, prefs, index)
+    score: cardScore(card, prefs, index, batchSalt)
   }));
   scored.sort((a, b) => b.score - a.score);
 

@@ -1,65 +1,87 @@
-# AnimeLore MVP
+# AnimeLore
 
-AnimeLore 是一个“二次元作品图鉴”MVP：输入作品名，生成四张社区语境卡片、相关推荐与中文社区语境，并提供首页冷知识、知识漫游、芽衣对话和分享卡片能力。
+AnimeLore 是一座由 AI 档案员「芽衣」陪伴探索的动画作品档案馆。输入作品名后，可以查看社区梗、幕后故事、创作谱系与有来源的延伸阅读；也可以漫游冷知识、与芽衣继续讨论，并生成分享卡片。
 
-## 本地启动
+当前产品采用移动端优先的响应式 Web/PWA 形态：同一套代码适配手机与桌面浏览器，支持日间、夜间和跟随系统三种主题状态。安装到手机主屏幕后可获得接近 App 的独立窗口体验。
 
-1. 安装依赖
-   - `npm install`
-2. 复制环境变量
-   - `copy .env.example .env.local`
-3. 填写 `.env.local`
-   - `DEEPSEEK_API_KEY=...`
-   - `DEEPSEEK_BASE_URL=https://api.deepseek.com`
-   - `NEXT_PUBLIC_BASE_URL=http://localhost:3000`
-4. 启动
-   - `npm run dev:clean`
+## 已实现
 
-## 常用脚本
+- 响应式全站壳层：桌面顶部导航、手机底部导航、安全区适配。
+- 双主题设计系统：纸张档案馆日间主题、星夜阅览室夜间主题。
+- 品牌资产：AnimeLore 书页星标 Logo、芽衣概念图、头像与 Q 版状态形象。
+- 首页：作品搜索、搜索建议、今日冷知识、最近浏览与随机档案。
+- 作品档案：基础信息、四类知识卡、换一批、相关推荐与中文社区考据。
+- 芽衣对话：基于当前作品知识卡继续讨论。
+- 冷知识：可分享、可复制永久链接的 `/cold/[id]` 档案页。
+- 知识漫游：卡片式随机发现并可继续阅读。
+- PWA：Web App Manifest、主题色与可安装入口。
+- 上线基线：输入校验、昂贵接口限流、安全响应头、生产环境调试入口隔离、robots 与 sitemap。
 
-- `npm run dev`：启动 Next dev server（端口 3000）。
-- `npm run dev:clean`：先释放 3000 端口，再启动 dev server，推荐本地开发使用。
-- `npm run build`：生产构建。
-- `npm run cold:clear`：清空 `data/cold-hooks.json`，并尝试重置 dev 进程内冷知识缓存。
-- `npm run cold:seed -- --count=50 --reset --fact-heavy`：生成 50 条偏事实型冷知识库存。
-- `npm run cold:seed -- --count=10 --reset --fact-heavy --dry-run`：只预览/校验，不写入库存。
-- `npm run cold:stats`：统计冷知识库存数量、subtype 分布、quiz 数量和质量缺口。
+## 本地运行
 
-## 数据与融合策略
+环境要求：Node.js 20 LTS（最低需满足当前 Next.js 的 Node 版本要求）。
 
-- 硬信息优先：AniList（年份、制作、封面）
-- 叙述补充：Wikipedia（summary）
-- 中文社区补充：通过联网检索提示词命中萌娘百科等社区页面
-- 冲突处理：AniList/Wikipedia > 社区来源，社区信息保留“据说/有说法认为”标注
+```powershell
+npm install
+Copy-Item .env.example .env.local
+npm run dev
+```
 
-## 当前已实现
+至少在 `.env.local` 中填写：
 
-- 首页：品牌区、搜索框、今日冷知识 Hook，默认从 `data/cold-hooks.json` 读取预生成精品库。
-- 知识漫游：复用冷知识库存，把 cold hook 转成 roam card，并可进入 `/cold` 查看详情。
-- 结果页：顶部基础信息、四卡图鉴、换一批、底部关联 Hook、社区延伸阅读和 AniList 相关推荐。
-- 芽衣对话：作品页 AI 对话助手，用户聊出实质感想后可生成「追番打卡」分享卡片。
-- 分享卡片：`html2canvas` 截图生成 1080×1440 竖版图片；作品页支持深夜追番、封神之作、意难平三套模板；`/cold` 支持冷知识分享卡。
-- API：
-  - `GET /api/hook`
-  - `GET /api/roam`
-  - `GET /api/work?q=...`
-  - `GET /api/work/stream?q=...`
-  - `POST /api/work/regenerate-cards`
-- Prompt：作品四卡强调来源优先级和不确定信息标注；冷知识 prompt 强调事实型优先、单中心趣味点、客观 quiz、避免免责声明式结尾。
+```dotenv
+DEEPSEEK_API_KEY=your_key
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
 
-## 冷知识库存状态
+不要提交 `.env` 或 `.env.local`。Bilibili、阿苇岛等 Cookie 也只允许放在部署平台的加密环境变量中。
 
-当前 `data/cold-hooks.json` 已生成 50 条当前版本库存（prompt version：`2025-05-v6-roam-blurb-quiz`）。
+## 质量门禁
 
-最近一次 `npm run cold:stats`：
+```powershell
+npm run lint
+npm run test
+npm run build
+```
 
-- 总数：50
-- 当前版本：50
-- quiz：16
-- subtype：`work_fact` 16、`character_fact` 1、`production_note` 3、`staff_fact` 7、`meme_origin` 4、`concept_origin` 4、`genre_trope` 10、`community_take` 5
-- 无推荐缺失、无 blurb 缺失、无正文长度异常
+也可以一次执行：
 
-## 已知注意事项
+```powershell
+npm run check
+```
 
-- `npm run build` 的 Next 编译阶段可以通过，但当前类型检查会扫到 `resume-tools/` 外部参考项目，并在 `resume-tools/jsonresume.org/apps/docs/app/docs/[[...slug]]/page.tsx` 因缺少 `@/lib/source` 失败。后续应把 `resume-tools/` 从主项目 `tsconfig.json` 检查范围排除。
-- `html2canvas` 截图跨域封面时使用 `useCORS: true`；封面失败时分享卡会退回纯色/渐变背景。
+当前单元测试覆盖冷知识会话兼容与接口限流核心逻辑。发布前还应完成桌面/手机端浏览器冒烟测试。
+
+## 常用维护命令
+
+- `npm run cold:stats`：检查冷知识库存数量与质量分布。
+- `npm run cold:seed -- --count=50 --reset --fact-heavy`：重建冷知识库存。
+- `npm run cold:clear`：清空本地冷知识库存（破坏性操作，执行前先备份）。
+- `npm run benchmark:run`：运行现有 RAG 基准脚本。
+
+## 部署
+
+推荐使用支持 Next.js Node 运行时与流式响应的平台。部署时：
+
+1. 使用 `npm ci` 按锁文件安装依赖。
+2. 设置生产环境变量，特别是 `DEEPSEEK_API_KEY` 与公开站点的 `NEXT_PUBLIC_BASE_URL`。
+3. 构建命令使用 `npm run build`，启动命令使用 `npm run start`。
+4. 验证平台没有缓冲 `text/event-stream`，否则关闭 `WORK_LORE_STREAMING`。
+5. 将 `data/cold-hooks.json` 视为随版本发布的只读内容；若未来允许在线写入，需要迁移到持久数据库。
+6. 当前限流是单实例内存实现，适合作为首层保护。多实例正式流量应替换为 Redis/Upstash 等共享限流存储。
+
+完整验收、后续功能边界和回退点见 `docs/RELEASE_CANDIDATE.md`，安全说明见 `SECURITY.md`。
+
+## 数据来源与可信度
+
+- AniList：作品年份、制作信息与封面等结构化元数据。
+- Bangumi：中文标题和条目信息补充。
+- Wikipedia、萌娘百科：背景叙述与交叉核对。
+- 中文社区来源：仅作为社区语境和延伸阅读，不覆盖权威硬信息。
+
+生成内容仍可能出错。涉及具体事实时，界面会尽可能附上来源、验证状态与置信度，用户应以原始来源为准。
+
+## 版本与回退
+
+改造工作位于 `codex/responsive-pwa-redesign` 分支，每个长跑阶段都有独立提交点。可使用 `git log --oneline` 查看阶段提交，并通过新分支或 `git revert <commit>` 做可审计回退；不建议直接重置或覆盖历史。

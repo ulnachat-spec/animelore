@@ -228,3 +228,11 @@ export const CONCEPT_REC_POOL: Record<string, ConceptRecEntry[]> = {
 export function conceptRecEntriesForSeed(seedKeyword: string): ConceptRecEntry[] {
   return CONCEPT_REC_POOL[seedKeyword] ?? [];
 }
+
+export function findConceptRecByAniListId(anilistId: number): ConceptRecEntry | undefined {
+  for (const entries of Object.values(CONCEPT_REC_POOL)) {
+    const match = entries.find((entry) => entry.anilistId === anilistId);
+    if (match) return match;
+  }
+  return undefined;
+}

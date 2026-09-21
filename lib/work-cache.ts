@@ -62,6 +62,11 @@ export function setCachedWorkLore(cacheKey: string, data: WorkLoreResult): void 
   });
 }
 
+/** 降级/资料不足结果只反映一次临时网络状态，不能污染 24 小时正常缓存。 */
+export function shouldCacheWorkLore(data: WorkLoreResult): boolean {
+  return data.pipeline === "adaptive" || data.pipeline === "legacy";
+}
+
 /** 命中缓存时在返回副本的 rag.trace 中标记 cache_hit（不修改 Map 内存储） */
 export function annotateWorkLoreCacheHit(
   data: WorkLoreResult,

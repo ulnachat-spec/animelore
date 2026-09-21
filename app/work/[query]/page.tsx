@@ -15,6 +15,7 @@ function searchParamIsOn(
   return false;
 }
 import { SearchBox } from "@/components/search-box";
+import { RecentWorkRecorder } from "@/components/recent-work-recorder";
 import { CommunityRecsSkeleton } from "@/components/skeletons/CommunityRecsSkeleton";
 import { RelatedWorksSkeleton } from "@/components/skeletons/RelatedWorksSkeleton";
 import { WorkHeroSkeleton } from "@/components/skeletons/WorkHeroSkeleton";
@@ -25,18 +26,23 @@ import { WorkHeroSection } from "@/components/work/work-hero-section";
 import { WorkLoreSection } from "@/components/work/work-lore-section";
 import { WorkPageNav } from "@/components/work/work-page-nav";
 
-export default function WorkPage({
+export default async function WorkPage({
   params,
   searchParams
 }: {
-  params: { query: string };
-  searchParams?: { debugTyping?: string | string[] };
+  params: Promise<{ query: string }>;
+  searchParams?: Promise<{ debugTyping?: string | string[] }>;
 }) {
-  const query = decodeURIComponent(params.query);
-  const debugTyping = searchParamIsOn(searchParams?.debugTyping);
+  const [{ query: encodedQuery }, resolvedSearchParams] = await Promise.all([
+    params,
+    searchParams
+  ]);
+  const query = decodeURIComponent(encodedQuery);
+  const debugTyping = searchParamIsOn(resolvedSearchParams?.debugTyping);
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
+    <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
+      <RecentWorkRecorder title={query} />
       <WorkPageNav query={query} />
       <div className="mt-6">
         <SearchBox defaultValue={query} />

@@ -5,12 +5,12 @@ export function WorkPageNav({ query }: { query: string }) {
     <header className="flex flex-wrap items-center justify-between gap-3">
       <Link
         href="/"
-        className="text-sm text-zinc-400 transition hover:text-zinc-200"
+        className="text-sm text-muted transition hover:text-ink"
       >
         ← 返回搜索
       </Link>
-      <p className="text-sm text-zinc-500">
-        正在查看：<span className="text-zinc-300">{query}</span>
+      <p className="text-sm text-muted">
+        正在查看：<span className="text-body">{query}</span>
       </p>
     </header>
   );
