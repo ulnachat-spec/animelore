@@ -1,7 +1,9 @@
 export function communityRecsEnabled(): boolean {
   const v = process.env.COMMUNITY_RECS_ENABLED?.trim();
-  if (v == null || v === "") return false;
-  return v === "true" || v === "1";
+  // 中文社区延伸阅读是作品页的核心信息层；未配置时保持可用。
+  // 仅允许通过明确的 false/0 暂停，避免部署平台没有注入可选变量时整个区域静默消失。
+  if (v == null || v === "") return true;
+  return v !== "false" && v !== "0";
 }
 
 export function communityRecsMax(): number {
