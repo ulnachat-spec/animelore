@@ -243,19 +243,23 @@ export async function fetchCommunityArticleCandidates(input: {
     }
   }
 
+  // 实时源可能只返回壁纸、搬运等会被质量层过滤的条目。兜底必须依据「合格候选」而不是
+  // 原始抓取数量，否则页面会在过滤后又变成空白。
+  let { candidates, filtered_out } = rankAndFilterCommunityCandidates(rawCandidates);
+
   // 无 Cookie 的云端请求常被 B 站/NGA 等实时源限流。至少保留一个稳定且明确标识的中文社区入口，
-  // 不能让整块「中文社区考据与创作」因第三方风控而静默消失。
-  if (rawCandidates.length === 0 && deadlineRemaining(deadlineMs) > 900) {
+  // 不能让整块「中文社区考据与创作」因第三方风控或低质量搜索结果而静默消失。
+  if (candidates.length === 0 && deadlineRemaining(deadlineMs) > 900) {
     const bangumiQuery = input.meta.nativeTitle || input.meta.title || input.query;
     const remaining = Math.min(5000, Math.max(800, deadlineRemaining(deadlineMs) - 250));
     const outcome = await withTimeout(fetchBangumiSubjectOutcome(bangumiQuery), remaining, "bangumi_fallback");
     if (outcome?.ok) {
       rawCandidates.push(bangumiCommunityFallbackCandidate(outcome.data));
+      ({ candidates, filtered_out } = rankAndFilterCommunityCandidates(rawCandidates));
     }
   }
 
   const raw_count = rawCandidates.length;
-  const { candidates, filtered_out } = rankAndFilterCommunityCandidates(rawCandidates);
 
   return {
     candidates,

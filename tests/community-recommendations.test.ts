@@ -19,4 +19,16 @@ describe("community recommendation fallbacks", () => {
     expect(candidate.url).toBe("https://bgm.tv/subject/172498");
     expect(filterCommunityArticleCandidate(candidate).ok).toBe(true);
   });
+
+  it("过滤 B 站壁纸等非考据类搜索结果", () => {
+    const result = filterCommunityArticleCandidate({
+      id: "bili-wallpaper",
+      source: "bilibili",
+      title: "你的名字超清壁纸",
+      url: "https://www.bilibili.com/opus/123456",
+      snippet: "图片分享"
+    });
+
+    expect(result).toEqual({ ok: false, reason: "resource_keyword" });
+  });
 });
