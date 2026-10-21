@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Self-hosted Docker builds set NEXT_OUTPUT=standalone; Vercel builds leave it unset.
+  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "s4.anilist.co" },

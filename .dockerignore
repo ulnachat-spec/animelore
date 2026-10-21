@@ -1,0 +1,26 @@
+# Keep the Docker build context small and secret-free.
+.git
+.next
+node_modules
+.env
+.env.*
+!.env.example
+*.log
+.vercel
+coverage
+tests
+benchmark
+artifacts
+outputs
+docs
+design
+ui-prototype
+resume-tools
+__pycache__
+*.py
+*.docx
+*.csv
+*.html
+*.md
+debug-*.json
+*.tsbuildinfo
