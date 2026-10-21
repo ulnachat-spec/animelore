@@ -20,6 +20,8 @@ export interface CommunityFetchMeta {
   fetched_bootstrap_cookie?: boolean;
   bilibili_api_code?: number;
   bilibili_api_message?: string;
+  /** 实际采用的 B站搜索方式：wbi_session / wbi_anonymous / plain_session */
+  bilibili_attempt?: string;
   /** B站搜索 result 结构摘要（不含 Cookie / 完整响应体） */
   bilibili_result_debug?: BilibiliResultDebugSummary;
 }

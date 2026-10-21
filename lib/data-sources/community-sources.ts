@@ -1,5 +1,6 @@
 import { communityRecsResolveOpusOnFetch } from "@/lib/community-recs-config";
 import {
+  getBilibiliAnonymousRequestHeaders,
   getBilibiliRequestHeaders,
   getBilibiliSessionMeta
 } from "@/lib/data-sources/bilibili-session";
@@ -28,6 +29,8 @@ export type {
 
 /** WBI 签名搜索；专栏 search_type=article（bilibili-API-collect） */
 const BILI_WBI_SEARCH = "https://api.bilibili.com/x/web-interface/wbi/search/type";
+/** 非 WBI 搜索；WBI 被 v_voucher 风控时的兜底 */
+const BILI_PLAIN_SEARCH = "https://api.bilibili.com/x/web-interface/search/type";
 const BILI_ARTICLE_SEARCH_TYPES = ["article", "column"] as const;
 
 const AWEIDAO_BASE = "https://aweidao1.com";
@@ -50,6 +53,31 @@ function responseLooksLikeHtml(body: string, contentType: string): boolean {
   if (ct.includes("text/html")) return true;
   const t = body.trim();
   return t.startsWith("<!") || t.startsWith("<html") || t.toLowerCase().startsWith("<!doctype");
+}
+
+function buildPlainSearchUrl(params: Record<string, string | number>): string {
+  const qs = new URLSearchParams(
+    Object.entries(params).map(([k, v]) => [k, String(v)])
+  ).toString();
+  return `${BILI_PLAIN_SEARCH}?${qs}`;
+}
+
+/** HTTP 412 / code=-412 / 只返回 v_voucher 风控凭证 → 换一种方式重试 */
+function bilibiliSearchBlocked(status: number, raw: string): boolean {
+  if (status === 412) return true;
+  try {
+    const data = JSON.parse(raw) as { code?: number; data?: unknown };
+    if (data.code === -412) return true;
+    const payload = data.data as Record<string, unknown> | null | undefined;
+    return (
+      !!payload &&
+      typeof payload === "object" &&
+      "v_voucher" in payload &&
+      !Array.isArray(payload.result)
+    );
+  } catch {
+    return false;
+  }
 }
 
 async function bilibiliDebugMeta(): Promise<CommunityFetchMeta> {
@@ -107,26 +135,50 @@ export async function fetchBilibiliColumnContext(
     });
 
     for (const searchType of BILI_ARTICLE_SEARCH_TYPES) {
-      const searchUrl = buildWbiSearchUrl(
-        BILI_WBI_SEARCH,
+      const params = {
+        search_type: searchType,
+        keyword: q,
+        page: 1,
+        page_size: 8,
+        order: "totalrank"
+      };
+      // 环境变量 Cookie 过期时 WBI 搜索返回 v_voucher；依次退到匿名会话、非 WBI 接口
+      const attempts = [
         {
-          search_type: searchType,
-          keyword: q,
-          page: 1,
-          page_size: 8,
-          order: "totalrank"
+          id: "wbi_session",
+          url: () => buildWbiSearchUrl(BILI_WBI_SEARCH, params, wbiKeys.imgKey, wbiKeys.subKey),
+          headers: getBilibiliRequestHeaders
         },
-        wbiKeys.imgKey,
-        wbiKeys.subKey
-      );
+        ...(baseMeta.used_env_cookie
+          ? [
+              {
+                id: "wbi_anonymous",
+                url: () => buildWbiSearchUrl(BILI_WBI_SEARCH, params, wbiKeys.imgKey, wbiKeys.subKey),
+                headers: getBilibiliAnonymousRequestHeaders
+              }
+            ]
+          : []),
+        {
+          id: "plain_session",
+          url: () => buildPlainSearchUrl(params),
+          headers: getBilibiliRequestHeaders
+        }
+      ];
 
-      const resp = await fetch(searchUrl, {
-        headers: await getBilibiliRequestHeaders(),
-        cache: "no-store"
-      });
-      lastStatus = resp.status;
-      const contentType = resp.headers.get("content-type") || "";
-      const raw = await resp.text();
+      let contentType = "";
+      let raw = "";
+      for (const attempt of attempts) {
+        const resp = await fetch(attempt.url(), {
+          headers: await attempt.headers(),
+          cache: "no-store"
+        });
+        lastStatus = resp.status;
+        contentType = resp.headers.get("content-type") || "";
+        raw = await resp.text();
+        lastMeta = { ...baseMeta, bilibili_attempt: attempt.id };
+        if (!bilibiliSearchBlocked(lastStatus, raw)) break;
+      }
+      const attemptMeta = lastMeta;
 
       if (lastStatus === 412) {
         return communityFetchFailure(source, q, {
@@ -137,7 +189,7 @@ export async function fetchBilibiliColumnContext(
         });
       }
 
-      if (!resp.ok) {
+      if (lastStatus < 200 || lastStatus >= 300) {
         return communityFetchFailure(source, q, {
           status: lastStatus,
           phase: "http",
@@ -180,7 +232,7 @@ export async function fetchBilibiliColumnContext(
         payload
       });
       lastMeta = {
-        ...baseMeta,
+        ...attemptMeta,
         bilibili_api_code: apiCode,
         bilibili_api_message: apiMessage,
         bilibili_result_debug: lastSummary

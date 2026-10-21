@@ -163,6 +163,28 @@ export async function getBilibiliSessionMeta(): Promise<BilibiliSessionMeta> {
   return s.meta;
 }
 
+let anonymousCache: { cookieHeader: string; at: number } | null = null;
+
+/**
+ * 不带环境变量 Cookie 的匿名请求头（仅首页 / finger/spi 下发的 buvid 等）。
+ * 环境变量 Cookie 过期（nav 返回 -101）时，WBI 搜索会返回 v_voucher 风控；匿名会话可正常搜索。
+ */
+export async function getBilibiliAnonymousRequestHeaders(): Promise<Record<string, string>> {
+  const now = Date.now();
+  if (!anonymousCache || now - anonymousCache.at >= SESSION_TTL_MS) {
+    let cookieHeader = "";
+    try {
+      cookieHeader = mergeCookieMaps(await fetchBootstrapCookies());
+    } catch {
+      /* fail-open：无 Cookie 也尝试 */
+    }
+    anonymousCache = { cookieHeader, at: now };
+  }
+  const h: Record<string, string> = { ...BILIBILI_BROWSER_HEADERS };
+  if (anonymousCache.cookieHeader) h.Cookie = anonymousCache.cookieHeader;
+  return h;
+}
+
 /** 服务端 B站 API 请求头（含 Cookie）；Cookie 值不离开本模块调用栈 */
 export async function getBilibiliRequestHeaders(): Promise<Record<string, string>> {
   const { cookieHeader } = await ensureSession();
