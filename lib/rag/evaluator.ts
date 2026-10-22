@@ -108,10 +108,12 @@ export function computeCoverageOk(meta: WorkMeta, evidence: Evidence[]): boolean
     return hasAni && hard && nar && hasHardFactEvidence(evidence);
   }
   /**
-   * 宽松：AniList 必备；叙述文本 **或** 足够结构化硬信息（含仅 AniList 条目）即可生成。
+   * 宽松：AniList + 叙述文本 **或** 足够结构化硬信息（含仅 AniList 条目）即可生成。
    * 避免维基/萌娘在部分网络下不可达时整页「资料不足」。
+   * AniList 不可用时，Bangumi 条目 + 叙述文本（萌百 / 维基 / Bangumi 简介）可顶替。
    */
-  return hasAni && (nar || hard);
+  if (hasAni) return nar || hard;
+  return hasBangumiStructuredEvidence(evidence) && nar;
 }
 
 /** 供 prompt / debug：当前证据包中的来源角色摘要 */

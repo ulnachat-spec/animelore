@@ -8,7 +8,9 @@ export {
   fetchBangumiSubject,
   fetchBangumiSubjectBestEffort,
   fetchBangumiSubjectOutcome,
-  bangumiSubjectToSnippet
+  fetchBangumiWorkMeta,
+  bangumiSubjectToSnippet,
+  bangumiSubjectToWorkMeta
 } from "./bangumi";
 export type { BangumiSubject } from "./bangumi";
 export type {

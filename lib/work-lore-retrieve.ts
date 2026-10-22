@@ -109,7 +109,7 @@ async function retrieveAdaptiveContext(userQuery: string): Promise<WorkLoreRetri
   const fallbackKept =
     kept.length > 0 ? kept : allEvidence.slice(0, Math.min(topK, allEvidence.length));
   const reason =
-    "未达到覆盖面阈值：需要 AniList 结构化信息，以及维基/萌娘/Bangumi 叙述或足够硬元数据（已尝试多轮检索）。";
+    "未达到覆盖面阈值：需要 AniList 或 Bangumi 结构化信息，以及维基/萌娘/Bangumi 叙述或足够硬元数据（已尝试多轮检索）。";
 
   return {
     meta,

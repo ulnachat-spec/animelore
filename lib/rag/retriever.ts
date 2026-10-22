@@ -2,6 +2,7 @@ import {
   fetchAniListMeta,
   fetchBangumiSubjectOutcome,
   bangumiSubjectToSnippet,
+  bangumiSubjectToWorkMeta,
   fetchAweidaoCommunityContext,
   fetchBilibiliColumnContext,
   fetchMoegirlContext,
@@ -234,6 +235,8 @@ interface BangumiBundle {
   evidence: Evidence[];
   bangumiFetches: BangumiFetchDebugEntry[];
   bangumiNameCn: string | null;
+  /** 命中条目转换的 meta；AniList 不可用时用于补全 */
+  bangumiMeta?: WorkMeta;
   ok: boolean;
 }
 
@@ -259,6 +262,7 @@ async function fetchBangumiBundle(input: {
       return {
         ok: true,
         bangumiNameCn,
+        bangumiMeta: bangumiSubjectToWorkMeta(bgm),
         bangumiFetches,
         evidence: [
           {
@@ -437,9 +441,13 @@ export async function retrieveWorkEvidenceRound(
     duration_ms: sourceTimings.find((t) => t.source === "anilist_meta")?.duration_ms
   });
 
-  const hasResolvedAniListMeta = Boolean(
-    meta.anilistId || meta.coverImage || meta.nativeTitle || meta.seasonYear || meta.studios?.length
-  );
+  // 后续轮次复用的 metaHint 可能来自 Bangumi，不能当作 AniList 证据
+  const hasResolvedAniListMeta =
+    meta.metaSource !== "bangumi" &&
+    Boolean(
+      meta.anilistId || meta.coverImage || meta.nativeTitle || meta.seasonYear || meta.studios?.length
+    );
+  let bangumiMeta: WorkMeta | undefined;
   if (sourceEnabled(enabledSources, "anilist") && hasResolvedAniListMeta) {
     evidence.push({
       id: nextId("anilist"),
@@ -492,6 +500,7 @@ export async function retrieveWorkEvidenceRound(
         if (timed.value) {
           bangumiFetches.push(...timed.value.bangumiFetches);
           evidence.push(...timed.value.evidence);
+          bangumiMeta = timed.value.bangumiMeta;
         } else if (timed.timed_out || timed.error) {
           bangumiFetches.push({
             query: bangumiSearchQueries[0] ?? primaryQuery,
@@ -628,6 +637,15 @@ export async function retrieveWorkEvidenceRound(
         });
       }
     }
+  }
+
+  if (!hasResolvedAniListMeta && meta.metaSource !== "bangumi" && bangumiMeta) {
+    meta = bangumiMeta;
+    ragLog("retriever.bangumi_meta_fallback", {
+      round,
+      primaryQuery,
+      resolved_title: meta.title
+    });
   }
 
   if (tryAlternateTitles) {

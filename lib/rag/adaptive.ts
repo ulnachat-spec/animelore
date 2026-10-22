@@ -331,7 +331,7 @@ export async function runAdaptiveWorkLore(
   );
 
   const reason =
-    "未达到覆盖面阈值：需要 AniList 结构化信息，以及维基/萌娘/Bangumi 叙述或足够硬元数据（已尝试多轮检索）。";
+    "未达到覆盖面阈值：需要 AniList 或 Bangumi 结构化信息，以及维基/萌娘/Bangumi 叙述或足够硬元数据（已尝试多轮检索）。";
 
   const rag: RagResult = {
     task_type: "work_lore",

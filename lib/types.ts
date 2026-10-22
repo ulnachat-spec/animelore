@@ -33,6 +33,8 @@ export interface WorkMeta {
   season?: string;
   studios?: string[];
   coverImage?: string;
+  /** "bangumi"：AniList 不可用时由 Bangumi 条目补全；缺省为 AniList */
+  metaSource?: "anilist" | "bangumi";
 }
 
 export type ColdTopicType = "work" | "concept" | "phenomenon";

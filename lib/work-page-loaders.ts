@@ -5,7 +5,7 @@ import {
   communityRecsEnabled,
   communityRecsFetchDeadlineMs
 } from "@/lib/community-recs-config";
-import { fetchAniListMeta } from "@/lib/data-sources";
+import { fetchAniListMeta, fetchBangumiWorkMeta } from "@/lib/data-sources";
 import { loadWorkCore } from "@/lib/load-work-core";
 import { loadWorkRelatedRecs } from "@/lib/load-work-related";
 import { workRelatedServerTimeoutMs } from "@/lib/work-page-timeouts";
@@ -14,10 +14,13 @@ import type { CommunityArticleRec, WorkMeta, WorkRelatedRec } from "@/lib/types"
 /** 同请求内 dedupe getWorkLore / loadWorkCore */
 export const getWorkCoreCached = cache(loadWorkCore);
 
-/** 较快 AniList meta，供 Hero / 延伸阅读独立 Suspense 使用 */
+/** 较快 AniList meta（AniList 不可用时退到 Bangumi），供 Hero / 延伸阅读独立 Suspense 使用 */
 export const getWorkMetaQuickCached = cache(async (query: string): Promise<WorkMeta> => {
   const trimmed = query.trim();
-  return (await fetchAniListMeta(trimmed)) ?? { title: trimmed };
+  return (
+    (await fetchAniListMeta(trimmed)) ??
+    (await fetchBangumiWorkMeta(trimmed).catch(() => null)) ?? { title: trimmed }
+  );
 });
 
 export async function loadCommunityRecsForPage(

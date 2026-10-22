@@ -3,6 +3,7 @@ import {
   bangumiFetchSuccess,
   type BangumiFetchOutcome
 } from "@/lib/data-sources/bangumi-fetch-types";
+import type { WorkMeta } from "@/lib/types";
 
 const BANGUMI_API = "https://api.bgm.tv/v0";
 const USER_AGENT = "AnimeLore/0.1 (https://github.com/animelore; contact: dev@local)";
@@ -38,6 +39,7 @@ type BangumiSubjectRaw = {
   type?: number;
   rating?: { score?: number; total?: number; rank?: number };
   infobox?: Array<{ key?: string; value?: string }>;
+  images?: { large?: string; common?: string; medium?: string };
 };
 
 function pickBestMatch(items: BangumiSubjectRaw[], query: string): BangumiSubjectRaw | null {
@@ -158,7 +160,9 @@ function rawToSubject(hit: BangumiSubjectRaw, detail: BangumiSubjectRaw, q: stri
       subjectId: id,
       type: detail.type ?? hit.type,
       infobox: detail.infobox ?? hit.infobox ?? [],
-      date: detail.date ?? hit.date
+      date: detail.date ?? hit.date,
+      coverImage:
+        detail.images?.large || detail.images?.common || hit.images?.large || hit.images?.common
     }
   };
 }
@@ -252,6 +256,56 @@ export async function fetchBangumiSubjectBestEffort(
       message: "无可用 query"
     })
   );
+}
+
+const BANGUMI_STUDIO_KEYS = ["动画制作", "アニメーション制作", "制作"];
+
+/** infobox value 可能是字符串，也可能是 [{ v }] 数组 */
+function infoboxValueToList(value: unknown): string[] {
+  if (typeof value === "string") {
+    return value
+      .split(/[、,，/]/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => (item && typeof item === "object" ? String((item as { v?: unknown }).v ?? "") : ""))
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
+/**
+ * AniList 不可用时，用 Bangumi 条目补全 Hero / 覆盖面判断所需的硬信息。
+ */
+export function bangumiSubjectToWorkMeta(subject: BangumiSubject): WorkMeta {
+  const infobox = (subject.structured.infobox as Array<{ key?: string; value?: unknown }>) ?? [];
+  let studios: string[] = [];
+  for (const key of BANGUMI_STUDIO_KEYS) {
+    const row = infobox.find((r) => r.key === key);
+    if (row) {
+      studios = infoboxValueToList(row.value).slice(0, 3);
+      if (studios.length) break;
+    }
+  }
+  const year = subject.date ? parseInt(subject.date.slice(0, 4), 10) : NaN;
+  const coverImage = subject.structured.coverImage;
+  const title = subject.name_cn?.trim() || subject.name;
+  return {
+    title,
+    nativeTitle: subject.name && subject.name !== title ? subject.name : undefined,
+    seasonYear: Number.isFinite(year) ? year : undefined,
+    studios: studios.length ? studios : undefined,
+    coverImage: typeof coverImage === "string" && coverImage ? coverImage : undefined,
+    metaSource: "bangumi"
+  };
+}
+
+export async function fetchBangumiWorkMeta(query: string): Promise<WorkMeta | null> {
+  const outcome = await fetchBangumiSubjectOutcome(query);
+  return outcome.ok ? bangumiSubjectToWorkMeta(outcome.data) : null;
 }
 
 /** @deprecated 使用 fetchBangumiSubjectOutcome；保留 null 返回以兼容旧调用 */
